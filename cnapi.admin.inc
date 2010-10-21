@@ -134,7 +134,7 @@ function cnapi_admin_defaults() {
   $form['defaults']['#tree'] = TRUE;
 
   foreach ($contexts as $context => $info) {
-    $context_default_specified = cnapi_default_values('pagelength', $context) != -1 || cnapi_default_values('sort', $context) != -1;
+    $context_default_specified = _cnapi_default_values('pagelength', $context) != -1 || _cnapi_default_values('sort', $context) != -1;
     $form['defaults'][$context] = array(
       '#type' => 'fieldset',
       '#title' => $info['name'],
@@ -146,14 +146,14 @@ function cnapi_admin_defaults() {
       '#title' => t('Items per page'),
       '#description' => t('The amount of items to request by default per API call.'),
       '#options' => array(-1 => t('Use general pagelength settings')) + $pagelength_options,
-      '#default_value' => cnapi_default_values('pagelength', $context),
+      '#default_value' => _cnapi_default_values('pagelength', $context),
     );
     $form['defaults'][$context]['sort'] = array(
       '#type' => 'select',
       '#title' => t('Sort'),
       '#description' => t('The amount of items to request by default per API call.'),
       '#options' => array(-1 => t('Use general pagelength settings')) + $sort_options,
-      '#default_value' => cnapi_default_values('sort', $context),
+      '#default_value' => _cnapi_default_values('sort', $context),
     );
   }
 

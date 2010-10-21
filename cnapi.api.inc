@@ -238,7 +238,7 @@ function _cnapi_timer($action, $url = NULL) {
   }
 }
 
-function cnapi_default_values($key = NULL, $namespace = NULL) {
+function _cnapi_default_values($key = NULL, $namespace = NULL) {
   switch ($namespace) {
     case 'event':
       $defaults = variable_get('cnapi_defaults_events', array('pagelength' => -1, 'sort' => -1));
@@ -277,12 +277,12 @@ function cnapi_request_add_defaults(&$request) {
     }
 
     // calculating defaults
-    $defaults = cnapi_default_values();
+    $defaults = _cnapi_default_values();
 
     foreach (array('event', 'production', 'actor') as $type) {
       if ($request['type'] == $type) {
         $namespace_defaults = array();
-        foreach (cnapi_default_values(NULL, $type) as $key => $val) {
+        foreach (_cnapi_default_values(NULL, $type) as $key => $val) {
           if ($val != -1) {
             $namespace_defaults[$key] = $val;
           }
