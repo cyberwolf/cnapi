@@ -49,6 +49,9 @@ function cnapi_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_flush_caches().
+ */
 function cnapi_flush_caches() {
   return array('cache_cnapi', 'cache_cnapi_detail');
 }
