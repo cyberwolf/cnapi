@@ -1,0 +1,105 @@
+<?php
+// $Id$
+
+require_once 'cnapi.api.inc';
+
+define('CNAPI_API_LOCATION', 'http://build.uitdatabank.be/');
+
+define('CNAPI_HTTP_REQUEST_TIMEOUT', 15);
+
+define('CNAPI_PARSE_LIST', 'list');
+define('CNAPI_PARSE_DETAIL', 'detail');
+define('CNAPI_PARSE_IGNORE', FALSE);
+
+define('CNAPI_DEFAULT_PAGELENGTH', 10);
+define('CNAPI_DEFAULT_SORT', 'date ASC');
+
+define('CNAPI_CACHE_DISABLED', 0);
+define('CNAPI_CACHE_ENABLED', 1);
+
+/**
+ * Implements hook_menu().
+ */
+function cnapi_menu() {
+  $items['admin/config/services/cnapi'] = array(
+    'title' => 'Cultuurnet API',
+    'description' => 'Change site name, e-mail address, slogan, default front page, and number of posts per page, error pages.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cnapi_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'cnapi.admin.inc',
+  );
+  $items['admin/config/services/cnapi/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Select and configure your theme',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -1,
+    'file' => 'cnapi.admin.inc',
+  );
+  $items['admin/config/services/cnapi/defaults'] = array(
+    'title' => 'Defaults',
+    'description' => 'Change site name, e-mail address, slogan, default front page, and number of posts per page, error pages.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cnapi_admin_defaults'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 0,
+    'file' => 'cnapi.admin.inc',
+  );
+  return $items;
+}
+
+function cnapi_flush_caches() {
+  return array('cache_cnapi', 'cache_cnapi_detail');
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
+  // We want our stuff before the clear cache fieldset and button.
+  $form['buttons']['#weight'] = 3;
+  $form['clear_cache']['#weight'] = 2;
+
+  // Adding API cache settings to the performance settings form.
+
+  $form['cnapi_cache'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Cultuurnet API cache'),
+    '#weight' => 1,
+    '#description' => t('Enabling the Cultuurnet API cache will cache all parsed results of requests to the Cultuurnet API. This will reduce the number of requests made directly to the API service.'),
+  );
+  $form['cnapi_cache']['cnapi_cache_status'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Cache API requests'),
+    '#default_value' => variable_get('cnapi_cache_status', CNAPI_CACHE_ENABLED),
+  );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400), 'format_interval');
+  $form['cnapi_cache']['cnapi_cache_lifetime'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime'),
+    '#default_value' => variable_get('cnapi_cache_lifetime', 0),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
+    '#states' => array(
+      'invisible' => array(
+        'input[name="cnapi_cache_status"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
+  $form['cnapi_cache']['cnapi_cache_lifetime_detail'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime for details'),
+    '#default_value' => variable_get('cnapi_cache_lifetime_detail', 0),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated for details (event, actor, production)'),
+    '#states' => array(
+      'invisible' => array(
+        'input[name="cnapi_cache_status"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+}
