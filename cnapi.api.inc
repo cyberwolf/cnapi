@@ -35,19 +35,19 @@ function cnapi_get_actor($cdbid) {
 
 function cnapi_get_events($query = NULL, $format = CNAPI_PARSE_LIST) {
   $request = array('type' => 'event', 'query' => $query);
-  $request['action'] = CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
   return cnapi_get($request);
 }
 
 function cnapi_get_productions($query = NULL, $format = CNAPI_PARSE_LIST) {
   $request = array('type' => 'production', 'query' => $query);
-  $request['action'] = CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
   return cnapi_get($request);
 }
 
 function cnapi_get_actors($query = NULL, $format = CNAPI_PARSE_LIST) {
   $request = array('type' => 'actor', 'query' => $query);
-  $request['action'] = CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
   return cnapi_get($request);
 }
 
