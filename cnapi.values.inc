@@ -115,7 +115,7 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
         if (is_array($mapping)) {
           $value = $row->xpath($mapping['path']);
           if (isset($value[0])) {
-            $object[$id] = $mapping['parser']($value[0]);
+            $object[$id] = call_user_func($mapping['parser'], $value[0]);
           }
         }
         else {
@@ -131,7 +131,7 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
       else {
         $values = $row->xpath($mappings[$multiple_key]['path']);
         foreach ($values as $value) {
-          $object[$multiple_key] = $mappings[$multiple_key]['parser']($value);
+          $object[$multiple_key] = call_user_func($mappings[$multiple_key]['parser'], $value);
           $objects[] = $object;
         }
       }
