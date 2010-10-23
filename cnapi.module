@@ -19,14 +19,6 @@ define('CNAPI_CACHE_DISABLED', 0);
 define('CNAPI_CACHE_ENABLED', 1);
 
 /**
- * Implementation of hook_init().
- */
-function cnapi_init() {
-  $events = cnapi_get_events(array(), CNAPI_PARSE_LIST);
-  print "<pre>".print_r($events, TRUE)."</pre>";
-}
-
-/**
  * Implements hook_menu().
  */
 function cnapi_menu() {
