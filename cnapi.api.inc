@@ -99,24 +99,45 @@ function _cnapi_parse($request, $result) {
     $data['total'] = _cnapi_xpath_str($result, '/c:c/c:nofrecords');
   }
   
-  if ($request['action'] == 'summary' && $request['type'] == 'event') {
-    foreach ($result->xpath('/c:cdbxml/c:list/c:item') as $item) {
-      $event = array();
+  if ($request['action'] == 'summary') {
+    $items_path = '/c:cdbxml/c:list/c:item';
+    if ($request['type'] == 'production') {
+      $items_path = '/c:cdbxml/c:production/c:item';
+    }
+    
+    foreach ($result->xpath($items_path) as $item) {
+      $object = array();
       
-      $event['cdbid']            = _cnapi_xpath_str($item, '@cdbid');
-      $event['title']            = _cnapi_xpath_str($item, '@title');
-      $event['shortdescription'] = _cnapi_xpath_str($item, '@shortdescription');
-      $event['thumbnail']        = _cnapi_xpath_str($item, '@thumbnail');
-      $event['created']          = strtotime(_cnapi_xpath_str($item, '@created'));
+      $object['cdbid'] = _cnapi_xpath_str($item, '@cdbid');
+      $object['title'] = _cnapi_xpath_str($item, '@title');
+      $object['shortdescription'] = _cnapi_xpath_str($item, '@shortdescription');
+      $object['thumbnail'] = _cnapi_xpath_str($item, '@thumbnail');
+      $object['created'] = strtotime(_cnapi_xpath_str($item, '@created'));
       
-      $event['city']             = _cnapi_xpath_str($item, '@city');
-      $event['zip']              = _cnapi_xpath_str($item, '@zip');
-      $event['address']          = _cnapi_xpath_str($item, '@address');
-      $latlng                    = explode(';', _cnapi_xpath_str($item, '@latlng'));
-      $event['lat']              = $latlng[0];
-      $event['lng']              = $latlng[1];
+      if (in_array($request['type'], array('event', 'actor'))) {
+        $object['city'] = _cnapi_xpath_str($item, '@city');
+        $object['zip'] = _cnapi_xpath_str($item, '@zip');
+        $object['address'] = _cnapi_xpath_str($item, '@address');
+        $latlng = explode(';', _cnapi_xpath_str($item, '@latlng'));
+        $object['lat'] = $latlng[0];
+        $object['lng'] = $latlng[1];
+      }
+      
+      if ($request['type'] == 'event') {
+        $object['calendarsummary'] = _cnapi_xpath_str($item, '@calendarsummary');
+        $object['headingid'] = _cnapi_xpath_int($item, '@headingid', TRUE);
+        $object['locationid'] = _cnapi_xpath_str($item, '@locationid');
+        $object['agefrom'] = _cnapi_xpath_int($item, '@agefrom');
+        $object['performers'] = _cnapi_xpath_str($item, '@performers', TRUE);
+        $object['available_to'] = strtotime(_cnapi_xpath_str($item, '@available_to'));
+      }
+      
+      if ($request['type'] == 'production') {
+        $object['agefrom'] = _cnapi_xpath_int($item, '@agefrom');
+        $object['performers'] = _cnapi_xpath_str($item, '@performers', TRUE);
+      }
 
-      $data['data'][] = $event;
+      $data['data'][] = $object;
     }
   }
   
