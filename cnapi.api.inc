@@ -78,8 +78,7 @@ function _cnapi_get($request = NULL) {
       $result = _cnapi_parse($request, $result);
 
       if (in_array($request['action'], array('list', 'summary'))) {
-        $total = intval($result->nofrecords);
-        _cnapi_cache_list_clean_by_total($request, $total);
+        _cnapi_cache_list_clean_by_total($request, $result['total']);
       }
 
       _cnapi_cache_set($request, $result);
@@ -90,8 +89,38 @@ function _cnapi_get($request = NULL) {
 }
 
 function _cnapi_parse($request, $result) {
-  // @todo implement this
-  return new SimpleXMLElement($result);
+  $data = array();
+  
+  $result = new SimpleXMLElement($result);
+  $namespaces = $result->getDocNamespaces(); 
+  $result->registerXPathNamespace('c', $namespaces['']); 
+  
+  if (in_array($request['action'], array('list', 'summary'))) {
+    $data['total'] = _cnapi_xpath_str($result, '/c:c/c:nofrecords');
+  }
+  
+  if ($request['action'] == 'summary' && $request['type'] == 'event') {
+    foreach ($result->xpath('/c:cdbxml/c:list/c:item') as $item) {
+      $event = array();
+      
+      $event['cdbid']            = _cnapi_xpath_str($item, '@cdbid');
+      $event['title']            = _cnapi_xpath_str($item, '@title');
+      $event['shortdescription'] = _cnapi_xpath_str($item, '@shortdescription');
+      $event['thumbnail']        = _cnapi_xpath_str($item, '@thumbnail');
+      $event['created']          = strtotime(_cnapi_xpath_str($item, '@created'));
+      
+      $event['city']             = _cnapi_xpath_str($item, '@city');
+      $event['zip']              = _cnapi_xpath_str($item, '@zip');
+      $event['address']          = _cnapi_xpath_str($item, '@address');
+      $latlng                    = explode(';', _cnapi_xpath_str($item, '@latlng'));
+      $event['lat']              = $latlng[0];
+      $event['lng']              = $latlng[1];
+
+      $data['data'][] = $event;
+    }
+  }
+  
+  return $data;
 }
 
 function _cnapi_cache_list_clean_by_total($request, $total) {
