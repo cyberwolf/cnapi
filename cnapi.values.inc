@@ -95,7 +95,6 @@ function cnapi_import($type = 'all') {
   _cnapi_xml_import(CNAPI_XML_HEADING_CATEGORISATION, '/Heading_categorisation/heading_categorisation', $mappings, 'cnapi_heading_category');
 
   cache_clear_all();
-  cache_clear_all('cnapi:', 'cache', TRUE);
 
   drupal_set_message(t('Succesfully imported all values.'), 'status');
 }
