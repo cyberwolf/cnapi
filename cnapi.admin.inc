@@ -30,11 +30,12 @@ function cnapi_admin_settings() {
     '#maxlength' => 40,
   );
   $form['settings']['cnapi_api_output_type'] = array(
-    '#type' => 'select',
+    '#type' => 'textfield',
     '#title' => t('Output type'),
     '#description' => t('Your Cultuurnet API output type.'),
     '#default_value' => variable_get('cnapi_api_output_type', 1),
-    '#options' => drupal_map_assoc(array(1, 2, 3)),
+    '#size' => 2,
+    '#maxlength' => 2,
   );
 
   // proxy settings
