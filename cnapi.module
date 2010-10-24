@@ -8,9 +8,9 @@ define('CNAPI_API_LOCATION', 'http://build.uitdatabank.be/');
 
 define('CNAPI_HTTP_REQUEST_TIMEOUT', 15);
 
-define('CNAPI_PARSE_LIST', 'list');
-define('CNAPI_PARSE_DETAIL', 'detail');
-define('CNAPI_PARSE_IGNORE', FALSE);
+define('CNAPI_LIST_SUMMARY', 'list_summary');
+define('CNAPI_LIST_DETAIL', 'list_detail');
+define('CNAPI_LIST_IGNORE', FALSE);
 
 define('CNAPI_DEFAULT_PAGELENGTH', 10);
 define('CNAPI_DEFAULT_SORT', 'date ASC');

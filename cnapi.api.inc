@@ -12,18 +12,18 @@ function cnapi_get_raw($request) {
   return _cnapi_get($request);
 }
 
-function cnapi_get_event($cdbid, $related_events = CNAPI_PARSE_IGNORE) {
+function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $cdbid));
-  if ($related_events != CNAPI_PARSE_IGNORE) {
-    $request['query']['related_events'] = $related_events;
+  if ($related_events != CNAPI_LIST_IGNORE) {
+    $request['query']['related_events'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
   }
   return cnapi_get($request);
 }
 
-function cnapi_get_production($cdbid, $related_events = CNAPI_PARSE_IGNORE) {
+function cnapi_get_production($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $cdbid));
-  if ($related_events != CNAPI_PARSE_IGNORE) {
-    $request['query']['related_events'] = $related_events;
+  if ($related_events != CNAPI_LIST_IGNORE) {
+    $request['query']['related_events'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
   }
   return cnapi_get($request);
 }
@@ -33,21 +33,18 @@ function cnapi_get_actor($cdbid) {
   return cnapi_get($request);
 }
 
-function cnapi_get_events($query = NULL, $format = CNAPI_PARSE_LIST) {
-  $request = array('type' => 'event', 'query' => $query);
-  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+function cnapi_get_events($query = NULL, $action = CNAPI_LIST_SUMMARY) {
+  $request = array('action' => $action, 'type' => 'event', 'query' => $query);
   return cnapi_get($request);
 }
 
-function cnapi_get_productions($query = NULL, $format = CNAPI_PARSE_LIST) {
-  $request = array('type' => 'production', 'query' => $query);
-  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+function cnapi_get_productions($query = NULL, $action = CNAPI_LIST_SUMMARY) {
+  $request = array('action' => $action, 'type' => 'production', 'query' => $query);
   return cnapi_get($request);
 }
 
-function cnapi_get_actors($query = NULL, $format = CNAPI_PARSE_LIST) {
-  $request = array('type' => 'actor', 'query' => $query);
-  $request['action'] = $format == CNAPI_PARSE_DETAIL ? 'list' : 'summary';
+function cnapi_get_actors($query = NULL, $action = CNAPI_LIST_SUMMARY) {
+  $request = array('action' => $action, 'type' => 'actor', 'query' => $query);
   return cnapi_get($request);
 }
 
@@ -77,7 +74,7 @@ function _cnapi_get($request = NULL) {
     if ($result) {
       $result = _cnapi_parse($request, $result);
 
-      if (in_array($request['action'], array('list', 'summary'))) {
+      if (in_array($request['action'], array('list_detail', 'list_summary'))) {
         _cnapi_cache_list_clean_by_total($request, $result['total']);
       }
 
@@ -95,7 +92,7 @@ function _cnapi_parse($request, $result) {
   $namespaces = $result->getDocNamespaces(); 
   $result->registerXPathNamespace('c', $namespaces['']); 
   
-  if (in_array($request['action'], array('list', 'summary'))) {
+  if (in_array($request['action'], array('list_detail', 'list_summary'))) {
     $data['total'] = _cnapi_xpath_str($result, '/c:c/c:nofrecords');
   }
   
@@ -320,7 +317,7 @@ function cnapi_request_add_defaults(&$request) {
     $request['query']['key'] = variable_get('cnapi_api_key', '');
   }
 
-  if (in_array($request['action'], array('list', 'summary'))) {
+  if (in_array($request['action'], array('list_detail', 'list_summary'))) {
     // page
     if (!isset($request['query']['page'])) {
       $request['query']['page'] = 1;
@@ -372,7 +369,7 @@ function cnapi_request_clean(&$request) {
 }
 
 function cnapi_request_validate($request) {
-  $valid_actions = array('list', 'summary', 'detail', 'report');
+  $valid_actions = array('list_detail', 'list_summary', 'detail', 'report');
   $valid_types = array('event', 'production', 'actor');
 
   // all requests should have a key
@@ -399,7 +396,7 @@ function cnapi_request_validate($request) {
   $valid_queries_common = array('key', 'q', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
   $valid_queries_events_productions = array('locationkeyword', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
 
-  if (in_array($request['action'], array('list', 'summary', 'report'))) {
+  if (in_array($request['action'], array('list_detail', 'list_summary', 'report'))) {
     if ($request['type'] == 'actor') {
       $valid_queries = $valid_queries_common;
     }
@@ -471,8 +468,8 @@ function cnapi_url_a2p($url = '') {
   $match = array();
   if (preg_match_all('/^(events|actors|productions)\/(search|xmlview|report)$/i', $path, $match)) {
     $mapping = array(
-      'search' => 'summary',
-      'xmlview' => 'list',
+      'search' => 'list_summary',
+      'xmlview' => 'list_detail',
       'report' => 'report',
     );
     $action = $match[2][0];
@@ -503,12 +500,12 @@ function cnapi_url_p2a($request = array()) {
       $path = $request['type'] . '/' . $request['query']['cdbid'];
       unset($request['query']['cdbid']);
       break;
-    case 'list':
-    case 'summary':
+    case 'list_detail':
+    case 'list_summary':
     case 'report':
       $mapping = array(
-        'summary' => 'search',
-        'list' => 'xmlview',
+        'list_summary' => 'search',
+        'list_detail' => 'xmlview',
         'report' => 'report',
       );
       $action = $mapping[$request['action']];
