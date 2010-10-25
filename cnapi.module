@@ -20,23 +20,6 @@ define('CNAPI_CACHE_DISABLED', 0);
 define('CNAPI_CACHE_ENABLED', 1);
 
 /**
- * Implementation of hook_init().
- */
-function cnapi_init() {
-  $cdbid = '26178dec-2b80-42d6-a70f-5c67be4bc91c'; // has nl / fr detail
-  $cdbid = '2aeacd95-db12-4663-853c-0091bdd2d2c9'; // has perfomers
-  $cdbid = 'cea642e9-23a0-48cf-93bb-336fad0ee9d0'; // has performers as actors
-  //$event = cnapi_get_event($cdbid);
-
-  $cdbid = '62b987b0-1c63-44cd-883c60f82c121da8';
-  $cdbid = '8982ef5c-3595-4d4b-a9965a9ff5ec4979';
-  $cdbid = 'cc967402-1dcd-47e0-abcb0af5c07fd759';
-  //$productions = cnapi_get_productions(array('pagelength' => 10), CNAPI_LIST_DETAIL);
-  //print "<pre>".print_r($productions, TRUE)."</pre>";
-  print "<pre>".print_r(cnapi_get_production('f4e2e0c4-1045-4c89-9a35aeba24bd9028', CNAPI_LIST_DETAIL), TRUE)."</pre>";
-}
-
-/**
  * Implements hook_menu().
  */
 function cnapi_menu() {
