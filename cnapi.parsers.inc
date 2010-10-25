@@ -197,7 +197,7 @@ function _cnapi_parse_contactinfo($xml) {
   $contactinfo['other']['phone'] = _cnapi_xpath_str($xml, 'c:phone[not(@main="true" or @reservation="true") and @type="phone"]', TRUE);
   $contactinfo['other']['fax'] = _cnapi_xpath_str($xml, 'c:phone[not(@main="true" or @reservation="true") and @type="fax"]', TRUE);
   $contactinfo['other']['url'] = _cnapi_xpath_str($xml, 'c:url[not(@main="true" or @reservation="true")]', TRUE);
-  print "<pre>".print_r($contactinfo, TRUE)."</pre>";
+
   return $contactinfo;
 }
 
