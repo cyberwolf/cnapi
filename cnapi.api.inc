@@ -15,7 +15,7 @@ function cnapi_get_raw($request) {
 function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $cdbid));
   if ($related_events != CNAPI_LIST_IGNORE) {
-    $request['query']['related_events'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
+    $request['query']['relatedevents'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
   }
   return cnapi_get($request);
 }
@@ -23,8 +23,9 @@ function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
 function cnapi_get_production($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $cdbid));
   if ($related_events != CNAPI_LIST_IGNORE) {
-    $request['query']['related_events'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
+    $request['query']['relatedevents'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
   }
+
   return cnapi_get($request);
 }
 
@@ -289,6 +290,8 @@ function cnapi_request_add_defaults(&$request) {
       }
     }
   }
+  
+  // @todo add "relatedevents" params in case of production
 
   drupal_alter('cnapi_request_defaults', $request);
 
