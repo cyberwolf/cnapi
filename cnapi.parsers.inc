@@ -13,21 +13,21 @@ function _cnapi_parse($request, $result) {
     
     // event
     if ($request['type'] == 'event') {
-      $xml_event = array_pop($xml->xpath('/c:cdbxml/c:events/c:event'));
+      $xml_event = array_shift($xml->xpath('/c:cdbxml/c:events/c:event'));
     
       $data = _cnapi_parse_event($xml_event);
     }
     
     // production
     elseif ($request['type'] == 'production') {
-      $xml_production = array_pop($xml->xpath('/c:cdbxml/c:productions/c:production'));
+      $xml_production = array_shift($xml->xpath('/c:cdbxml/c:productions/c:production'));
     
       $data = _cnapi_parse_production($xml_production);
     }
     
     // actor
     elseif ($request['type'] == 'actor') {
-      $xml_actor = array_pop($xml->xpath('/c:cdbxml/c:actors/c:actor'));
+      $xml_actor = array_shift($xml->xpath('/c:cdbxml/c:actors/c:actor'));
     
       $data = _cnapi_parse_actor($xml_actor);
     }
@@ -128,10 +128,10 @@ function _cnapi_parse_event($xml, $return_full = TRUE) {
   $data['headings'] = _cnapi_parse_headings($xml);
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   $data['calendar'] = _cnapi_parse_calendar($xml);
-  $data['contactinfo'] = _cnapi_parse_contactinfo(array_pop($xml->xpath('c:contactinfo')));
-  $data['location']['address'] = _cnapi_parse_address(array_pop($xml->xpath('c:location/c:address')));
-  $data['location']['actor'] = _cnapi_parse_actor(array_pop($xml->xpath('c:location/c:actor')), FALSE);
-  $data['organiser'] = _cnapi_parse_actor(array_pop($xml->xpath('c:organiser/c:actor')), FALSE);
+  $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
+  $data['location']['address'] = _cnapi_parse_address(array_shift($xml->xpath('c:location/c:address')));
+  $data['location']['actor'] = _cnapi_parse_actor(array_shift($xml->xpath('c:location/c:actor')), FALSE);
+  $data['organiser'] = _cnapi_parse_actor(array_shift($xml->xpath('c:organiser/c:actor')), FALSE);
   
   if (!$return_full) {
     return $data['cdbid'];
@@ -167,7 +167,7 @@ function _cnapi_parse_actor($xml, $return_full = TRUE) {
   $data['detail'] = _cnapi_parse_actor_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
-  $data['contactinfo'] = _cnapi_parse_contactinfo(array_pop($xml->xpath('c:contactinfo')));
+  $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
   
   return $data['cdbid'];
 }
@@ -181,7 +181,7 @@ function _cnapi_parse_calendar($xml) {
 function _cnapi_parse_contactinfo($xml) {
   _cnapi_register_default_namespace($xml, 'c');
 
-  $contactinfo['address'] = _cnapi_parse_address(array_pop($xml->xpath('c:address')));
+  $contactinfo['address'] = _cnapi_parse_address(array_shift($xml->xpath('c:address')));
 
   $contactinfo['main']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@main="true"]');
   $contactinfo['main']['phone'] = _cnapi_xpath_str($xml, 'c:phone[@main="true" and @type="phone"]');
@@ -244,7 +244,7 @@ function _cnapi_parse_event_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:eventdetails/c:eventdetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_pop($xml->xpath('c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift($xml->xpath('c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_event_detail($xml_detail);
   }
 
@@ -275,7 +275,7 @@ function _cnapi_parse_production_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:productiondetails/c:productiondetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_pop($xml->xpath('c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift($xml->xpath('c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_production_detail($xml_detail);
   }
 
@@ -304,7 +304,7 @@ function _cnapi_parse_actor_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:actordetails/c:actordetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_pop($xml->xpath('c:actordetails/c:actordetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift($xml->xpath('c:actordetails/c:actordetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_actor_detail($xml_detail);
   }
 
