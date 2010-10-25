@@ -2,6 +2,7 @@
 // $Id$
 
 require_once 'cnapi.helpers.inc';
+require_once 'cnapi.parsers.inc';
 require_once 'cnapi.api.inc';
 
 define('CNAPI_API_LOCATION', 'http://build.uitdatabank.be/');
@@ -17,6 +18,16 @@ define('CNAPI_DEFAULT_SORT', 'date ASC');
 
 define('CNAPI_CACHE_DISABLED', 0);
 define('CNAPI_CACHE_ENABLED', 1);
+
+/**
+ * Implementation of hook_init().
+ */
+function cnapi_init() {
+  $cdbid = "26178dec-2b80-42d6-a70f-5c67be4bc91c";
+  $event = cnapi_get_event($cdbid);
+}
+
+
 
 /**
  * Implements hook_menu().

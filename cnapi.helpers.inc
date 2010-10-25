@@ -1,5 +1,10 @@
 <?php
 
+function _cnapi_register_default_namespace(&$xml, $namespace) {
+  $namespaces = $xml->getDocNamespaces();
+  $xml->registerXPathNamespace($namespace, $namespaces['']);
+}
+
 function _cnapi_xpath_cast($cast_function, $xml, $query, $multiple = FALSE) {
   $result = $multiple ? array() : NULL;
 
