@@ -125,7 +125,7 @@ function _cnapi_parse_event($xml) {
   $data['detail'] = _cnapi_parse_event_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
-  $data['headings'] = _cnapi_parse_headings($xml);
+  $data['headings'] = _cnapi_xpath_str($xml, 'c:headings/c:heading/@id', TRUE);
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   $data['calendar'] = _cnapi_parse_calendar($xml);
   _cnapi_parse_object($data, 'contactinfo', '_cnapi_parse_contactinfo', $xml, 'c:contactinfo');
@@ -380,12 +380,6 @@ function _cnapi_parse_address($xml) {
   // @todo add cityid
   
   return $address;
-}
-
-function _cnapi_parse_headings($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
-
-  return _cnapi_xpath_str($xml, 'c:headings/c:heading/@id', TRUE);
 }
 
 function _cnapi_parse_performers($xml) {
