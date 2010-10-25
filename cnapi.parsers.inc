@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 function _cnapi_parse($request, $result) {
   $data = array();
@@ -121,6 +122,7 @@ function _cnapi_parse_event($xml, $return_full = TRUE) {
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_event_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
+  $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['headings'] = _cnapi_parse_headings($xml);
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   $data['calendar'] = _cnapi_parse_calendar($xml);
@@ -144,6 +146,7 @@ function _cnapi_parse_production($xml, $return_full = TRUE) {
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_production_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
+  $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   
   if (!$return_full) {
@@ -159,6 +162,10 @@ function _cnapi_parse_actor($xml, $return_full = TRUE) {
   _cnapi_register_default_namespace($xml, 'c');
   
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
+  $data['detail'] = _cnapi_parse_actor_details($xml);
+  $data['categories'] = _cnapi_parse_categories($xml);
+  $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
+  $data['contactinfo'] = _cnapi_parse_contactinfo($xml);
   
   // @todo implement this
   
@@ -253,6 +260,34 @@ function _cnapi_parse_production_detail($xml) {
   $detail['performers'] = _cnapi_parse_performers($xml);
   $detail['media'] = _cnapi_parse_media($xml);
   $detail['price'] = _cnapi_parse_price($xml);
+
+  return $detail;
+}
+
+function _cnapi_parse_actor_details($xml) {
+  $details = array();
+
+  _cnapi_register_default_namespace($xml, 'c');
+
+  $languages = _cnapi_xpath_str($xml, 'c:actordetails/c:actordetail/@lang', TRUE);
+
+  foreach ($languages as $language) {
+    $xml_detail = array_pop($xml->xpath('c:actordetails/c:actordetail[@lang="' . $language . '"]'));
+    $details[$language] = _cnapi_parse_actor_detail($xml_detail);
+  }
+
+  return $details;
+}
+
+function _cnapi_parse_actor_detail($xml) {
+  $detail = array();
+  
+  _cnapi_register_default_namespace($xml, 'c');
+
+  $detail['title'] = _cnapi_xpath_str($xml, 'c:title');
+  $detail['shortdescription'] = _cnapi_xpath_str($xml, 'c:shortdescription');
+  $detail['longdescription'] = _cnapi_xpath_str($xml, 'c:longdescription');
+  $detail['media'] = _cnapi_parse_media($xml);
 
   return $detail;
 }
