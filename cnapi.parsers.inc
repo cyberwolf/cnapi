@@ -167,8 +167,6 @@ function _cnapi_parse_actor($xml, $return_full = TRUE) {
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['contactinfo'] = _cnapi_parse_contactinfo($xml);
   
-  // @todo implement this
-  
   return $data['cdbid'];
 }
 
@@ -259,7 +257,6 @@ function _cnapi_parse_production_detail($xml) {
   $detail['longdescription'] = _cnapi_xpath_str($xml, 'c:longdescription');
   $detail['performers'] = _cnapi_parse_performers($xml);
   $detail['media'] = _cnapi_parse_media($xml);
-  $detail['price'] = _cnapi_parse_price($xml);
 
   return $detail;
 }
@@ -312,5 +309,10 @@ function _cnapi_parse_media($xml) {
 }
 
 function _cnapi_parse_price($xml) {
-  // @todo implement this
+  _cnapi_register_default_namespace($xml, 'c');
+  
+  $price['value'] = _cnapi_xpath_float($xml, 'c:pricevalue');
+  $price['description'] = _cnapi_xpath_str($xml, 'c:pricedescription');
+  
+  return $price;
 }
