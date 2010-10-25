@@ -12,11 +12,8 @@ function cnapi_get_raw($request) {
   return _cnapi_get($request);
 }
 
-function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
+function cnapi_get_event($cdbid) {
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $cdbid));
-  if ($related_events != CNAPI_LIST_IGNORE) {
-    $request['query']['relatedevents'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
-  }
   return cnapi_get($request);
 }
 
@@ -79,7 +76,9 @@ function _cnapi_get($request = NULL) {
         _cnapi_cache_list_clean_by_total($request, $result['total']);
       }
 
-      _cnapi_cache_set($request, $result);
+      if ($request['action'] != 'detail') { // detail actions will be cached at parse level
+        _cnapi_cache_set($request, $result);
+      }
     }
   }
 

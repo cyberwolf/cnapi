@@ -133,7 +133,10 @@ function _cnapi_parse_event($xml) {
   $data['location']['actor'] = _cnapi_parse_actor(array_shift($xml->xpath('c:location/c:actor')));
   $data['organiser'] = _cnapi_parse_actor(array_shift($xml->xpath('c:organiser/c:actor')));
   
-  // @todo cache this as if being a request to a detail pagina
+  // caching this object
+  $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
+  $cid = cnapi_cache_cid($request);
+  _cnapi_cache_set($request, $data);
   
   return $data;
 }
@@ -150,9 +153,20 @@ function _cnapi_parse_production($xml) {
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   if ($xml_related_events = $xml->xpath('c:relatedevents')) {
     $data['related_events'] = _cnapi_parse_related_events(array_shift($xml_related_events));
+  }  
+  
+  // caching this object
+  $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $data['cdbid']));
+  
+  if ($xml->xpath('c:relatedevents/c:list/c:item')) {
+    $request['query']['relatedevents'] = 'list';
+  }
+  elseif ($xml->xpath('c:relatedevents/c:list/c:item')) {
+    $request['query']['relatedevents'] = 'detail';
   }
   
-  // @todo cache this as if being a request to a detail pagina
+  $cid = cnapi_cache_cid($request);
+  _cnapi_cache_set($request, $data);
   
   return $data;
 }
@@ -168,7 +182,10 @@ function _cnapi_parse_actor($xml) {
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
   
-  // @todo cache this as if being a request to a detail pagina
+  // caching this object
+  $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $data['cdbid']));
+  $cid = cnapi_cache_cid($request);
+  _cnapi_cache_set($request, $data);
   
   return $data;
 }
