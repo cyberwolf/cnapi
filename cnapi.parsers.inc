@@ -76,7 +76,7 @@ function _cnapi_parse($request, $result) {
     }
     
     foreach ($xml->xpath($items_path) as $item) {
-      $object = _cnapi_parse_list_item($item);
+      $object = _cnapi_parse_list_item($request['type'], $item);
 
       $data['data'][] = $object;
     }
@@ -85,33 +85,35 @@ function _cnapi_parse($request, $result) {
   return $data;
 }
 
-function _cnapi_parse_list_item($xml) {
-  $object['cdbid'] = _cnapi_xpath_str($item, '@cdbid');
-  $object['title'] = _cnapi_xpath_str($item, '@title');
-  $object['shortdescription'] = _cnapi_xpath_str($item, '@shortdescription');
-  $object['thumbnail'] = _cnapi_xpath_str($item, '@thumbnail');
-  $object['created'] = strtotime(_cnapi_xpath_str($item, '@created'));
+function _cnapi_parse_list_item($type, $xml) {
+  $object['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
+  $object['title'] = _cnapi_xpath_str($xml, '@title');
+  $object['shortdescription'] = _cnapi_xpath_str($xml, '@shortdescription');
+  $object['thumbnail'] = _cnapi_xpath_str($xml, '@thumbnail');
+  $object['created'] = strtotime(_cnapi_xpath_str($xml, '@created'));
   
-  if (in_array($request['type'], array('event', 'actor'))) {
-    $object['city'] = _cnapi_xpath_str($item, '@city');
-    $object['zip'] = _cnapi_xpath_str($item, '@zip');
-    $object['address'] = _cnapi_xpath_str($item, '@address');
-    $latlng = explode(';', _cnapi_xpath_str($item, '@latlng'));
+  if (in_array($type, array('event', 'actor'))) {
+    $object['city'] = _cnapi_xpath_str($xml, '@city');
+    $object['zip'] = _cnapi_xpath_str($xml, '@zip');
+    $object['address'] = _cnapi_xpath_str($xml, '@address');
+    $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
     $object['gis']['lat'] = $latlng[0];
     $object['gis']['lng'] = $latlng[1];
   }
   
-  if ($request['type'] == 'event') {
-    $object['calendarsummary'] = _cnapi_xpath_str($item, '@calendarsummary');
-    $object['headings'] = explode(';', _cnapi_xpath_str($item, '@headingid'));
-    $object['locationid'] = _cnapi_xpath_str($item, '@locationid');
-    $object['available_to'] = strtotime(_cnapi_xpath_str($item, '@available_to'));
+  if ($type == 'event') {
+    $object['calendarsummary'] = _cnapi_xpath_str($xml, '@calendarsummary');
+    $object['headings'] = explode(';', _cnapi_xpath_str($xml, '@headingid'));
+    $object['locationid'] = _cnapi_xpath_str($xml, '@locationid');
+    $object['available_to'] = strtotime(_cnapi_xpath_str($xml, '@available_to'));
   }
   
-  if (in_array($request['type'], array('event', 'production'))) {
-    $object['agefrom'] = _cnapi_xpath_int($item, '@agefrom');
-    $object['performers'] = explode(';', _cnapi_xpath_str($item, '@performers'));
+  if (in_array($type, array('event', 'production'))) {
+    $object['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
+    $object['performers'] = explode(';', _cnapi_xpath_str($xml, '@performers'));
   }
+  
+  return $object;
 }
 
 function _cnapi_parse_event($xml, $return_full = TRUE) {
@@ -130,10 +132,13 @@ function _cnapi_parse_event($xml, $return_full = TRUE) {
   $data['location']['address'] = _cnapi_parse_address(array_shift($xml->xpath('c:location/c:address')));
   $data['location']['actor'] = _cnapi_parse_actor(array_shift($xml->xpath('c:location/c:actor')), FALSE);
   $data['organiser'] = _cnapi_parse_actor(array_shift($xml->xpath('c:organiser/c:actor')), FALSE);
+  $data['related_events'] = _cnapi_parse_related_events(array_shift($xml->xpath('c:relatedevents')));
   
   if (!$return_full) {
     return $data['cdbid'];
   }
+  
+  // @todo cache this as if being a request to a detail pagina
   
   return $data;
 }
@@ -142,16 +147,19 @@ function _cnapi_parse_production($xml, $return_full = TRUE) {
   $data = array();
   
   _cnapi_register_default_namespace($xml, 'c');
-  
+
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_production_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
+  $data['related_events'] = _cnapi_parse_related_events(array_shift($xml->xpath('c:relatedevents')));
   
   if (!$return_full) {
     return $data['cdbid'];
   }
+  
+  // @todo cache this as if being a request to a detail pagina
   
   return $data;
 }
@@ -167,7 +175,44 @@ function _cnapi_parse_actor($xml, $return_full = TRUE) {
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
   
+  if (!$return_full) {
+    return $data['cdbid'];
+  }
+  
+  // @todo cache this as if being a request to a detail pagina
+  
   return $data['cdbid'];
+}
+
+function _cnapi_parse_related_events($xml) {
+  $related_events = array();
+  
+  _cnapi_register_default_namespace($xml, 'c');
+  
+  // related events as list_summary
+  if ($items = $xml->xpath('c:list/c:item')) {
+    foreach ($items as $item) {
+      $object = _cnapi_parse_list_item('event', $item);
+
+      $related_events[] = $object;
+    }
+  }
+
+  // related events as list_detail
+  elseif ($items = $xml->xpath('c:event')) {
+    foreach ($items as $item) {
+      $object = _cnapi_parse_event($item);
+
+      $related_events[] = $object;
+    }
+  }
+
+  // related events as list of cdbid
+  else {
+    $related_events = _cnapi_xpath_str($xml, 'c:id/@cdbid', TRUE);
+  }
+  
+  return $related_events;
 }
 
 function _cnapi_parse_calendar($xml) {
@@ -329,9 +374,10 @@ function _cnapi_parse_performers($xml) {
 
   $performers['labels'] = _cnapi_xpath_str($xml, 'c:performers/c:performer/c:label', TRUE);
   
-  $xml_actors = $xml->xpath('c:performers/c:performer/c:actor');
-  foreach ($xml_actors as $xml_actor) {
-    $performers['actors'][] = _cnapi_parse_actor($xml_actor, FALSE);
+  if ($xml_actors = $xml->xpath('c:performers/c:performer/c:actor')) {
+    foreach ($xml_actors as $xml_actor) {
+      $performers['actors'][] = _cnapi_parse_actor($xml_actor, FALSE);
+    }
   }
 
   return $performers;
