@@ -128,10 +128,10 @@ function _cnapi_parse_event($xml) {
   $data['headings'] = _cnapi_parse_headings($xml);
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   $data['calendar'] = _cnapi_parse_calendar($xml);
-  $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
-  $data['location']['address'] = _cnapi_parse_address(array_shift($xml->xpath('c:location/c:address')));
-  $data['location']['actor'] = _cnapi_parse_actor(array_shift($xml->xpath('c:location/c:actor')));
-  $data['organiser'] = _cnapi_parse_actor(array_shift($xml->xpath('c:organiser/c:actor')));
+  _cnapi_parse_object($data, 'contactinfo', '_cnapi_parse_contactinfo', $xml, 'c:contactinfo');
+  _cnapi_parse_object($data['location'], 'address', '_cnapi_parse_address', $xml, 'c:location/c:address');
+  _cnapi_parse_object($data['location'], 'actor', '_cnapi_parse_actor', $xml, 'c:location/c:actor');
+  _cnapi_parse_object($data, 'organiser', '_cnapi_parse_actor', $xml, 'c:organiser/c:actor');
   
   // caching this object
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
@@ -152,9 +152,7 @@ function _cnapi_parse_production($xml) {
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
 
-  if ($xml_related_events = $xml->xpath('c:relatedevents')) {
-    $data['related_events'] = _cnapi_parse_related_events(array_shift($xml_related_events));
-  }  
+  _cnapi_parse_object($data, 'related_events', '_cnapi_parse_related_events', $xml, 'c:relatedevents');
   
   // caching this object
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $data['cdbid']));
@@ -165,7 +163,7 @@ function _cnapi_parse_production($xml) {
   elseif ($xml->xpath('c:relatedevents/c:list/c:item')) {
     $request['query']['relatedevents'] = 'detail';
   }
-  
+
   $cid = cnapi_cache_cid($request);
   _cnapi_cache_set($request, $data);
   
@@ -181,7 +179,7 @@ function _cnapi_parse_actor($xml) {
   $data['detail'] = _cnapi_parse_actor_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
-  $data['contactinfo'] = _cnapi_parse_contactinfo(array_shift($xml->xpath('c:contactinfo')));
+  _cnapi_parse_object($data, 'contactinfo', '_cnapi_parse_contactinfo', $xml, 'c:contactinfo');
   
   // caching this object
   $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $data['cdbid']));
@@ -189,6 +187,14 @@ function _cnapi_parse_actor($xml) {
   _cnapi_cache_set($request, $data);
   
   return $data;
+}
+
+function _cnapi_parse_object(&$data, $field, $parser, $xml, $xpath) {
+  _cnapi_register_default_namespace($xml, 'c');
+  
+  if ($xml_sub = $xml->xpath($xpath)) {
+    $data[$field] = call_user_func($parser, array_shift($xml_sub));
+  }
 }
 
 function _cnapi_parse_event_details($xml) {
@@ -319,9 +325,7 @@ function _cnapi_parse_calendar($xml) {
 function _cnapi_parse_contactinfo($xml) {
   _cnapi_register_default_namespace($xml, 'c');
 
-  if ($xml_address = $xml->xpath('c:address')) {
-    $contactinfo['address'] = _cnapi_parse_address(array_shift($xml_address));
-  }
+  _cnapi_parse_object($contactinfo, 'address', '_cnapi_parse_address', $xml, 'c:address');
 
   $contactinfo['main']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@main="true"]');
   $contactinfo['main']['phone'] = _cnapi_xpath_str($xml, 'c:phone[@main="true" and @type="phone"]');
@@ -378,7 +382,7 @@ function _cnapi_parse_headings($xml) {
 
 function _cnapi_parse_performers($xml) {
   $performers = array();
-  
+
   _cnapi_register_default_namespace($xml, 'c');
 
   $performers['labels'] = _cnapi_xpath_str($xml, 'c:performers/c:performer/c:label', TRUE);
@@ -389,6 +393,8 @@ function _cnapi_parse_performers($xml) {
     }
   }
 
+  // @todo add role
+  
   return $performers;
 }
 
