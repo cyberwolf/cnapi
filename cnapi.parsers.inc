@@ -35,7 +35,7 @@ function _cnapi_parse($request, $result) {
   
   // list_detail
   elseif ($request['action'] == 'list_detail') {
-    $data['total'] = _cnapi_xpath_str($xml, '/c:c/c:nofrecords');
+    $data['total'] = _cnapi_xpath_str($xml, 'c:nofrecords');
     $data['data'] = array();
     
     // event
@@ -68,7 +68,7 @@ function _cnapi_parse($request, $result) {
   
   // list_summary
   elseif ($request['action'] == 'list_summary') {
-    $data['total'] = _cnapi_xpath_str($xml, '/c:c/c:nofrecords');
+    $data['total'] = _cnapi_xpath_str($xml, 'c:nofrecords');
     
     $items_path = '/c:cdbxml/c:list/c:item';
     if ($request['type'] == 'production') {
@@ -120,7 +120,7 @@ function _cnapi_parse_event($xml) {
   $data = array();
 
   _cnapi_register_default_namespace($xml, 'c');
-  
+
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_event_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
@@ -151,6 +151,7 @@ function _cnapi_parse_production($xml) {
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
+
   if ($xml_related_events = $xml->xpath('c:relatedevents')) {
     $data['related_events'] = _cnapi_parse_related_events(array_shift($xml_related_events));
   }  
@@ -175,7 +176,7 @@ function _cnapi_parse_actor($xml) {
   $data = array();
   
   _cnapi_register_default_namespace($xml, 'c');
-  
+
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_actor_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
@@ -318,7 +319,9 @@ function _cnapi_parse_calendar($xml) {
 function _cnapi_parse_contactinfo($xml) {
   _cnapi_register_default_namespace($xml, 'c');
 
-  $contactinfo['address'] = _cnapi_parse_address(array_shift($xml->xpath('c:address')));
+  if ($xml_address = $xml->xpath('c:address')) {
+    $contactinfo['address'] = _cnapi_parse_address(array_shift($xml_address));
+  }
 
   $contactinfo['main']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@main="true"]');
   $contactinfo['main']['phone'] = _cnapi_xpath_str($xml, 'c:phone[@main="true" and @type="phone"]');
