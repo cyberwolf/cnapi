@@ -265,6 +265,12 @@ function cnapi_request_add_defaults(&$request) {
     $request['query']['key'] = variable_get('cnapi_api_key', '');
   }
 
+  // detail
+  if ($request['action'] == 'detail' && in_array($request['type'], array('event', 'production'))) {
+    $request['query']['relatedevents'] = 'id';
+  }
+
+  // lists
   if (in_array($request['action'], array('list_detail', 'list_summary'))) {
     // page
     if (!isset($request['query']['page'])) {
@@ -293,8 +299,6 @@ function cnapi_request_add_defaults(&$request) {
       }
     }
   }
-  
-  // @todo add "relatedevents" params in case of production
 
   drupal_alter('cnapi_request_defaults', $request);
 

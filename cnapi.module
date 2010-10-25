@@ -11,6 +11,7 @@ define('CNAPI_HTTP_REQUEST_TIMEOUT', 15);
 
 define('CNAPI_LIST_SUMMARY', 'list_summary');
 define('CNAPI_LIST_DETAIL', 'list_detail');
+define('CNAPI_LIST_ID', 'list_id');
 define('CNAPI_LIST_IGNORE', FALSE);
 
 define('CNAPI_DEFAULT_PAGELENGTH', 10);
