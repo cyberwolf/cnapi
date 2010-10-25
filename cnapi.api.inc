@@ -12,8 +12,11 @@ function cnapi_get_raw($request) {
   return _cnapi_get($request);
 }
 
-function cnapi_get_event($cdbid) {
+function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $cdbid));
+  if ($related_events != CNAPI_LIST_IGNORE) {
+    $request['query']['relatedevents'] = ($related_events == CNAPI_LIST_SUMMARY ? 'list' : 'detail');
+  }
   return cnapi_get($request);
 }
 

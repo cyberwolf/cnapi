@@ -132,9 +132,18 @@ function _cnapi_parse_event($xml) {
   _cnapi_parse_object($data['location'], 'address', '_cnapi_parse_address', $xml, 'c:location/c:address');
   _cnapi_parse_object($data['location'], 'actor', '_cnapi_parse_actor', $xml, 'c:location/c:actor');
   _cnapi_parse_object($data, 'organiser', '_cnapi_parse_actor', $xml, 'c:organiser/c:actor');
+  _cnapi_parse_object($data, 'related_events', '_cnapi_parse_related_events', $xml, 'c:relatedevents');
   
   // caching this object
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
+  
+  if ($xml->xpath('c:relatedevents/c:list/c:item')) {
+    $request['query']['relatedevents'] = 'list';
+  }
+  elseif ($xml->xpath('c:relatedevents/c:list/c:item')) {
+    $request['query']['relatedevents'] = 'detail';
+  }
+  
   $cid = cnapi_cache_cid($request);
   _cnapi_cache_set($request, $data);
   
@@ -151,7 +160,6 @@ function _cnapi_parse_production($xml) {
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
-
   _cnapi_parse_object($data, 'related_events', '_cnapi_parse_related_events', $xml, 'c:relatedevents');
   
   // caching this object
