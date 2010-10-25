@@ -103,16 +103,14 @@ function _cnapi_parse_list_item($xml) {
   
   if ($request['type'] == 'event') {
     $object['calendarsummary'] = _cnapi_xpath_str($item, '@calendarsummary');
-    $object['headingid'] = _cnapi_xpath_int($item, '@headingid', TRUE);
+    $object['headings'] = explode(';', _cnapi_xpath_str($item, '@headingid'));
     $object['locationid'] = _cnapi_xpath_str($item, '@locationid');
-    $object['agefrom'] = _cnapi_xpath_int($item, '@agefrom');
-    $object['performers'] = _cnapi_xpath_str($item, '@performers', TRUE);
     $object['available_to'] = strtotime(_cnapi_xpath_str($item, '@available_to'));
   }
   
-  if ($request['type'] == 'production') {
+  if (in_array($request['type'], array('event', 'production'))) {
     $object['agefrom'] = _cnapi_xpath_int($item, '@agefrom');
-    $object['performers'] = _cnapi_xpath_str($item, '@performers', TRUE);
+    $object['performers'] = explode(';', _cnapi_xpath_str($item, '@performers'));
   }
 }
 
