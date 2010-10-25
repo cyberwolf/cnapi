@@ -97,8 +97,8 @@ function _cnapi_parse_list_item($xml) {
     $object['zip'] = _cnapi_xpath_str($item, '@zip');
     $object['address'] = _cnapi_xpath_str($item, '@address');
     $latlng = explode(';', _cnapi_xpath_str($item, '@latlng'));
-    $object['lat'] = $latlng[0];
-    $object['lng'] = $latlng[1];
+    $object['gis']['lat'] = $latlng[0];
+    $object['gis']['lng'] = $latlng[1];
   }
   
   if ($request['type'] == 'event') {
@@ -128,7 +128,7 @@ function _cnapi_parse_event($xml, $return_full = TRUE) {
   $data['headings'] = _cnapi_parse_headings($xml);
   $data['agefrom'] = _cnapi_xpath_int($xml, '@agefrom');
   $data['calendar'] = _cnapi_parse_calendar($xml);
-  $data['contactinfo'] = _cnapi_parse_contactinfo($xml);
+  $data['contactinfo'] = _cnapi_parse_contactinfo(array_pop($xml->xpath('c:contactinfo')));
   $data['location']['address'] = _cnapi_parse_address(array_pop($xml->xpath('c:location/c:address')));
   $data['location']['actor'] = _cnapi_parse_actor(array_pop($xml->xpath('c:location/c:actor')), FALSE);
   $data['organiser'] = _cnapi_parse_actor(array_pop($xml->xpath('c:organiser/c:actor')), FALSE);
@@ -167,7 +167,7 @@ function _cnapi_parse_actor($xml, $return_full = TRUE) {
   $data['detail'] = _cnapi_parse_actor_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
   $data['keywords'] = explode(';', _cnapi_xpath_str($xml, 'keywords'));
-  $data['contactinfo'] = _cnapi_parse_contactinfo($xml);
+  $data['contactinfo'] = _cnapi_parse_contactinfo(array_pop($xml->xpath('c:contactinfo')));
   
   return $data['cdbid'];
 }
@@ -180,11 +180,24 @@ function _cnapi_parse_calendar($xml) {
 
 function _cnapi_parse_contactinfo($xml) {
   _cnapi_register_default_namespace($xml, 'c');
-  
-  $contactinfo['address'] = _cnapi_parse_address(array_pop($xml->xpath('address')));
 
-  // @todo implement this
-  
+  $contactinfo['address'] = _cnapi_parse_address(array_pop($xml->xpath('c:address')));
+
+  $contactinfo['main']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@main="true"]');
+  $contactinfo['main']['phone'] = _cnapi_xpath_str($xml, 'c:phone[@main="true" and @type="phone"]');
+  $contactinfo['main']['fax'] = _cnapi_xpath_str($xml, 'c:phone[@main="true" and @type="fax"]');
+  $contactinfo['main']['url'] = _cnapi_xpath_str($xml, 'c:url[@main="true"]');
+
+  $contactinfo['reservation']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@reservation="true"]');
+  $contactinfo['reservation']['phone'] = _cnapi_xpath_str($xml, 'c:phone[@reservation="true" and @type="phone"]');
+  $contactinfo['reservation']['fax'] = _cnapi_xpath_str($xml, 'c:phone[@reservation="true" and @type="fax"]');
+  $contactinfo['reservation']['url'] = _cnapi_xpath_str($xml, 'c:url[@reservation="true"]');
+
+  $contactinfo['other']['mail'] = _cnapi_xpath_str($xml, 'c:mail[not(@main="true" or @reservation="true")]', TRUE);
+  $contactinfo['other']['phone'] = _cnapi_xpath_str($xml, 'c:phone[not(@main="true" or @reservation="true") and @type="phone"]', TRUE);
+  $contactinfo['other']['fax'] = _cnapi_xpath_str($xml, 'c:phone[not(@main="true" or @reservation="true") and @type="fax"]', TRUE);
+  $contactinfo['other']['url'] = _cnapi_xpath_str($xml, 'c:url[not(@main="true" or @reservation="true")]', TRUE);
+  print "<pre>".print_r($contactinfo, TRUE)."</pre>";
   return $contactinfo;
 }
 
@@ -204,7 +217,17 @@ function _cnapi_parse_categories($xml) {
 function _cnapi_parse_address($xml) {
   _cnapi_register_default_namespace($xml, 'c');
   
-  // @todo implement this
+  $address['street'] = _cnapi_xpath_str($xml, 'c:physical/c:street');
+  $address['housenr'] = _cnapi_xpath_str($xml, 'c:physical/c:housenr');
+  $address['zipcode'] = _cnapi_xpath_str($xml, 'c:physical/c:zipcode');
+  $address['city'] = _cnapi_xpath_str($xml, 'c:physical/c:city');
+  $address['country'] = _cnapi_xpath_str($xml, 'c:physical/c:country');
+  $address['gis']['lat'] = _cnapi_xpath_str($xml, 'c:physical/c:gis/xcoordinate');
+  $address['gis']['lng'] = _cnapi_xpath_str($xml, 'c:physical/c:gis/ycoordinate');
+  
+  // @todo add cityid
+  
+  return $address;
 }
 
 function _cnapi_parse_headings($xml) {
