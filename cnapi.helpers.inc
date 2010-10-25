@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 function _cnapi_register_default_namespace(&$xml, $namespace) {
   $namespaces = $xml->getDocNamespaces();
