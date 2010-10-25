@@ -32,17 +32,18 @@ function cnapi_get_actor($cdbid) {
 }
 
 function cnapi_get_events($query = NULL, $action = CNAPI_LIST_SUMMARY) {
-  $request = array('action' => CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail', 'type' => 'event', 'query' => $query);
+  $request = array('action' => ($action == CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail'), 'type' => 'event', 'query' => $query);
   return cnapi_get($request);
 }
 
 function cnapi_get_productions($query = NULL, $action = CNAPI_LIST_SUMMARY) {
-  $request = array('action' => CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail', 'type' => 'production', 'query' => $query);
+  $request = array('action' => ($action == CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail'), 'type' => 'production', 'query' => $query);
+
   return cnapi_get($request);
 }
 
 function cnapi_get_actors($query = NULL, $action = CNAPI_LIST_SUMMARY) {
-  $request = array('action' => CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail', 'type' => 'actor', 'query' => $query);
+  $request = array('action' => ($action == CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail'), 'type' => 'actor', 'query' => $query);
   return cnapi_get($request);
 }
 
