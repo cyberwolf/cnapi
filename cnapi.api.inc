@@ -87,13 +87,18 @@ function _cnapi_get($request = NULL) {
 
 function _cnapi_parse($request, $result) {
   $data = array();
+
+  $xml = new SimpleXMLElement($result);
   
-  $result = new SimpleXMLElement($result);
-  $namespaces = $result->getDocNamespaces(); 
-  $result->registerXPathNamespace('c', $namespaces['']); 
+  _cnapi_register_default_namespace($xml, 'c');
+  
+  if ($request['action'] == 'detail' && $request['type'] == 'event') {
+    $detail = $xml->xpath('/c:cdbxml/c:events/c:event');
+    $categories = _cnapi_parse_categories($detail[0]);
+  }
   
   if (in_array($request['action'], array('list_detail', 'list_summary'))) {
-    $data['total'] = _cnapi_xpath_str($result, '/c:c/c:nofrecords');
+    $data['total'] = _cnapi_xpath_str($xml, '/c:c/c:nofrecords');
   }
   
   if ($request['action'] == 'summary') {
@@ -102,7 +107,7 @@ function _cnapi_parse($request, $result) {
       $items_path = '/c:cdbxml/c:production/c:item';
     }
     
-    foreach ($result->xpath($items_path) as $item) {
+    foreach ($xml->xpath($items_path) as $item) {
       $object = array();
       
       $object['cdbid'] = _cnapi_xpath_str($item, '@cdbid');
@@ -139,6 +144,19 @@ function _cnapi_parse($request, $result) {
   }
   
   return $data;
+}
+
+function _cnapi_parse_categories($xml) {
+  $categories = array();
+  
+  _cnapi_register_default_namespace($xml, 'c');
+  
+  $types = _cnapi_xpath_str($xml, 'c:categories/c:category/@type', TRUE);
+  foreach ($types as $type) {
+    $categories[$type] = _cnapi_xpath_str($xml, 'c:categories/c:category[@type="' . $type . '"]/@catid', TRUE);
+  }
+
+  return $categories;
 }
 
 function _cnapi_cache_list_clean_by_total($request, $total) {
@@ -194,7 +212,7 @@ function cnapi_cache_cid($request) {
 
   switch ($request['action']) {
     case 'detail':
-      return implode(':', array($request['type'], cnapi_query_hash($request), $param['query']['cdbid']));
+      return implode(':', array($request['type'], cnapi_query_hash($request), $request['query']['cdbid']));
     case 'report':
       return implode(':', array($request['type'], cnapi_base_query_hash($request), $request['action']));
     default:
