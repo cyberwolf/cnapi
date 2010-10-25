@@ -7,29 +7,68 @@ function _cnapi_parse($request, $result) {
   
   _cnapi_register_default_namespace($xml, 'c');
   
-  if ($request['action'] == 'detail' && $request['type'] == 'event') {
-    $xml_event = array_pop($xml->xpath('/c:cdbxml/c:events/c:event'));
-
-    $data = _cnapi_parse_event($xml_event);
+  // detail
+  if ($request['action'] == 'detail') {
+    
+    // event
+    if ($request['type'] == 'event') {
+      $xml_event = array_pop($xml->xpath('/c:cdbxml/c:events/c:event'));
+    
+      $data = _cnapi_parse_event($xml_event);
+    }
+    
+    // production
+    elseif ($request['type'] == 'production') {
+      $xml_production = array_pop($xml->xpath('/c:cdbxml/c:productions/c:production'));
+    
+      $data = _cnapi_parse_production($xml_production);
+    }
+    
+    // actor
+    elseif ($request['type'] == 'actor') {
+      $xml_actor = array_pop($xml->xpath('/c:cdbxml/c:actors/c:actor'));
+    
+      $data = _cnapi_parse_actor($xml_actor);
+    }
   }
   
-  if ($request['action'] == 'detail' && $request['type'] == 'production') {
-    $xml_production = array_pop($xml->xpath('/c:cdbxml/c:productions/c:production'));
-
-    $data = _cnapi_parse_production($xml_production);
-  }
-  
-  if ($request['action'] == 'detail' && $request['type'] == 'actor') {
-    $xml_actor = array_pop($xml->xpath('/c:cdbxml/c:actors/c:actor'));
-
-    $data = _cnapi_parse_actor($xml_actor);
-  }
-  
-  if (in_array($request['action'], array('list_detail', 'list_summary'))) {
+  // list_detail
+  elseif ($request['action'] == 'list_detail') {
     $data['total'] = _cnapi_xpath_str($xml, '/c:c/c:nofrecords');
+    $data['data'] = array();
+    
+    // event
+    if ($request['type'] == 'event') {
+      $xml_events = $xml->xpath('/c:cdbxml/c:events/c:event');
+    
+      foreach ($xml_events as $xml_event) {
+        $data['data'][] = _cnapi_parse_event($xml_event);
+      }
+    }
+    
+    // event
+    elseif ($request['type'] == 'production') {
+      $xml_productions = $xml->xpath('/c:cdbxml/c:productions/c:production');
+    
+      foreach ($xml_productions as $xml_production) {
+        $data['data'][] = _cnapi_parse_production($xml_production);
+      }
+    }
+    
+    // actor
+    elseif ($request['type'] == 'actor') {
+      $xml_actors = $xml->xpath('/c:cdbxml/c:actors/c:actor');
+    
+      foreach ($xml_actors as $xml_actor) {
+        $data['data'][] = _cnapi_parse_actor($xml_actor);
+      }
+    }
   }
   
-  if ($request['action'] == 'summary') {
+  // list_summary
+  elseif ($request['action'] == 'list_summary') {
+    $data['total'] = _cnapi_xpath_str($xml, '/c:c/c:nofrecords');
+    
     $items_path = '/c:cdbxml/c:list/c:item';
     if ($request['type'] == 'production') {
       $items_path = '/c:cdbxml/c:production/c:item';
