@@ -470,9 +470,9 @@ function _cnapi_parse_media($xml) {
 
 function _cnapi_parse_price($xml) {
   _cnapi_register_default_namespace($xml, 'c');
-  
-  $price['value'] = _cnapi_xpath_float($xml, 'c:pricevalue');
-  $price['description'] = _cnapi_xpath_str($xml, 'c:pricedescription');
+
+  $price['value'] = _cnapi_xpath_float($xml, 'c:price/c:pricevalue');
+  $price['description'] = _cnapi_xpath_str($xml, 'c:price/c:pricedescription');
   
   return $price;
 }
