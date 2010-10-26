@@ -436,9 +436,34 @@ function _cnapi_parse_performers($xml) {
 }
 
 function _cnapi_parse_media($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
+  $files = array();
   
-  // @todo implement this
+  _cnapi_register_default_namespace($xml, 'c');
+
+  if ($xml_files = $xml->xpath('c:media/c:file')) {
+    foreach ($xml_files as $xml_file) {
+      _cnapi_register_default_namespace($xml_file, 'c');
+      
+      $file = array(
+        'copyright' => _cnapi_xpath_str($xml_file, 'c:copyright'),
+        'filename' => _cnapi_xpath_str($xml_file, 'c:filename'),
+        'filetype' => _cnapi_xpath_str($xml_file, 'c:filetype'),
+        'mediatype' => _cnapi_xpath_str($xml_file, 'c:mediatype'),
+        'title' => _cnapi_xpath_str($xml_file, 'c:title'),
+      );
+      
+      if (_cnapi_xpath_str($xml_file, 'c:hlink')) {
+        $file['hlink'] = _cnapi_xpath_str($xml_file, 'c:hlink');
+      }
+      elseif (_cnapi_xpath_str($xml_file, 'c:plaintext')) {
+        $file['plaintext'] = _cnapi_xpath_str($xml_file, 'c:plaintext');
+      }
+      
+      $files[] = $file;
+    }
+  }
+  
+  return $files;
 }
 
 function _cnapi_parse_price($xml) {
