@@ -58,48 +58,28 @@ function _cnapi_xpath_bool($xml, $query, $multiple = FALSE) {
 function _cnapi_parse_str(&$data, $field, $xml, $query, $multiple = FALSE, $trim = TRUE) {
   $result = _cnapi_xpath_str($xml, $query, $multiple, $trim);
 
-  if ($multiple && is_array($result) && empty($result)) {
-    return;
-  }
-  elseif (!$multiple && $result == NULL) {
-    return;
-  }
-  else {
-    $data[$field] = $result;
-  }
+  _cnapi_parse_basic(&$data, $field, $result, $multiple);
 }
 
 function _cnapi_parse_int(&$data, $field, $xml, $query, $multiple = FALSE) {
   $result = _cnapi_xpath_int($xml, $query, $multiple);
 
-  if ($multiple && is_array($result) && empty($result)) {
-    return;
-  }
-  elseif (!$multiple && $result == NULL) {
-    return;
-  }
-  else {
-    $data[$field] = $result;
-  }
+  _cnapi_parse_basic($data, $field, $result, $multiple);
 }
 
 function _cnapi_parse_float(&$data, $field, $xml, $query, $multiple = FALSE) {
   $result = _cnapi_xpath_float($xml, $query, $multiple);
 
-  if ($multiple && is_array($result) && empty($result)) {
-    return;
-  }
-  elseif (!$multiple && $result == NULL) {
-    return;
-  }
-  else {
-    $data[$field] = $result;
-  }
+  _cnapi_parse_basic($data, $field, $result, $multiple);
 }
 
 function _cnapi_parse_bool(&$data, $field, $xml, $query, $multiple = FALSE) {
   $result = _cnapi_xpath_bool($xml, $query, $multiple);
+  
+  _cnapi_parse_basic(&$data, $field, $result, $multiple);
+}
 
+function _cnapi_parse_basic(&$data, $field, $result, $multiple) {
   if ($multiple && is_array($result) && empty($result)) {
     return;
   }
