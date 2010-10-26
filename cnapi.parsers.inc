@@ -119,8 +119,6 @@ function _cnapi_parse_list_item($type, $xml) {
 function _cnapi_parse_event($xml) {
   $data = array();
 
-  _cnapi_register_default_namespace($xml, 'c');
-
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_event_details($xml);
   $data['categories'] = _cnapi_parse_categories($xml);
@@ -154,8 +152,6 @@ function _cnapi_parse_event($xml) {
 
 function _cnapi_parse_production($xml) {
   $data = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_production_details($xml);
@@ -182,8 +178,6 @@ function _cnapi_parse_production($xml) {
 
 function _cnapi_parse_actor($xml) {
   $data = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   $data['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $data['detail'] = _cnapi_parse_actor_details($xml);
@@ -200,8 +194,6 @@ function _cnapi_parse_actor($xml) {
 }
 
 function _cnapi_parse_object(&$data, $field, $parser, $xml, $xpath) {
-  _cnapi_register_default_namespace($xml, 'c');
-  
   if ($xml_sub = _cnapi_xpath($xml, $xpath)) {
     $data[$field] = call_user_func($parser, array_shift($xml_sub));
   }
@@ -209,8 +201,6 @@ function _cnapi_parse_object(&$data, $field, $parser, $xml, $xpath) {
 
 function _cnapi_parse_event_details($xml) {
   $details = array();
-
-  _cnapi_register_default_namespace($xml, 'c');
 
   $languages = _cnapi_xpath_str($xml, 'c:eventdetails/c:eventdetail/@lang', TRUE);
 
@@ -224,8 +214,6 @@ function _cnapi_parse_event_details($xml) {
 
 function _cnapi_parse_event_detail($xml) {
   $detail = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   $detail['title'] = _cnapi_xpath_str($xml, 'c:title');
   $detail['shortdescription'] = _cnapi_xpath_str($xml, 'c:shortdescription');
@@ -241,8 +229,6 @@ function _cnapi_parse_event_detail($xml) {
 function _cnapi_parse_production_details($xml) {
   $details = array();
 
-  _cnapi_register_default_namespace($xml, 'c');
-
   $languages = _cnapi_xpath_str($xml, 'c:productiondetails/c:productiondetail/@lang', TRUE);
 
   foreach ($languages as $language) {
@@ -255,8 +241,6 @@ function _cnapi_parse_production_details($xml) {
 
 function _cnapi_parse_production_detail($xml) {
   $detail = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   $detail['title'] = _cnapi_xpath_str($xml, 'c:title');
   $detail['shortdescription'] = _cnapi_xpath_str($xml, 'c:shortdescription');
@@ -270,8 +254,6 @@ function _cnapi_parse_production_detail($xml) {
 function _cnapi_parse_actor_details($xml) {
   $details = array();
 
-  _cnapi_register_default_namespace($xml, 'c');
-
   $languages = _cnapi_xpath_str($xml, 'c:actordetails/c:actordetail/@lang', TRUE);
 
   foreach ($languages as $language) {
@@ -284,8 +266,6 @@ function _cnapi_parse_actor_details($xml) {
 
 function _cnapi_parse_actor_detail($xml) {
   $detail = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   $detail['title'] = _cnapi_xpath_str($xml, 'c:title');
   $detail['shortdescription'] = _cnapi_xpath_str($xml, 'c:shortdescription');
@@ -298,8 +278,6 @@ function _cnapi_parse_actor_detail($xml) {
 function _cnapi_parse_related_production($xml) {
   $production = array();
 
-  _cnapi_register_default_namespace($xml, 'c');
-
   $production['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $production['title'] = strval($xml);
 
@@ -309,8 +287,6 @@ function _cnapi_parse_related_production($xml) {
 function _cnapi_parse_parent_event($xml) {
   $event = array();
 
-  _cnapi_register_default_namespace($xml, 'c');
-
   $event['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
   $event['title'] = strval($xml);
 
@@ -319,8 +295,6 @@ function _cnapi_parse_parent_event($xml) {
 
 function _cnapi_parse_related_events($xml) {
   $related_events = array();
-
-  _cnapi_register_default_namespace($xml, 'c');
   
   // related events as list_summary
   if ($items = _cnapi_xpath($xml, 'c:list/c:item')) {
@@ -349,14 +323,10 @@ function _cnapi_parse_related_events($xml) {
 }
 
 function _cnapi_parse_calendar($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
-  
   // @todo implement this
 }
 
 function _cnapi_parse_contactinfo($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
-
   _cnapi_parse_object($contactinfo, 'address', '_cnapi_parse_address', $xml, 'c:address');
 
   $contactinfo['main']['mail'] = _cnapi_xpath_str($xml, 'c:mail[@main="true"]');
@@ -380,8 +350,6 @@ function _cnapi_parse_contactinfo($xml) {
 function _cnapi_parse_categories($xml) {
   $categories = array();
   
-  _cnapi_register_default_namespace($xml, 'c');
-  
   $types = _cnapi_xpath_str($xml, 'c:categories/c:category/@type', TRUE);
   foreach ($types as $type) {
     $categories[$type] = _cnapi_xpath_str($xml, 'c:categories/c:category[@type="' . $type . '"]/@catid', TRUE);
@@ -391,8 +359,6 @@ function _cnapi_parse_categories($xml) {
 }
 
 function _cnapi_parse_address($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
-  
   $address['street'] = _cnapi_xpath_str($xml, 'c:physical/c:street');
   $address['housenr'] = _cnapi_xpath_str($xml, 'c:physical/c:housenr');
   $address['zipcode'] = _cnapi_xpath_str($xml, 'c:physical/c:zipcode');
@@ -408,13 +374,9 @@ function _cnapi_parse_address($xml) {
 
 function _cnapi_parse_performers($xml) {
   $performers = array();
-
-  _cnapi_register_default_namespace($xml, 'c');
   
   if ($xml_performers = _cnapi_xpath($xml, 'c:performers/c:performer')) {
     foreach ($xml_performers as $xml_performer) {
-      _cnapi_register_default_namespace($xml_performer, 'c');
-      
       if ($xml_actor = $xml_performer->xpath('c:actor')) {
         $actor = _cnapi_parse_actor($xml_actor);
         $performers[] = array(
@@ -437,13 +399,9 @@ function _cnapi_parse_performers($xml) {
 
 function _cnapi_parse_media($xml) {
   $files = array();
-  
-  _cnapi_register_default_namespace($xml, 'c');
 
   if ($xml_files = _cnapi_xpath($xml, 'c:media/c:file')) {
     foreach ($xml_files as $xml_file) {
-      _cnapi_register_default_namespace($xml_file, 'c');
-      
       $file = array(
         'copyright' => _cnapi_xpath_str($xml_file, 'c:copyright'),
         'filename' => _cnapi_xpath_str($xml_file, 'c:filename'),
@@ -469,8 +427,6 @@ function _cnapi_parse_media($xml) {
 }
 
 function _cnapi_parse_price($xml) {
-  _cnapi_register_default_namespace($xml, 'c');
-
   $price['value'] = _cnapi_xpath_float($xml, 'c:price/c:pricevalue');
   $price['description'] = _cnapi_xpath_str($xml, 'c:price/c:pricedescription');
   
