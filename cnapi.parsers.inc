@@ -82,7 +82,8 @@ function _cnapi_parse($request, $result) {
     }
     
     foreach (_cnapi_xpath($xml, $items_path) as $item) {
-      $object = _cnapi_parse_list_item($request['type'], $item);
+      $object = array();
+      call_user_func('_cnapi_parse_list_item' . $request['type'], $object, $item);
 
       $data['data'][] = $object;
     }
@@ -91,45 +92,118 @@ function _cnapi_parse($request, $result) {
   return $data;
 }
 
-function _cnapi_parse_list_item($type, $xml) { // @todo parse this using the &$data way
-  _cnapi_parse_str($object, 'cdbid', $xml, '@cdbid');
-  _cnapi_parse_str($object, 'title', $xml, '@title');
-  _cnapi_parse_str($object, 'shortdescription', $xml, '@shortdescription');
-  _cnapi_parse_str($object, 'thumbnail', $xml, '@thumbnail');
+function _cnapi_parse_event_list_item(&$data, $$xml) {
+  // $data['cdbid']
+  _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
   
-  if (in_array($type, array('event', 'actor'))) {
-    _cnapi_parse_str($object, 'city', $xml, '@city');
-    _cnapi_parse_str($object, 'zip', $xml, '@zip');
-    _cnapi_parse_str($object, 'address', $xml, '@address');
-    $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
-    if (count($latlng) == 2) {
-      $object['gis']['lat'] = $latlng[0];
-      $object['gis']['lng'] = $latlng[1];
-    }
+  // $data['title']
+  _cnapi_parse_str($data, 'title', $xml, '@title');
+  
+  // $data['shortdescription']
+  _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  
+  // $data['thumbnail']
+  _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
+  
+  // $data['city']
+  _cnapi_parse_str($data, 'city', $xml, '@city');
+  
+  // $data['zip']
+  _cnapi_parse_str($data, 'zip', $xml, '@zip');
+  
+  // $data['address']
+  _cnapi_parse_str($data, 'address', $xml, '@address');
+  $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
+  if (count($latlng) == 2) {
+    $data['gis']['lat'] = $latlng[0];
+    $data['gis']['lng'] = $latlng[1];
   }
   
-  if ($type == 'event') {
-    _cnapi_parse_str($object, 'calendarsummary', $xml, '@calendarsummary');
-    _cnapi_parse_str($object, 'headingid', $xml, '@headingid');
-    if (isset($object['headingid'])) {
-      $object['headingid'] = explode(';', $object['headingid']);
-    }
-    _cnapi_parse_str($object, 'locationid', $xml, '@locationid');
-    _cnapi_parse_str($object, 'available_to', $xml, '@available_to');
-    if (isset($object['available_to'])) {
-      $object['available_to'] = strtotime($object['available_to']); // @todo strtotime doesn't work
-    }
+  // $data['calendarsummary']
+  _cnapi_parse_str($data, 'calendarsummary', $xml, '@calendarsummary');
+  
+  // $data['headingid']
+  _cnapi_parse_str($data, 'headingid', $xml, '@headingid');
+  if (isset($data['headingid'])) {
+    $data['headingid'] = explode(';', $data['headingid']);
   }
   
-  if (in_array($type, array('event', 'production'))) {
-    _cnapi_parse_str($object, 'agefrom', $xml, '@agefrom');
-    _cnapi_parse_str($object, 'performers', $xml, '@performers');
-    if (isset($object['performers'])) {
-      $object['performers'] = explode(';', $object['performers']);
-    }
+  // $data['locationid']
+  _cnapi_parse_str($data, 'locationid', $xml, '@locationid');
+  
+  // $data['available_to']
+  _cnapi_parse_str($data, 'available_to', $xml, '@available_to');
+  if (isset($data['available_to'])) {
+    $data['available_to'] = strtotime($data['available_to']); // @todo strtotime doesn't work
   }
   
-  return $object;
+  // $data['agefrom']
+  _cnapi_parse_str($data, 'agefrom', $xml, '@agefrom');
+  
+  // $data['performers']
+  _cnapi_parse_str($data, 'performers', $xml, '@performers');
+  if (isset($data['performers'])) {
+    $data['performers'] = explode(';', $data['performers']);
+  }
+}
+
+function _cnapi_parse_production_list_item(&$data, $xml) {
+  $data = array();
+  
+  // $data['cdbid']
+  _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
+  
+  // $data['title']
+  _cnapi_parse_str($data, 'title', $xml, '@title');
+  
+  // $data['shortdescription']
+  _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  
+  // $data['thumbnail']
+  _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
+  
+  // $data['agefrom']
+  _cnapi_parse_str($data, 'agefrom', $xml, '@agefrom');
+  
+  // $data['performers']
+  _cnapi_parse_str($data, 'performers', $xml, '@performers');
+  if (isset($data['performers'])) {
+    $data['performers'] = explode(';', $data['performers']);
+  }
+  
+  return $data;
+}
+
+function _cnapi_parse_actor_list_item(&$data, $xml) {
+  $data = array();
+  
+  // $data['cdbid']
+  _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
+  
+  // $data['title']
+  _cnapi_parse_str($data, 'title', $xml, '@title');
+  
+  // $data['shortdescription']
+  _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  
+  // $data['thumbnail']
+  _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
+  
+  // $data['city']
+  _cnapi_parse_str($data, 'city', $xml, '@city');
+  
+  // $data['zip']
+  _cnapi_parse_str($data, 'zip', $xml, '@zip');
+  
+  // $data['address']
+  _cnapi_parse_str($data, 'address', $xml, '@address');
+  $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
+  if (count($latlng) == 2) {
+    $data['gis']['lat'] = $latlng[0];
+    $data['gis']['lng'] = $latlng[1];
+  }
+  
+  return $data;
 }
 
 function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wrong level
@@ -431,7 +505,8 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
   // related events as list_summary
   if ($items = _cnapi_xpath($xml, 'c:list/c:item')) {
     foreach ($items as $item) {
-      $object = _cnapi_parse_list_item('event', $item);
+      $object = array();
+      _cnapi_parse_event_list_item($object, $item);
 
       $related_events[] = $object;
     }
