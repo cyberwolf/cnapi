@@ -19,7 +19,7 @@ function _cnapi_parse($request, $xml) {
     $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
     if ($xml_object = _cnapi_xpath($xml, $xpath)) {
       $xml_object = array_shift($xml_object);
-      call_user_func('_cnapi_parse_' . $request['type'], $data, NULL, $xml_object);
+      call_user_func('_cnapi_parse_' . $request['type'], &$data, NULL, $xml_object);
     }
   }
   
@@ -35,7 +35,7 @@ function _cnapi_parse($request, $xml) {
     if ($xml_objects = _cnapi_xpath($xml, $xpath)) {
       foreach ($xml_objects as $xml_object) {
         $object = array();
-        call_user_func('_cnapi_parse_' . $request['type'], $object, NULL, $xml_object);
+        call_user_func('_cnapi_parse_' . $request['type'], &$object, NULL, $xml_object);
         if (!empty($object)) {
           $data['data'][] = $object;
         }
@@ -56,7 +56,7 @@ function _cnapi_parse($request, $xml) {
     
     foreach (_cnapi_xpath($xml, $items_path) as $item) {
       $object = array();
-      call_user_func('_cnapi_parse_list_item' . $request['type'], $object, $item);
+      call_user_func('_cnapi_parse_list_item' . $request['type'], &$object, $item);
 
       $data['data'][] = $object;
     }
@@ -226,7 +226,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   
   // $event['related_events'][...]
   _cnapi_parse_related_events($event, 'related_events', $xml);
-  
+
   if ($xml_event_relations = _cnapi_xpath($xml, 'c:eventrelations')) {
     $xml_event_relations = array_shift($xml_event_relations);
     
@@ -236,11 +236,11 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
     // $event['parent_event'][...]
     _cnapi_parse_parent_event($event, 'parent_event', $xml_event_relations);
   }
-  
+
   if (!empty($event)) {
     // caching this object
-    _cnapi_cache_event($event);
-    
+    _cnapi_cache_event($event, $xml);
+
     // adding data to requesting object
     if ($field) {
       $data[$field] = $event;
@@ -277,7 +277,7 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) { // @todo starts 
   
   if (!empty($production)) {
     // caching this object
-    _cnapi_cache_production($production);
+    _cnapi_cache_production($production, $xml);
   
     // adding data to requesting object
     if ($field) {
@@ -312,7 +312,7 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) { // @todo starts at wr
 
   if (!empty($actor)) {
     // caching this object
-    _cnapi_cache_actor($actor);
+    _cnapi_cache_actor($actor, $xml);
   
     // adding data to requesting object
     if ($field) {
@@ -324,7 +324,7 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) { // @todo starts at wr
   }
 }
 
-function _cnapi_cache_event($event) {
+function _cnapi_cache_event($event, $xml) {
   // constructing the $request object for generating the cache id
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $event['cdbid']));
   
@@ -339,7 +339,7 @@ function _cnapi_cache_event($event) {
   _cnapi_cache_set($request, $event);
 }
 
-function _cnapi_cache_production($production) {
+function _cnapi_cache_production($production, $xml) {
   // constructing the $request object for generating the cache id
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $production['cdbid']));
   
@@ -354,7 +354,7 @@ function _cnapi_cache_production($production) {
   _cnapi_cache_set($request, $production);
 }
 
-function _cnapi_cache_actor($actor) {
+function _cnapi_cache_actor($actor, $xml) {
   // constructing the $request object for generating the cache id
   $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $actor['cdbid']));
   
@@ -549,7 +549,7 @@ function _cnapi_parse_calendar(&$data, $field, $xml) {
 
 function _cnapi_parse_contactinfo(&$data, $field, $xml) {
   $info = array(
-    'info' => array(),
+    'main' => array(),
     'reservation' => array(),
     'other' => array(),
   );
