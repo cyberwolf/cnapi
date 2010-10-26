@@ -617,12 +617,24 @@ function _cnapi_parse_categories(&$data, $field, $xml) {
 }
 
 function _cnapi_parse_address(&$data, $field, $xml) {
+  $address = array();
+  
+  // $address['street']
   _cnapi_parse_str($address, 'street', $xml, 'c:address/c:physical/c:street');
+  
+  // $address['housenr']
   _cnapi_parse_str($address, 'housenr', $xml, 'c:address/c:physical/c:housenr');
+  
+  // $address['zipcode']
   _cnapi_parse_str($address, 'zipcode', $xml, 'c:address/c:physical/c:zipcode');
+  
+  // $address['city']
   _cnapi_parse_str($address, 'city', $xml, 'c:address/c:physical/c:city');
+  
+  // $address['country']
   _cnapi_parse_str($address, 'country', $xml, 'c:address/c:physical/c:country');
   
+  // $address['gis'][...]
   $gis = array();
   _cnapi_parse_str($gis, 'lat', $xml, 'c:address/c:physical/c:gis/c:xcoordinate');
   _cnapi_parse_str($gis, 'lng', $xml, 'c:address/c:physical/c:gis/c:ycoordinate');
