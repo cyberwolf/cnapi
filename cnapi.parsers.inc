@@ -13,7 +13,7 @@ function _cnapi_parse($request, $result) {
     $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
     if ($xml_object = _cnapi_xpath($xml, $xpath)) {
       $xml_object = array_shift($xml_object);
-      call_user_func('_cnapi_parse_event' . $request['type'], $data, NULL, $xml_object);
+      call_user_func('_cnapi_parse_' . $request['type'], $data, NULL, $xml_object);
     }
   }
   
