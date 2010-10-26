@@ -401,7 +401,7 @@ function _cnapi_parse_address($xml) {
   $address['gis']['lat'] = _cnapi_xpath_str($xml, 'c:physical/c:gis/xcoordinate');
   $address['gis']['lng'] = _cnapi_xpath_str($xml, 'c:physical/c:gis/ycoordinate');
   
-  // @todo add cityid
+  // @improvement add cityid
   
   return $address;
 }
@@ -458,6 +458,8 @@ function _cnapi_parse_media($xml) {
       elseif (_cnapi_xpath_str($xml_file, 'c:plaintext')) {
         $file['plaintext'] = _cnapi_xpath_str($xml_file, 'c:plaintext');
       }
+      
+      // @todo mark main file
       
       $files[] = $file;
     }
