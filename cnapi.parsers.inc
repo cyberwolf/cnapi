@@ -145,7 +145,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   
   if (!empty($event)) {
     // caching this object
-    $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
+    $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $event['cdbid']));
     
     if (_cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
       $request['query']['relatedevents'] = 'list';
