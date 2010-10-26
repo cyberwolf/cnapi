@@ -121,8 +121,6 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
 }
 
 function _cnapi_parse_production_list_item(&$data, $xml) {
-  $data = array();
-  
   // $data['cdbid']
   _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
   
@@ -143,13 +141,9 @@ function _cnapi_parse_production_list_item(&$data, $xml) {
   if (isset($data['performers'])) {
     $data['performers'] = explode(';', $data['performers']);
   }
-  
-  return $data;
 }
 
 function _cnapi_parse_actor_list_item(&$data, $xml) {
-  $data = array();
-  
   // $data['cdbid']
   _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
   
@@ -175,8 +169,6 @@ function _cnapi_parse_actor_list_item(&$data, $xml) {
     $data['gis']['lat'] = $latlng[0];
     $data['gis']['lng'] = $latlng[1];
   }
-  
-  return $data;
 }
 
 function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wrong level
