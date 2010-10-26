@@ -13,21 +13,21 @@ function _cnapi_parse($request, $result) {
     
     // event
     if ($request['type'] == 'event') {
-      $xml_event = array_shift($xml->xpath('/c:cdbxml/c:events/c:event'));
+      $xml_event = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:events/c:event'));
     
       $data = _cnapi_parse_event($xml_event);
     }
     
     // production
     elseif ($request['type'] == 'production') {
-      $xml_production = array_shift($xml->xpath('/c:cdbxml/c:productions/c:production'));
+      $xml_production = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:productions/c:production'));
     
       $data = _cnapi_parse_production($xml_production);
     }
     
     // actor
     elseif ($request['type'] == 'actor') {
-      $xml_actor = array_shift($xml->xpath('/c:cdbxml/c:actors/c:actor'));
+      $xml_actor = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:actors/c:actor'));
     
       $data = _cnapi_parse_actor($xml_actor);
     }
@@ -40,7 +40,7 @@ function _cnapi_parse($request, $result) {
     
     // event
     if ($request['type'] == 'event') {
-      $xml_events = $xml->xpath('/c:cdbxml/c:events/c:event');
+      $xml_events = _cnapi_xpath($xml, '/c:cdbxml/c:events/c:event');
     
       foreach ($xml_events as $xml_event) {
         $data['data'][] = _cnapi_parse_event($xml_event);
@@ -49,7 +49,7 @@ function _cnapi_parse($request, $result) {
     
     // event
     elseif ($request['type'] == 'production') {
-      $xml_productions = $xml->xpath('/c:cdbxml/c:productions/c:production');
+      $xml_productions = _cnapi_xpath($xml, '/c:cdbxml/c:productions/c:production');
     
       foreach ($xml_productions as $xml_production) {
         $data['data'][] = _cnapi_parse_production($xml_production);
@@ -58,7 +58,7 @@ function _cnapi_parse($request, $result) {
     
     // actor
     elseif ($request['type'] == 'actor') {
-      $xml_actors = $xml->xpath('/c:cdbxml/c:actors/c:actor');
+      $xml_actors = _cnapi_xpath($xml, '/c:cdbxml/c:actors/c:actor');
     
       foreach ($xml_actors as $xml_actor) {
         $data['data'][] = _cnapi_parse_actor($xml_actor);
@@ -75,7 +75,7 @@ function _cnapi_parse($request, $result) {
       $items_path = '/c:cdbxml/c:production/c:item';
     }
     
-    foreach ($xml->xpath($items_path) as $item) {
+    foreach (_cnapi_xpath($xml, $items_path) as $item) {
       $object = _cnapi_parse_list_item($request['type'], $item);
 
       $data['data'][] = $object;
@@ -139,10 +139,10 @@ function _cnapi_parse_event($xml) {
   // caching this object
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
   
-  if ($xml->xpath('c:relatedevents/c:list/c:item')) {
+  if (_cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
     $request['query']['relatedevents'] = 'list';
   }
-  elseif ($xml->xpath('c:relatedevents/c:list/c:item')) {
+  elseif (_cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
     $request['query']['relatedevents'] = 'detail';
   }
   
@@ -167,10 +167,10 @@ function _cnapi_parse_production($xml) {
   // caching this object
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $data['cdbid']));
   
-  if ($xml->xpath('c:relatedevents/c:list/c:item')) {
+  if (_cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
     $request['query']['relatedevents'] = 'list';
   }
-  elseif ($xml->xpath('c:relatedevents/c:list/c:item')) {
+  elseif (_cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
     $request['query']['relatedevents'] = 'detail';
   }
 
@@ -202,7 +202,7 @@ function _cnapi_parse_actor($xml) {
 function _cnapi_parse_object(&$data, $field, $parser, $xml, $xpath) {
   _cnapi_register_default_namespace($xml, 'c');
   
-  if ($xml_sub = $xml->xpath($xpath)) {
+  if ($xml_sub = _cnapi_xpath($xml, $xpath)) {
     $data[$field] = call_user_func($parser, array_shift($xml_sub));
   }
 }
@@ -215,7 +215,7 @@ function _cnapi_parse_event_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:eventdetails/c:eventdetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_shift($xml->xpath('c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift(_cnapi_xpath($xml, 'c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_event_detail($xml_detail);
   }
 
@@ -246,7 +246,7 @@ function _cnapi_parse_production_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:productiondetails/c:productiondetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_shift($xml->xpath('c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift(_cnapi_xpath($xml, 'c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_production_detail($xml_detail);
   }
 
@@ -275,7 +275,7 @@ function _cnapi_parse_actor_details($xml) {
   $languages = _cnapi_xpath_str($xml, 'c:actordetails/c:actordetail/@lang', TRUE);
 
   foreach ($languages as $language) {
-    $xml_detail = array_shift($xml->xpath('c:actordetails/c:actordetail[@lang="' . $language . '"]'));
+    $xml_detail = array_shift(_cnapi_xpath($xml, 'c:actordetails/c:actordetail[@lang="' . $language . '"]'));
     $details[$language] = _cnapi_parse_actor_detail($xml_detail);
   }
 
@@ -323,7 +323,7 @@ function _cnapi_parse_related_events($xml) {
   _cnapi_register_default_namespace($xml, 'c');
   
   // related events as list_summary
-  if ($items = $xml->xpath('c:list/c:item')) {
+  if ($items = _cnapi_xpath($xml, 'c:list/c:item')) {
     foreach ($items as $item) {
       $object = _cnapi_parse_list_item('event', $item);
 
@@ -332,7 +332,7 @@ function _cnapi_parse_related_events($xml) {
   }
 
   // related events as list_detail
-  elseif ($items = $xml->xpath('c:event')) {
+  elseif ($items = _cnapi_xpath($xml, 'c:event')) {
     foreach ($items as $item) {
       $object = _cnapi_parse_event($item);
 
@@ -411,7 +411,7 @@ function _cnapi_parse_performers($xml) {
 
   _cnapi_register_default_namespace($xml, 'c');
   
-  if ($xml_performers = $xml->xpath('c:performers/c:performer')) {
+  if ($xml_performers = _cnapi_xpath($xml, 'c:performers/c:performer')) {
     foreach ($xml_performers as $xml_performer) {
       _cnapi_register_default_namespace($xml_performer, 'c');
       
@@ -440,7 +440,7 @@ function _cnapi_parse_media($xml) {
   
   _cnapi_register_default_namespace($xml, 'c');
 
-  if ($xml_files = $xml->xpath('c:media/c:file')) {
+  if ($xml_files = _cnapi_xpath($xml, 'c:media/c:file')) {
     foreach ($xml_files as $xml_file) {
       _cnapi_register_default_namespace($xml_file, 'c');
       
