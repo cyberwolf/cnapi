@@ -456,6 +456,7 @@ function _cnapi_parse_address(&$data, $field, $xml) {
   _cnapi_parse_str($address, 'zipcode', $xml, 'c:address/c:physical/c:zipcode');
   _cnapi_parse_str($address, 'city', $xml, 'c:address/c:physical/c:city');
   _cnapi_parse_str($address, 'country', $xml, 'c:address/c:physical/c:country');
+  
   $gis = array();
   _cnapi_parse_str($gis, 'lat', $xml, 'c:address/c:physical/c:gis/c:xcoordinate');
   _cnapi_parse_str($gis, 'lng', $xml, 'c:address/c:physical/c:gis/c:ycoordinate');
@@ -531,8 +532,10 @@ function _cnapi_parse_media(&$data, $field, $xml) {
 
 function _cnapi_parse_price(&$data, $field, $xml) {
   $price = array();
+  
   _cnapi_parse_float($price, 'value', $xml, 'c:price/c:pricevalue');
   _cnapi_parse_str($price, 'description', $xml, 'c:price/c:pricedescription');
+  
   if (!empty($price)) {
     $data[$field] = $price;
   }
