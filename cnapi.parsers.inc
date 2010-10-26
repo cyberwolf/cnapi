@@ -486,18 +486,26 @@ function _cnapi_parse_actor_detail(&$data, $field, $xml) { // @todo starts at wr
 }
 
 function _cnapi_parse_related_production(&$data, $field, $xml) {
+  // $data[$field]['cdbid']
   _cnapi_parse_str($data[$field], 'cdbid', $xml, 'c:relatedproduction/@cdbid');
+
+  // $data[$field]['title']
   _cnapi_parse_str($data[$field], 'title', $xml, 'c:relatedproduction');
   
+  // removing empty related_production
   if (empty($data[$field])) {
     unset($data[$field]);
   }
 }
 
 function _cnapi_parse_parent_event(&$data, $field, $xml) {
+  // $data[$field]['cdbid']
   _cnapi_parse_str($data[$field], 'cdbid', $xml, 'c:parentevent/@cdbid');
+  
+  // $data[$field]['title']
   _cnapi_parse_str($data[$field], 'title', $xml, 'c:parentevent');
   
+  // removing empty parent_event
   if (empty($data[$field])) {
     unset($data[$field]);
   }
