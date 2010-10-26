@@ -592,14 +592,10 @@ function _cnapi_parse_contactinfo(&$data, $field, $xml) {
   _cnapi_parse_str($info['other'], 'url', $xml, 'c:contactinfo/c:url[not(@main="true" or @reservation="true")]', TRUE);
   
   // removing empty contactinfo types
-  if (empty($info['main'])) {
-    unset($info['main']);
-  }
-  if (empty($info['reservation'])) {
-    unset($info['reservation']);
-  }
-  if (empty($info['other'])) {
-    unset($info['other']);
+  foreach ($info as $type => $value) {
+    if (empty($info[$type])) {
+      unset($info[$type]);
+    }
   }
   
   // adding data to requesting object
