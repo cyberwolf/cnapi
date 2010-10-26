@@ -133,6 +133,8 @@ function _cnapi_parse_event($xml) {
   _cnapi_parse_object($data['location'], 'actor', '_cnapi_parse_actor', $xml, 'c:location/c:actor');
   _cnapi_parse_object($data, 'organiser', '_cnapi_parse_actor', $xml, 'c:organiser/c:actor');
   _cnapi_parse_object($data, 'related_events', '_cnapi_parse_related_events', $xml, 'c:relatedevents');
+  _cnapi_parse_object($data, 'related_production', '_cnapi_parse_related_production', $xml, 'c:eventrelations/c:relatedproduction');
+  _cnapi_parse_object($data, 'parent_event', '_cnapi_parse_parent_event', $xml, 'c:eventrelations/c:parentevent');
   
   // caching this object
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $data['cdbid']));
@@ -291,6 +293,28 @@ function _cnapi_parse_actor_detail($xml) {
   $detail['media'] = _cnapi_parse_media($xml);
 
   return $detail;
+}
+
+function _cnapi_parse_related_production($xml) {
+  $production = array();
+
+  _cnapi_register_default_namespace($xml, 'c');
+
+  $production['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
+  $production['title'] = strval($xml);
+
+  return $production;
+}
+
+function _cnapi_parse_parent_event($xml) {
+  $event = array();
+
+  _cnapi_register_default_namespace($xml, 'c');
+
+  $event['cdbid'] = _cnapi_xpath_str($xml, '@cdbid');
+  $event['title'] = strval($xml);
+
+  return $event;
 }
 
 function _cnapi_parse_related_events($xml) {
