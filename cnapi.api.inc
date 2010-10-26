@@ -137,9 +137,6 @@ function _cnapi_cache_expires($request) {
 function cnapi_cache_cid($request) {
   unset($request['query']['format']);
 
-  _cnapi_request_expand_key($request);
-  unset($request['query']['key']);
-
   switch ($request['action']) {
     case 'detail':
       return implode(':', array($request['type'], cnapi_query_hash($request), $request['query']['cdbid']));
@@ -371,10 +368,6 @@ function cnapi_request_validate($request) {
   }
 
   return TRUE;
-}
-
-function _cnapi_request_expand_key(&$request) {
-  // @todo implement this
 }
 
 function cnapi_request_sort(&$request) {
