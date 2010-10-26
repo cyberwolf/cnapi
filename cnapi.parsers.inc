@@ -146,12 +146,21 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   _cnapi_parse_str($event, 'agefrom', $xml, '@agefrom');
   _cnapi_parse_calendar($event, 'calendar', $xml);
   _cnapi_parse_contactinfo($event, 'contactinfo', $xml);
-  _cnapi_parse_address($event['location'], 'address', array_shift(_cnapi_xpath($xml, 'c:location')));
-  _cnapi_parse_actor($event['location'], 'actor', array_shift(_cnapi_xpath($xml, 'c:location/c:actor')));
-  _cnapi_parse_actor($event, 'organiser', array_shift(_cnapi_xpath($xml, 'c:organiser/c:actor')));
+  if ($xml_location = _cnapi_xpath($xml, 'c:location')) {
+    _cnapi_parse_address($event['location'], 'address', array_shift($xml_location));
+  }
+  if ($xml_location_actor = _cnapi_xpath($xml, 'c:location/c:actor')) {
+    _cnapi_parse_actor($event['location'], 'actor', array_shift($xml_location_actor));
+  }
+  if ($xml_organiser = _cnapi_xpath($xml, 'c:organiser/c:actor')) {
+    _cnapi_parse_actor($event, 'organiser', array_shift($xml_organiser));
+  }
   _cnapi_parse_related_events($event, 'related_events', $xml);
-  _cnapi_parse_related_production($event, 'related_production', array_shift(_cnapi_xpath($xml, 'c:eventrelations')));
-  _cnapi_parse_parent_event($event, 'parent_event', array_shift(_cnapi_xpath($xml, 'c:eventrelations')));
+  if ($xml_event_relations = _cnapi_xpath($xml, 'c:eventrelations')) {
+    $xml_event_relations = array_shift($xml_event_relations);
+    _cnapi_parse_related_production($event, 'related_production', $xml_event_relations);
+    _cnapi_parse_parent_event($event, 'parent_event', $xml_event_relations);
+  }
   
   if (!empty($event)) {
     // caching this object
@@ -482,17 +491,25 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
         
         $actor = array();
         _cnapi_parse_actor($actor, NULL, $xml_actor);
-        $performers[] = array(
-          'role' => _cnapi_xpath_str($xml_performer, 'c:role'),
-          'name' => $actor['actordetails']['nl']['title'],
-          'actor' => $actor,
-        );
+        
+        if (!empty($actor)) {
+          $performer = array();
+          _cnapi_parse_str($performer, 'role', $xml_performer, 'c:role');
+          $performer['name'] = $actor['detail']['nl']['title'];
+          $performer['actor'] = $actor;
+          
+          $performers[] = $performer;
+        }
       }
       elseif ($xml_label = _cnapi_xpath($xml_performer, 'c:label')) {
-        $performers[] = array(
-          'role' => _cnapi_xpath_str($xml_performer, 'c:role'),
-          'name' => _cnapi_xpath_str($xml_performer, 'c:label'),
-        );
+        $performer = array();
+        
+        _cnapi_parse_str($performer, 'role', $xml_performer, 'c:role');
+        _cnapi_parse_str($performer, 'name', $xml_performer, 'c:label');
+        
+        if (!empty($performer)) {
+          $performers[] = $performer;
+        }
       }
     }
   }
