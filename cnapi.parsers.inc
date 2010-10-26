@@ -486,32 +486,30 @@ function _cnapi_parse_actor_detail(&$data, $field, $xml) { // @todo starts at wr
 }
 
 function _cnapi_parse_related_production(&$data, $field, $xml) {
-  if ($xml = array_shift(_cnapi_xpath($xml, 'c:relatedproduction'))) {
-    _cnapi_parse_str($data[$field], 'cdbid', $xml, '@cdbid');
-    $data[$field]['title'] = strval($xml);
+  _cnapi_parse_str($data[$field], 'cdbid', $xml, 'c:relatedproduction/@cdbid');
+  _cnapi_parse_str($data[$field], 'title', $xml, 'c:relatedproduction');
+  
+  if (empty($data[$field])) {
+    unset($data[$field]);
   }
 }
 
 function _cnapi_parse_parent_event(&$data, $field, $xml) {
-  if ($xml = array_shift(_cnapi_xpath($xml, 'c:parentevent'))) {
-    _cnapi_parse_str($data[$field], 'cdbid', $xml, '@cdbid');
-    $data[$field]['title'] = strval($xml);
+  _cnapi_parse_str($data[$field], 'cdbid', $xml, 'c:parentevent/@cdbid');
+  _cnapi_parse_str($data[$field], 'title', $xml, 'c:parentevent');
+  
+  if (empty($data[$field])) {
+    unset($data[$field]);
   }
 }
 
 function _cnapi_parse_related_events(&$data, $field, $xml) {
   $related_events = array();
   
-  if (!($xml = _cnapi_xpath($xml, 'c:relatedevents'))) {
-    return;
-  }
-  
-  $xml = array_shift($xml);
-  
   // @todo cleanup
   
   // related events as list_summary
-  if ($items = _cnapi_xpath($xml, 'c:list/c:item')) {
+  if ($items = _cnapi_xpath($xml, 'c:relatedevents/c:list/c:item')) {
     foreach ($items as $item) {
       $object = array();
       _cnapi_parse_event_list_item($object, $item);
@@ -522,7 +520,7 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
   }
 
   // related events as list_detail
-  elseif ($items = _cnapi_xpath($xml, 'c:event')) {
+  elseif ($items = _cnapi_xpath($xml, 'c:relatedevents/c:event')) {
     foreach ($items as $item) {
       $object = array();
       _cnapi_parse_event($object, NULL, $item);
@@ -534,7 +532,7 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
 
   // related events as list of cdbid
   else {
-    $related_events = _cnapi_xpath_str($xml, 'c:id/@cdbid', TRUE);
+    $related_events = _cnapi_xpath_str($xml, 'c:relatedevents/c:id/@cdbid', TRUE);
   }
   
   // adding data to requesting object
