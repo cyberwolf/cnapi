@@ -65,7 +65,7 @@ function _cnapi_parse($request, $xml) {
   return $data;
 }
 
-function _cnapi_parse_event_list_item(&$data, $$xml) {
+function _cnapi_parse_event_list_item(&$data, $xml) {
   // $data['cdbid']
   _cnapi_parse_str($data, 'cdbid', $xml, '@cdbid');
   
@@ -354,7 +354,7 @@ function _cnapi_cache_production($production) {
   _cnapi_cache_set($request, $production);
 }
 
-function _cnapi_cache_production($production) {
+function _cnapi_cache_actor($actor) {
   // constructing the $request object for generating the cache id
   $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $actor['cdbid']));
   
@@ -548,51 +548,60 @@ function _cnapi_parse_calendar(&$data, $field, $xml) {
 }
 
 function _cnapi_parse_contactinfo(&$data, $field, $xml) {
-  $info = array();
+  $info = array(
+    'info' => array(),
+    'reservation' => array(),
+    'other' => array(),
+  );
   
-  if (!($xml = _cnapi_xpath($xml, 'c:contactinfo'))) {
-    return;
-  }
-  
-  $xml = array_shift($xml);
-  
-  // $info['address][...]
-  _cnapi_parse_address($info, 'address', $xml);
+  // $info['address'][...]
+  _cnapi_parse_address($info, 'c:contactinfo/address', $xml);
 
-  // main contactinfo
-  $main = array();
-  _cnapi_parse_str($main, 'mail', $xml, 'c:mail[@main="true"]');
-  _cnapi_parse_str($main, 'phone', $xml, 'c:phone[@main="true" and @type="phone"]');
-  _cnapi_parse_str($main, 'fax', $xml, 'c:phone[@main="true" and @type="fax"]');
-  _cnapi_parse_str($main, 'url', $xml, 'c:url[@main="true"]');
+  // $info['main']['mail']
+  _cnapi_parse_str($info['main'], 'mail', $xml, 'c:contactinfo/c:mail[@main="true"]');
   
-  // only adding main contactinfo if it has at least one field
-  if (!empty($main)) {
-    $info['main'] = $main;
-  }
+  // $info['main']['phone']
+  _cnapi_parse_str($info['main'], 'phone', $xml, 'c:contactinfo/c:phone[@main="true" and @type="phone"]');
+  
+  // $info['main']['fax']
+  _cnapi_parse_str($info['main'], 'fax', $xml, 'c:contactinfo/c:phone[@main="true" and @type="fax"]');
+  
+  // $info['main']['url']
+  _cnapi_parse_str($info['main'], 'url', $xml, 'c:contactinfo/c:url[@main="true"]');
 
-  // reservation contactinfo
-  $reservation = array();
-  _cnapi_parse_str($reservation, 'mail', $xml, 'c:mail[@reservation="true"]');
-  _cnapi_parse_str($reservation, 'phone', $xml, 'c:phone[@reservation="true" and @type="phone"]');
-  _cnapi_parse_str($reservation, 'fax', $xml, 'c:phone[@reservation="true" and @type="fax"]');
-  _cnapi_parse_str($reservation, 'url', $xml, 'c:url[@reservation="true"]');
+  // $info['reservation']['mail']
+  _cnapi_parse_str($info['reservation'], 'mail', $xml, 'c:contactinfo/c:mail[@reservation="true"]');
   
-  // only adding reservation contactinfo if it has at least one field
-  if (!empty($reservation)) {
-    $info['reservation'] = $reservation;
-  }
+  // $info['reservation']['phone']
+  _cnapi_parse_str($info['reservation'], 'phone', $xml, 'c:contactinfo/c:phone[@reservation="true" and @type="phone"]');
+  
+  // $info['reservation']['fax']
+  _cnapi_parse_str($info['reservation'], 'fax', $xml, 'c:contactinfo/c:phone[@reservation="true" and @type="fax"]');
+  
+  // $info['reservation']['url']
+  _cnapi_parse_str($info['reservation'], 'url', $xml, 'c:contactinfo/c:url[@reservation="true"]');
 
-  // other contactinfo
-  $other = array();
-  _cnapi_parse_str($other, 'mail', $xml, 'c:mail[not(@main="true" or @reservation="true")]', TRUE);
-  _cnapi_parse_str($other, 'phone', $xml, 'c:phone[not(@main="true" or @reservation="true") and @type="phone"]', TRUE);
-  _cnapi_parse_str($other, 'fax', $xml, 'c:phone[not(@main="true" or @reservation="true") and @type="fax"]', TRUE);
-  _cnapi_parse_str($other, 'url', $xml, 'c:url[not(@main="true" or @reservation="true")]', TRUE);
+  // $info['other']['mail']
+  _cnapi_parse_str($info['other'], 'mail', $xml, 'c:contactinfo/c:mail[not(@main="true" or @reservation="true")]', TRUE);
   
-  // only adding other contactinfo if it has at least one field
-  if (!empty($other)) {
-    $info['other'] = $other;
+  // $info['other']['phone']
+  _cnapi_parse_str($info['other'], 'phone', $xml, 'c:contactinfo/c:phone[not(@main="true" or @reservation="true") and @type="phone"]', TRUE);
+  
+  // $info['other']['fax']
+  _cnapi_parse_str($info['other'], 'fax', $xml, 'c:contactinfo/c:phone[not(@main="true" or @reservation="true") and @type="fax"]', TRUE);
+  
+  // $info['other']['url']
+  _cnapi_parse_str($info['other'], 'url', $xml, 'c:contactinfo/c:url[not(@main="true" or @reservation="true")]', TRUE);
+  
+  // removing empty contactinfo types
+  if (empty($info['main'])) {
+    unset($info['main']);
+  }
+  if (empty($info['reservation'])) {
+    unset($info['reservation']);
+  }
+  if (empty($info['other'])) {
+    unset($info['other']);
   }
   
   // adding data to requesting object
