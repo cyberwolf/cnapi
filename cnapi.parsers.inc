@@ -10,26 +10,10 @@ function _cnapi_parse($request, $result) {
   
   // detail
   if ($request['action'] == 'detail') {
-    
-    // event
-    if ($request['type'] == 'event') {
-      $xml_event = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:events/c:event'));
-    
-      _cnapi_parse_event($data, NULL, $xml_event);
-    }
-    
-    // production
-    elseif ($request['type'] == 'production') {
-      $xml_production = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:productions/c:production'));
-    
-      _cnapi_parse_production($data, NULL, $xml_production);
-    }
-    
-    // actor
-    elseif ($request['type'] == 'actor') {
-      $xml_actor = array_shift(_cnapi_xpath($xml, '/c:cdbxml/c:actors/c:actor'));
-    
-      _cnapi_parse_actor($data, NULL, $xml_actor);
+    $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
+    if ($xml_object = _cnapi_xpath($xml, $xpath)) {
+      $xml_object = array_shift($xml_object);
+      call_user_func('_cnapi_parse_event' . $request['type'], $data, NULL, $xml_object);
     }
   }
   
@@ -38,36 +22,14 @@ function _cnapi_parse($request, $result) {
     $data['total'] = _cnapi_xpath_str($xml, 'c:nofrecords');
     $data['data'] = array();
     
-    // event
-    if ($request['type'] == 'event') {
-      $xml_events = _cnapi_xpath($xml, '/c:cdbxml/c:events/c:event');
-    
-      foreach ($xml_events as $xml_event) {
-        $event = array();
-        _cnapi_parse_event($event, NULL, $xml_event);
-        $data['data'][] = $event;
-      }
-    }
-    
-    // event
-    elseif ($request['type'] == 'production') {
-      $xml_productions = _cnapi_xpath($xml, '/c:cdbxml/c:productions/c:production');
-    
-      foreach ($xml_productions as $xml_production) {
-        $production = array();
-        _cnapi_parse_production($production, NULL, $xml_production);
-        $data['data'][] = $production;
-      }
-    }
-    
-    // actor
-    elseif ($request['type'] == 'actor') {
-      $xml_actors = _cnapi_xpath($xml, '/c:cdbxml/c:actors/c:actor');
-    
-      foreach ($xml_actors as $xml_actor) {
-        $actor = array();
-        _cnapi_parse_actor($actor, NULL, $xml_actor);
-        $data['data'][] = $actor;
+    $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
+    if ($xml_objects = _cnapi_xpath($xml, $xpath)) {
+      foreach ($xml_objects as $xml_object) {
+        $object = array();
+        call_user_func('_cnapi_parse_' . $request['type'], $object, NULL, $xml_object);
+        if (!empty($object)) {
+          $data['data'][] = $object;
+        }
       }
     }
   }
