@@ -4,8 +4,14 @@
 function _cnapi_parse($request, $result) {
   $data = array();
 
+  // trying to parse the xml
   $xml = new SimpleXMLElement($result);
   
+  if (!$xml) {
+    // @todo log this
+  }
+  
+  // registering the default namespace
   _cnapi_register_default_namespace($xml, 'c');
   
   // detail
@@ -19,7 +25,10 @@ function _cnapi_parse($request, $result) {
   
   // list_detail
   elseif ($request['action'] == 'list_detail') {
+    // $data['total]
     $data['total'] = _cnapi_xpath_str($xml, 'c:nofrecords');
+    
+    // $data['data]
     $data['data'] = array();
     
     $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
@@ -36,8 +45,10 @@ function _cnapi_parse($request, $result) {
   
   // list_summary
   elseif ($request['action'] == 'list_summary') {
+    // $data['total]
     $data['total'] = _cnapi_xpath_str($xml, 'c:nofrecords');
     
+    // $data['data]
     $items_path = '/c:cdbxml/c:list/c:item';
     if ($request['type'] == 'production') {
       $items_path = '/c:cdbxml/c:production/c:item';
@@ -230,7 +241,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
     // caching this object
     _cnapi_cache_event($event);
     
-    // setting field on object
+    // adding data to requesting object
     if ($field) {
       $data[$field] = $event;
     }
@@ -268,7 +279,7 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) { // @todo starts 
     // caching this object
     _cnapi_cache_production($production);
   
-    // setting field on object
+    // adding data to requesting object
     if ($field) {
       $data[$field] = $production;
     }
@@ -303,7 +314,7 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) { // @todo starts at wr
     // caching this object
     _cnapi_cache_actor($actor);
   
-    // setting field on object
+    // adding data to requesting object
     if ($field) {
       $data[$field] = $actor;
     }
@@ -361,6 +372,7 @@ function _cnapi_parse_event_details(&$data, $field, $xml) {
     }
   }
 
+  // adding data to requesting object
   if (!empty($details)) {
     $data[$field] = $details;
   }
@@ -390,6 +402,7 @@ function _cnapi_parse_event_detail(&$data, $field, $xml) { // @todo starts at wr
   // $detail['price'][...]
   _cnapi_parse_price($detail, 'price', $xml);
 
+  // adding data to requesting object
   if (!empty($detail)) {
     $data[$field] = $detail;
   }
@@ -405,6 +418,7 @@ function _cnapi_parse_production_details(&$data, $field, $xml) {
     }
   }
 
+  // adding data to requesting object
   if (!empty($details)) {
     $data[$field] = $details;
   }
@@ -428,6 +442,7 @@ function _cnapi_parse_production_detail(&$data, $field, $xml) { // @todo starts 
   // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
 
+  // adding data to requesting object
   if (!empty($detail)) {
     $data[$field] = $detail;
   }
@@ -443,6 +458,7 @@ function _cnapi_parse_actor_details(&$data, $field, $xml) {
     }
   }
 
+  // adding data to requesting object
   if (!empty($details)) {
     $data[$field] = $details;
   }
@@ -463,6 +479,7 @@ function _cnapi_parse_actor_detail(&$data, $field, $xml) { // @todo starts at wr
   // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
 
+  // adding data to requesting object
   if (!empty($detail)) {
     $data[$field] = $detail;
   }
@@ -498,8 +515,9 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
     foreach ($items as $item) {
       $object = array();
       _cnapi_parse_event_list_item($object, $item);
-
-      $related_events[] = $object;
+      if (!empty($object)) {
+        $related_events[] = $object;
+      }
     }
   }
 
@@ -519,6 +537,7 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
     $related_events = _cnapi_xpath_str($xml, 'c:id/@cdbid', TRUE);
   }
   
+  // adding data to requesting object
   if (!empty($related_events)) {
     $data[$field] = $related_events;
   }
@@ -537,41 +556,46 @@ function _cnapi_parse_contactinfo(&$data, $field, $xml) {
   
   $xml = array_shift($xml);
   
+  // $info['address][...]
   _cnapi_parse_address($info, 'address', $xml);
 
-  // main
+  // main contactinfo
   $main = array();
   _cnapi_parse_str($main, 'mail', $xml, 'c:mail[@main="true"]');
   _cnapi_parse_str($main, 'phone', $xml, 'c:phone[@main="true" and @type="phone"]');
   _cnapi_parse_str($main, 'fax', $xml, 'c:phone[@main="true" and @type="fax"]');
   _cnapi_parse_str($main, 'url', $xml, 'c:url[@main="true"]');
   
+  // only adding main contactinfo if it has at least one field
   if (!empty($main)) {
     $info['main'] = $main;
   }
 
-  // reservation
+  // reservation contactinfo
   $reservation = array();
   _cnapi_parse_str($reservation, 'mail', $xml, 'c:mail[@reservation="true"]');
   _cnapi_parse_str($reservation, 'phone', $xml, 'c:phone[@reservation="true" and @type="phone"]');
   _cnapi_parse_str($reservation, 'fax', $xml, 'c:phone[@reservation="true" and @type="fax"]');
   _cnapi_parse_str($reservation, 'url', $xml, 'c:url[@reservation="true"]');
   
+  // only adding reservation contactinfo if it has at least one field
   if (!empty($reservation)) {
     $info['reservation'] = $reservation;
   }
 
-  // reservation
+  // other contactinfo
   $other = array();
   _cnapi_parse_str($other, 'mail', $xml, 'c:mail[not(@main="true" or @reservation="true")]', TRUE);
   _cnapi_parse_str($other, 'phone', $xml, 'c:phone[not(@main="true" or @reservation="true") and @type="phone"]', TRUE);
   _cnapi_parse_str($other, 'fax', $xml, 'c:phone[not(@main="true" or @reservation="true") and @type="fax"]', TRUE);
   _cnapi_parse_str($other, 'url', $xml, 'c:url[not(@main="true" or @reservation="true")]', TRUE);
   
+  // only adding other contactinfo if it has at least one field
   if (!empty($other)) {
     $info['other'] = $other;
   }
   
+  // adding data to requesting object
   if (!empty($info)) {
     $data[$field] = $info;
   }
@@ -586,6 +610,7 @@ function _cnapi_parse_categories(&$data, $field, $xml) {
     }
   }
   
+  // adding data to requesting object
   if (!empty($categories)) {
     $data[$field] = $categories;
   }
@@ -606,7 +631,8 @@ function _cnapi_parse_address(&$data, $field, $xml) {
   }
   
   // @improvement add cityid
-    
+  
+  // adding data to requesting object
   if (!empty($address)) {
     $data[$field] = $address;
   }
@@ -639,6 +665,7 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
         _cnapi_parse_str($performer, 'role', $xml_performer, 'c:role');
         _cnapi_parse_str($performer, 'name', $xml_performer, 'c:label');
         
+        // only adding performer if at least one field is available
         if (!empty($performer)) {
           $performers[] = $performer;
         }
@@ -646,6 +673,7 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
     }
   }
   
+  // adding data to requesting object
   if (!empty($performers)) {
     $data[$field] = $performers;
   }
@@ -658,14 +686,28 @@ function _cnapi_parse_media(&$data, $field, $xml) {
     foreach ($xml_files as $xml_file) {
       $file = array();
       
+      // $file['copyright']
       _cnapi_parse_str($file, 'copyright', $xml_file, 'c:copyright');
+      
+      // $file['filename']
       _cnapi_parse_str($file, 'filename', $xml_file, 'c:filename');
+      
+      // $file['filetype']
       _cnapi_parse_str($file, 'filetype', $xml_file, 'c:filetype');
+      
+      // $file['mediatype']
       _cnapi_parse_str($file, 'mediatype', $xml_file, 'c:mediatype');
+      
+      // $file['title']
       _cnapi_parse_str($file, 'title', $xml_file, 'c:title');
+      
+      // $file['hlink']
       _cnapi_parse_str($file, 'hlink', $xml_file, 'c:hlink');
+      
+      // $file['plaintext']
       _cnapi_parse_str($file, 'plaintext', $xml_file, 'c:plaintext');
       
+      // only adding the file if we have at least one field
       if (!empty($file)) {
         $files[] = $file;
       }
@@ -674,6 +716,7 @@ function _cnapi_parse_media(&$data, $field, $xml) {
     }
   }
   
+  // adding data to requesting object
   if (!empty($files)) {
     $data[$field] = $files;
   }
@@ -682,9 +725,13 @@ function _cnapi_parse_media(&$data, $field, $xml) {
 function _cnapi_parse_price(&$data, $field, $xml) {
   $price = array();
   
+  // $price['value']
   _cnapi_parse_float($price, 'value', $xml, 'c:price/c:pricevalue');
+  
+  // $data['description']
   _cnapi_parse_str($price, 'description', $xml, 'c:price/c:pricedescription');
   
+  // adding data to requesting object
   if (!empty($price)) {
     $data[$field] = $price;
   }
