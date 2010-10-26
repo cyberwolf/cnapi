@@ -1,11 +1,11 @@
 <?php
 // $Id$
 
-function _cnapi_parse($request, $result) {
+function _cnapi_parse($request, $xml) {
   $data = array();
 
   // trying to parse the xml
-  $xml = new SimpleXMLElement($result);
+  $xml = new SimpleXMLElement($xml);
   
   if (!$xml) {
     // @todo log this
