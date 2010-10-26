@@ -91,7 +91,7 @@ function _cnapi_parse($request, $result) {
   return $data;
 }
 
-function _cnapi_parse_list_item($type, $xml) {
+function _cnapi_parse_list_item($type, $xml) { // @todo parse this using the &$data way
   _cnapi_parse_str($object, 'cdbid', $xml, '@cdbid');
   _cnapi_parse_str($object, 'title', $xml, '@title');
   _cnapi_parse_str($object, 'shortdescription', $xml, '@shortdescription');
@@ -376,9 +376,11 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
   // related events as list_detail
   elseif ($items = _cnapi_xpath($xml, 'c:event')) {
     foreach ($items as $item) {
+      $object = array();
       _cnapi_parse_event($object, NULL, $item);
-
-      $related_events[] = $object;
+      if (!empty($object)) {
+        $related_events[] = $object;
+      }
     }
   }
 
