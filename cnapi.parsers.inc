@@ -56,7 +56,7 @@ function _cnapi_parse($request, $xml) {
     
     foreach (_cnapi_xpath($xml, $items_path) as $item) {
       $object = array();
-      call_user_func('_cnapi_parse_list_item' . $request['type'], &$object, $item);
+      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', &$object, $item);
 
       $data['data'][] = $object;
     }
