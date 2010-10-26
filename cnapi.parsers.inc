@@ -410,16 +410,27 @@ function _cnapi_parse_performers($xml) {
   $performers = array();
 
   _cnapi_register_default_namespace($xml, 'c');
-
-  $performers['labels'] = _cnapi_xpath_str($xml, 'c:performers/c:performer/c:label', TRUE);
   
-  if ($xml_actors = $xml->xpath('c:performers/c:performer/c:actor')) {
-    foreach ($xml_actors as $xml_actor) {
-      $performers['actors'][] = _cnapi_parse_actor($xml_actor);
+  if ($xml_performers = $xml->xpath('c:performers/c:performer')) {
+    foreach ($xml_performers as $xml_performer) {
+      _cnapi_register_default_namespace($xml_performer, 'c');
+      
+      if ($xml_actor = $xml_performer->xpath('c:actor')) {
+        $actor = _cnapi_parse_actor($xml_actor);
+        $performers[] = array(
+          'role' => _cnapi_xpath_str($xml_performer, 'c:role'),
+          'name' => $actor['actordetails']['nl']['title'],
+          'actor' => $actor,
+        );
+      }
+      elseif ($xml_label = $xml_performer->xpath('c:label')) {
+        $performers[] = array(
+          'role' => _cnapi_xpath_str($xml_performer, 'c:role'),
+          'name' => _cnapi_xpath_str($xml_performer, 'c:label'),
+        );
+      }
     }
   }
-
-  // @todo add role
   
   return $performers;
 }
