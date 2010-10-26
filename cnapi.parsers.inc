@@ -368,13 +368,26 @@ function _cnapi_parse_event_details(&$data, $field, $xml) {
 
 function _cnapi_parse_event_detail(&$data, $field, $xml) { // @todo starts at wrong level
   $detail = array();
-
+  
+  // $detail['title']
   _cnapi_parse_str($detail, 'title', $xml, 'c:title');
+  
+  // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'c:shortdescription');
+  
+  // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'c:longdescription');
+  
+  // $detail['calendarsummary']
   _cnapi_parse_str($detail, 'calendarsummary', $xml, 'c:calendarsummary');
+  
+  // $detail['performers'][...]
   _cnapi_parse_performers($detail, 'performers', $xml);
+  
+  // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
+  
+  // $detail['price'][...]
   _cnapi_parse_price($detail, 'price', $xml);
 
   if (!empty($detail)) {
@@ -400,10 +413,19 @@ function _cnapi_parse_production_details(&$data, $field, $xml) {
 function _cnapi_parse_production_detail(&$data, $field, $xml) { // @todo starts at wrong level
   $detail = array();
 
+  // $detail['title']
   _cnapi_parse_str($detail, 'title', $xml, 'c:title');
+  
+  // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'c:shortdescription');
+  
+  // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'c:longdescription');
+  
+  // $detail['performers'][...]
   _cnapi_parse_performers($detail, 'performers', $xml);
+  
+  // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
 
   if (!empty($detail)) {
@@ -429,9 +451,16 @@ function _cnapi_parse_actor_details(&$data, $field, $xml) {
 function _cnapi_parse_actor_detail(&$data, $field, $xml) { // @todo starts at wrong level
   $detail = array();
 
+  // $detail['title']
   _cnapi_parse_str($detail, 'title', $xml, 'c:title');
+  
+  // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'c:shortdescription');
+  
+  // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'c:longdescription');
+  
+  // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
 
   if (!empty($detail)) {
