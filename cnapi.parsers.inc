@@ -649,7 +649,7 @@ function _cnapi_parse_address(&$data, $field, $xml) {
     $address['gis'] = $gis;
   }
   
-  // @improvement add cityid
+  // @todo add cityid
   
   // adding data to requesting object
   if (!empty($address)) {
