@@ -53,9 +53,10 @@ function _cnapi_parse($request, $xml) {
       $items_path = '/cdbxml/production/item';
     }
 
-    foreach ($xml->xpath($items_path) as $item) {
+    $xml_items = $xml->xpath($items_path);
+    foreach ($xml_items as $xml_item) {
       $object = array();
-      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', &$object, $item);
+      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', &$object, $xml_item);
 
       $data['data'][] = $object;
     }
