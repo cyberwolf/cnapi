@@ -173,7 +173,7 @@ function _cnapi_parse_actor_list_item(&$data, $xml) {
   }
 }
 
-function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wrong level
+function _cnapi_parse_event(&$data, $field = NULL, $xml) {
   $event = array();
 
   // $event['cdbid']
@@ -245,7 +245,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   }
 }
 
-function _cnapi_parse_production(&$data, $field = NULL, $xml) { // @todo starts at wrong level
+function _cnapi_parse_production(&$data, $field = NULL, $xml) {
   $production = array();
 
   // $production['cdbid']
@@ -283,7 +283,7 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) { // @todo starts 
   }
 }
 
-function _cnapi_parse_actor(&$data, $field = NULL, $xml) { // @todo starts at wrong level
+function _cnapi_parse_actor(&$data, $field = NULL, $xml) {
   $actor = array();
 
   // $actor['cdbid']
@@ -372,7 +372,7 @@ function _cnapi_parse_event_details(&$data, $field, $xml) {
   }
 }
 
-function _cnapi_parse_event_detail(&$data, $field, $xml) { // @todo starts at wrong level
+function _cnapi_parse_event_detail(&$data, $field, $xml) {
   $detail = array();
   
   // $detail['title']
@@ -418,7 +418,7 @@ function _cnapi_parse_production_details(&$data, $field, $xml) {
   }
 }
 
-function _cnapi_parse_production_detail(&$data, $field, $xml) { // @todo starts at wrong level
+function _cnapi_parse_production_detail(&$data, $field, $xml) {
   $detail = array();
 
   // $detail['title']
@@ -458,7 +458,7 @@ function _cnapi_parse_actor_details(&$data, $field, $xml) {
   }
 }
 
-function _cnapi_parse_actor_detail(&$data, $field, $xml) { // @todo starts at wrong level
+function _cnapi_parse_actor_detail(&$data, $field, $xml) {
   $detail = array();
 
   // $detail['title']
