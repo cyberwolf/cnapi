@@ -99,11 +99,11 @@ function _cnapi_cache_list_clean_by_total($request, $total) {
     if ($cache_total = cache_get($cid_total)) { // what if number of results = 0?
       if ($cache_total != $total) {
         cache_clear_all($cid_base, _cnapi_cache_table($request), TRUE);
-        cache_set($cid_total, $total, _cnapi_cache_table($request));
+        cache_set($cid_total, $total, _cnapi_cache_table($request), _cnapi_cache_expires($request));
       }
     }
     else {
-      cache_set($cid_total, $total, _cnapi_cache_table($request));
+      cache_set($cid_total, $total, _cnapi_cache_table($request), _cnapi_cache_expires($request));
     }
   }
 }
