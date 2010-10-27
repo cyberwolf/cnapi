@@ -76,13 +76,23 @@ function _cnapi_get($request = NULL) {
     if ($result) {
       $result = _cnapi_parse($request, $result);
 
-      if (in_array($request['action'], array('list_detail', 'list_summary'))) {
-        _cnapi_cache_list_clean_by_total($request, $result['total']);
-      }
+      if ($result) {
+        if (in_array($request['action'], array('list_detail', 'list_summary'))) {
+          _cnapi_cache_list_clean_by_total($request, $result['total']);
+        }
 
-      if ($request['action'] != 'detail') { // detail actions will be cached at parse level
-        _cnapi_cache_set($request, $result);
+        if ($request['action'] != 'detail') { // detail actions will be cached at parse level
+          _cnapi_cache_set($request, $result);
+        }
       }
+      else {
+        watchdog('cnapi', 'Failed parsing for request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
+        return FALSE;
+      }
+    }
+    else {
+      watchdog('cnapi', 'Failed request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
+      return FALSE;
     }
   }
 
