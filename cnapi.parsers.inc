@@ -12,7 +12,7 @@ function _cnapi_parse($request, $xml) {
     $xml = new SimpleXMLElement($xml);
   }
   catch (Exception $e) {
-    watchdog('cnapi', 'An error occured while parsing url for !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
+    watchdog('cnapi', 'Could not parse request result for request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
     return FALSE;
   }
   
