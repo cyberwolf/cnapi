@@ -508,8 +508,6 @@ function _cnapi_parse_parent_event(&$data, $field, $xml) {
 function _cnapi_parse_related_events(&$data, $field, $xml) {
   $related_events = array();
   
-  // @todo cleanup
-  
   // related events as list_summary
   if ($items = $xml->xpath('relatedevents/list/item')) {
     foreach ($items as $item) {
@@ -658,20 +656,28 @@ function _cnapi_parse_address(&$data, $field, $xml) {
 function _cnapi_parse_performers(&$data, $field, $xml) {
   $performers = array();
   
-  // @todo clean this up
   if ($xml_performers = $xml->xpath('performers/performer')) {
     foreach ($xml_performers as $xml_performer) {
       // performer as an actor
       if ($xml_actor = $xml->xpath('actor')) {
+        // parsing the actor
         $actor = array();
         _cnapi_parse_actor($actor, NULL, reset($xml_actor));
         
+        // if we succesfully parsed an actor, add extra info and add it to list
         if (!empty($actor)) {
           $performer = array();
+          
+          // $perfomer['role']
           _cnapi_parse_str($performer, 'role', $xml_performer, 'role');
+          
+          // $perfomer['name']
           $performer['name'] = $actor['detail']['nl']['title'];
+          
+          // $perfomer['actor']
           $performer['actor'] = $actor;
           
+          // adding the performer
           $performers[] = $performer;
         }
       }
@@ -680,7 +686,10 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
       elseif ($xml->xpath('label')) {
         $performer = array();
         
+        // $perfomer['role']
         _cnapi_parse_str($performer, 'role', $xml_performer, 'role');
+        
+        // $perfomer['name']
         _cnapi_parse_str($performer, 'name', $xml_performer, 'label');
         
         // only adding performer if at least one field is available
