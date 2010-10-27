@@ -35,7 +35,11 @@ function _cnapi_xpath_float($xml, $query, $multiple = FALSE) {
 }
 
 function _cnapi_xpath_bool($xml, $query, $multiple = FALSE) {
-  return _cnapi_xpath_cast('intval', $xml, $query, $multiple) ? TRUE : FALSE;
+  $val = _cnapi_xpath_cast('strval', $xml, $query, $multiple);
+  if (!$val) {
+    return NULL;
+  }
+  return strtolower($val) == 'true' ? TRUE : FALSE;
 }
 
 function _cnapi_parse_str(&$data, $field, $xml, $query, $multiple = FALSE, $trim = TRUE) {
@@ -72,4 +76,22 @@ function _cnapi_parse_basic(&$data, $field, $result, $multiple) {
   else {
     $data[$field] = $result;
   }
+}
+
+/**
+ * Convert a date in the format D(D)/M(M)/YY(YY) H(H):M(M):S(S) to to a unix timestamp.
+ *
+ * @param $time
+ *   The string representation of the date.
+ * @return
+ *   Unix timestamp version of the input date.
+ */
+function cnapi_timestamp($timestamp) {
+  list($date, $time) = explode(' ', $timestamp);
+  list($day, $month, $year) = explode('/', $date);
+  list($hour, $minute, $second) = explode(':', $time);
+  
+  $tmp = sprintf('%d/%d/%d %d:%d:%d', $month, $day, $year, $hour, $minute, $second);
+  
+  return strtotime($tmp);
 }

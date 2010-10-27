@@ -699,6 +699,7 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
 
 function _cnapi_parse_media(&$data, $field, $xml) {
   $files = array();
+  $main_file = array();
 
   if ($xml_files = $xml->xpath('media/file')) {
     foreach ($xml_files as $xml_file) {
@@ -727,16 +728,24 @@ function _cnapi_parse_media(&$data, $field, $xml) {
       
       // only adding the file if we have at least one field
       if (!empty($file)) {
-        $files[] = $file;
+        if (_cnapi_xpath_bool($xml_file, '@main')) {
+          $main_file = $file;
+        }
+        else {
+          $files[] = $file;
+        }
       }
-      
-      // @todo mark main file
     }
   }
   
-  // adding data to requesting object
+  // adding mail file to requesting object
+  if (!empty($main_file)) {
+    $data[$field]['main'] = $main_file;
+  }
+  
+  // adding other files to requesting object
   if (!empty($files)) {
-    $data[$field] = $files;
+    $data[$field]['other'] = $files;
   }
 }
 
