@@ -8,10 +8,12 @@ function _cnapi_parse($request, $xml) {
   $xml = str_replace(' xmlns=', ' ns=', $xml);
   
   // trying to parse the xml
-  $xml = new SimpleXMLElement($xml);
-  
-  if (!$xml) {
+  try {
+    $xml = new SimpleXMLElement($xml);
+  }
+  catch (Exception $e) {
     // @todo log this
+    return FALSE;
   }
   
   // detail
