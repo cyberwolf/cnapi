@@ -185,7 +185,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   // $event['keywords']
   _cnapi_parse_str($event, 'keywords', $xml, 'c:keywords');
   if (isset($event['keywords'])) {
-    $event['keywords'] = explode(';', $data['keywords']);
+    $event['keywords'] = explode(';', $event['keywords']);
   }
   
   // $event['headings']
