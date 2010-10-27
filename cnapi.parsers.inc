@@ -64,6 +64,10 @@ function _cnapi_parse($request, $xml) {
     }
   }
   
+  elseif ($request['action'] == 'report') {
+    // @todo implement this
+  }
+  
   return $data;
 }
 
