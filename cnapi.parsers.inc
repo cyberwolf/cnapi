@@ -18,8 +18,7 @@ function _cnapi_parse($request, $xml) {
   if ($request['action'] == 'detail') {
     $xpath = sprintf('/c:cdbxml/c:%ss/c:%s', $request['type'], $request['type']);
     if ($xml_object = _cnapi_xpath($xml, $xpath)) {
-      $xml_object = array_shift($xml_object);
-      call_user_func('_cnapi_parse_' . $request['type'], &$data, NULL, $xml_object);
+      call_user_func('_cnapi_parse_' . $request['type'], &$data, NULL, reset($xml_object));
     }
   }
   
@@ -203,24 +202,24 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) { // @todo starts at wr
   
   // $event['location']['address'][...]
   if ($xml_location = _cnapi_xpath($xml, 'c:location')) {
-    _cnapi_parse_address($event['location'], 'address', array_shift($xml_location));
+    _cnapi_parse_address($event['location'], 'address', reset($xml_location));
   }
   
   // $event['location']['actor'][...]
   if ($xml_location_actor = _cnapi_xpath($xml, 'c:location/c:actor')) {
-    _cnapi_parse_actor($event['location'], 'actor', array_shift($xml_location_actor));
+    _cnapi_parse_actor($event['location'], 'actor', reset($xml_location_actor));
   }
   
   // $event['organiser'][...]
   if ($xml_organiser = _cnapi_xpath($xml, 'c:organiser/c:actor')) {
-    _cnapi_parse_actor($event, 'organiser', array_shift($xml_organiser));
+    _cnapi_parse_actor($event, 'organiser', reset($xml_organiser));
   }
   
   // $event['related_events'][...]
   _cnapi_parse_related_events($event, 'related_events', $xml);
 
   if ($xml_event_relations = _cnapi_xpath($xml, 'c:eventrelations')) {
-    $xml_event_relations = array_shift($xml_event_relations);
+    $xml_event_relations = reset($xml_event_relations);
     
     // $event['related_production'][...]
     _cnapi_parse_related_production($event, 'related_production', $xml_event_relations);
@@ -359,7 +358,7 @@ function _cnapi_parse_event_details(&$data, $field, $xml) {
 
   if ($languages = _cnapi_xpath_str($xml, 'c:eventdetails/c:eventdetail/@lang', TRUE)) {
     foreach ($languages as $language) {
-      $xml_detail = array_shift(_cnapi_xpath($xml, 'c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
+      $xml_detail = reset(_cnapi_xpath($xml, 'c:eventdetails/c:eventdetail[@lang="' . $language . '"]'));
       _cnapi_parse_event_detail($details, $language, $xml_detail);
     }
   }
@@ -405,7 +404,7 @@ function _cnapi_parse_production_details(&$data, $field, $xml) {
 
   if ($languages = _cnapi_xpath_str($xml, 'c:productiondetails/c:productiondetail/@lang', TRUE)) {
     foreach ($languages as $language) {
-      $xml_detail = array_shift(_cnapi_xpath($xml, 'c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
+      $xml_detail = reset(_cnapi_xpath($xml, 'c:productiondetails/c:productiondetail[@lang="' . $language . '"]'));
       _cnapi_parse_production_detail($details, $language, $xml_detail);
     }
   }
@@ -445,7 +444,7 @@ function _cnapi_parse_actor_details(&$data, $field, $xml) {
 
   if ($languages = _cnapi_xpath_str($xml, 'c:actordetails/c:actordetail/@lang', TRUE)) {
     foreach ($languages as $language) {
-      $xml_detail = array_shift(_cnapi_xpath($xml, 'c:actordetails/c:actordetail[@lang="' . $language . '"]'));
+      $xml_detail = reset(_cnapi_xpath($xml, 'c:actordetails/c:actordetail[@lang="' . $language . '"]'));
       _cnapi_parse_actor_detail($details, $language, $xml_detail);
     }
   }
@@ -661,10 +660,8 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
     foreach ($xml_performers as $xml_performer) {
       // performer as an actor
       if ($xml_actor = _cnapi_xpath($xml_performer, 'c:actor')) {
-        $xml_actor = array_shift($xml_actor);
-        
         $actor = array();
-        _cnapi_parse_actor($actor, NULL, $xml_actor);
+        _cnapi_parse_actor($actor, NULL, reset($xml_actor));
         
         if (!empty($actor)) {
           $performer = array();
