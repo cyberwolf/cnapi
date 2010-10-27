@@ -10,7 +10,7 @@ define('CNAPI_XML_CATEGORISATION',  '/lib/categorisation.xml');
 define('CNAPI_XML_HEADING',  '/lib/heading.xml');
 define('CNAPI_XML_HEADING_CATEGORISATION',  '/lib/heading_categorisation.xml');
 
-function cnapi_import($type = 'all') {
+function cnapi_import() {
   // output types
   $mappings = array(
     'tid'              => array('path' => '@id', 'parser' => 'intval'),
