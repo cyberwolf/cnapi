@@ -1,23 +1,6 @@
 <?php
 // $Id$
 
-function _cnapi_register_default_namespace(&$xml, $namespace) {
-  $namespaces = $xml->getDocNamespaces();
-  $xml->registerXPathNamespace($namespace, $namespaces['']);
-}
-
-function _cnapi_xpath($xml, $xpath) {
-  $result = $xml->xpath($xpath);
-  
-  if (is_array($result)) {
-    foreach ($result as $item) {
-      _cnapi_register_default_namespace($item, 'c');
-    }
-  }
-  
-  return $result;
-}
-
 function _cnapi_xpath_cast($cast_function, $xml, $query, $multiple = FALSE) {
   $result = $multiple ? array() : NULL;
 
