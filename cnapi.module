@@ -60,7 +60,7 @@ function cnapi_flush_caches() {
 }
 
 /**
- * Implementation of hook_form_alter().
+ * Implements hook_form_alter().
  */
 function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
   // We want our stuff before the clear cache fieldset and button.

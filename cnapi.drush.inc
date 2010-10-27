@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Implementation of hook_drush_help().
+ * Implements hook_drush_help().
  */
 function cnapi_drush_help($section) {
   switch ($section) {
@@ -13,7 +13,7 @@ function cnapi_drush_help($section) {
 
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  */
 function cnapi_drush_command() {
   $items['cnapi-import-values'] = array(

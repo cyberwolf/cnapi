@@ -62,7 +62,7 @@ function _cnapi_parse_float(&$data, $field, $xml, $query, $multiple = FALSE) {
 
 function _cnapi_parse_bool(&$data, $field, $xml, $query, $multiple = FALSE) {
   $result = _cnapi_xpath_bool($xml, $query, $multiple);
-  
+
   _cnapi_parse_basic(&$data, $field, $result, $multiple);
 }
 
@@ -90,8 +90,8 @@ function cnapi_timestamp($timestamp) {
   list($date, $time) = explode(' ', $timestamp);
   list($day, $month, $year) = explode('/', $date);
   list($hour, $minute, $second) = explode(':', $time);
-  
+
   $tmp = sprintf('%d/%d/%d %d:%d:%d', $month, $day, $year, $hour, $minute, $second);
-  
+
   return strtotime($tmp);
 }
