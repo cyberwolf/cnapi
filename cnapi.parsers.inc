@@ -109,7 +109,7 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   // $data['available_to']
   _cnapi_parse_str($data, 'available_to', $xml, '@available_to');
   if (isset($data['available_to'])) {
-    $data['available_to'] = strtotime($data['available_to']); // @todo strtotime doesn't work
+    $data['available_to'] = cnapi_timestamp($data['available_to']);
   }
   
   // $data['agefrom']
