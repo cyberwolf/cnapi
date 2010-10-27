@@ -24,10 +24,10 @@ function _cnapi_parse($request, $xml) {
   
   // list_detail
   elseif ($request['action'] == 'list_detail') {
-    // $data['total]
+    // $data['total']
     $data['total'] = _cnapi_xpath_str($xml, 'nofrecords');
     
-    // $data['data]
+    // $data['data']
     $data['data'] = array();
     
     $xpath = sprintf('/cdbxml/%ss/%s', $request['type'], $request['type']);
@@ -44,10 +44,10 @@ function _cnapi_parse($request, $xml) {
   
   // list_summary
   elseif ($request['action'] == 'list_summary') {
-    // $data['total]
+    // $data['total']
     $data['total'] = _cnapi_xpath_str($xml, 'nofrecords');
     
-    // $data['data]
+    // $data['data']
     $items_path = '/cdbxml/list/item';
     if ($request['type'] == 'production') {
       $items_path = '/cdbxml/production/item';
