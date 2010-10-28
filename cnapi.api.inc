@@ -267,28 +267,46 @@ function _cnapi_default_values($key = NULL, $namespace = NULL) {
   }
 }
 
-// remove_defaults should be part of ui module, we only deal with api stuff here
+// only supports scalar defaults
 // stuff like pagelength, page and sort are always specified although not necessary to get a meaningful cache id (cid still works if defaults change)
 function cnapi_request_add_defaults(&$request) {
-  // api key
-  if (!isset($request['query']['key'])) {
-    $request['query']['key'] = variable_get('cnapi_api_key', '');
+  $defaults = _cnapi_query_defaults($request);
+  
+  // setting defaults
+  foreach ($defaults as $key => $value) {
+    if (!isset($request['query'][$key])) {
+      $request['query'][$key] = $value;
+    }
   }
+}
+
+function cnapi_request_remove_defaults(&$request) {
+  $defaults = _cnapi_query_defaults($request);
+  
+  // setting defaults
+  foreach ($defaults as $key => $value) {
+    if (isset($request['query'][$key]) && $request['query'][$key] == $value) {
+      unset($request['query'][$key]);
+    }
+  }
+}
+
+function _cnapi_query_defaults($request) {
+  // api key
+  $defaults['key'] = variable_get('cnapi_api_key', '');
 
   // detail
   if ($request['action'] == 'detail' && in_array($request['type'], array('event', 'production'))) {
-    $request['query']['relatedevents'] = 'id';
+    $defaults['relatedevents'] = 'id';
   }
 
   // lists
   if (in_array($request['action'], array('list_detail', 'list_summary'))) {
     // page
-    if (!isset($request['query']['page'])) {
-      $request['query']['page'] = 1;
-    }
+    $defaults['page'] = 1;
 
     // calculating defaults
-    $defaults = _cnapi_default_values();
+    $defaults = array_merge($defaults, _cnapi_default_values());
 
     foreach (array('event', 'production', 'actor') as $type) {
       if ($request['type'] == $type) {
@@ -301,18 +319,11 @@ function cnapi_request_add_defaults(&$request) {
         $defaults = array_merge($defaults, $namespace_defaults);
       }
     }
-
-    // setting defaults
-    foreach ($defaults as $key => $value) {
-      if (!isset($request['query'][$key])) {
-        $request['query'][$key] = $value;
-      }
-    }
   }
 
-  drupal_alter('cnapi_request_defaults', $request);
+  drupal_alter('cnapi_request_defaults', $defaults, $request);
 
-  return $request;
+  return $defaults;
 }
 
 // cnapi_request_clean is very important in case of report because cache id depends on it, otherwise we get a different cache per page
