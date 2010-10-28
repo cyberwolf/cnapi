@@ -14,6 +14,20 @@ function cnapi_ui_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'cnapi_ui.pages.inc',
   );
+  $items['cn/list/production'] = array(
+    'page callback' => 'cnapi_ui_page_productions',
+    'title callback' => 'Productions',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
+  $items['cn/list/actor'] = array(
+    'page callback' => 'cnapi_ui_page_actors',
+    'title callback' => 'Actors',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
 
   return $items;
 }
@@ -26,6 +40,14 @@ function cnapi_ui_theme() {
     'cnapi_ui_event_summary' => array(
       'variables' => array('event' => NULL),
       'template' => 'cnapi-ui-event-summary',
+    ),
+    'cnapi_ui_production_summary' => array(
+      'variables' => array('production' => NULL),
+      'template' => 'cnapi-ui-production-summary',
+    ),
+    'cnapi_ui_actor_summary' => array(
+      'variables' => array('actor' => NULL),
+      'template' => 'cnapi-ui-actor-summary',
     ),
   );
 }
@@ -54,6 +76,51 @@ function cnapi_ui_preprocess_cnapi_ui_event_summary(&$vars) {
   if (isset($vars['event']['thumbnail'])) {
     $image = array(
       'path' => $vars['event']['thumbnail'],
+      'width' => 100,
+    );
+    $vars['thumbnail'] = theme('image', $image);
+  }
+}
+
+function cnapi_ui_preprocess_cnapi_ui_production_summary(&$vars) {
+  // title
+  $vars['title'] = $vars['production']['title'];
+
+  // short descirption
+  $vars['short_description'] = $vars['production']['shortdescription'];
+
+  // performers
+  $vars['who'] = '';
+  if (isset($vars['production']['performers'])) {
+    $vars['who'] = implode(', ', $vars['production']['performers']);
+  }
+
+  $vars['thumbnail'] = '';
+  // thumbnail
+  if (isset($vars['production']['thumbnail'])) {
+    $image = array(
+      'path' => $vars['production']['thumbnail'],
+      'width' => 100,
+    );
+    $vars['thumbnail'] = theme('image', $image);
+  }
+}
+
+function cnapi_ui_preprocess_cnapi_ui_actor_summary(&$vars) {
+  // title
+  $vars['title'] = $vars['actor']['title'];
+
+  // short descirption
+  $vars['short_description'] = $vars['actor']['shortdescription'];
+
+  // where
+  $vars['where'] = $vars['actor']['city'];
+
+  $vars['thumbnail'] = '';
+  // thumbnail
+  if (isset($vars['actor']['thumbnail'])) {
+    $image = array(
+      'path' => $vars['actor']['thumbnail'],
       'width' => 100,
     );
     $vars['thumbnail'] = theme('image', $image);
