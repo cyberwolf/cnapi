@@ -1,0 +1,61 @@
+<?php
+// $Id$
+
+require_once('cnapi_ui.url.inc');
+
+/**
+ * Implementation of hook_menu().
+ */
+function cnapi_ui_menu() {
+  $items['cn/list/event'] = array(
+    'page callback' => 'cnapi_ui_page_events',
+    'title callback' => 'Events',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnapi_ui_theme() {
+  return array(
+    'cnapi_ui_event_summary' => array(
+      'variables' => array('event' => NULL),
+      'template' => 'cnapi-ui-event-summary',
+    ),
+  );
+}
+
+function cnapi_ui_preprocess_cnapi_ui_event_summary(&$vars) {
+  // title
+  $vars['title'] = $vars['event']['title'];
+
+  // short descirption
+  $vars['short_description'] = $vars['event']['shortdescription'];
+
+  // where
+  $vars['where'] = $vars['event']['city'];
+
+  // when
+  $vars['when'] = $vars['event']['calendarsummary'];
+
+  // performers
+  $vars['who'] = '';
+  if (isset($vars['event']['performers'])) {
+    $vars['who'] = implode(', ', $vars['event']['performers']);
+  }
+
+  $vars['thumbnail'] = '';
+  // thumbnail
+  if (isset($vars['event']['thumbnail'])) {
+    $image = array(
+      'path' => $vars['event']['thumbnail'],
+      'width' => 100,
+    );
+    $vars['thumbnail'] = theme('image', $image);
+  }
+}

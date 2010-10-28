@@ -1,0 +1,11 @@
+; $Id$
+name = Cultuurnet API User Interface
+description = User Interface example implementation for Cultuurnet API
+package = Cultuurnet API
+version = VERSION
+core = 7.x
+files[] = cnapi_ui.module
+files[] = cnapi_ui.pages.inc
+files[] = cnapi_ui.install
+files[] = cnapi_ui.url.inc
+files[] = cnapi_ui.helpers.inc
