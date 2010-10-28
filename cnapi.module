@@ -95,13 +95,27 @@ function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
     ),
   );
 
-  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
   $form['cnapi_cache']['cnapi_cache_lifetime_detail'] = array(
     '#type' => 'select',
     '#title' => t('Minimum cache lifetime for details'),
     '#default_value' => variable_get('cnapi_cache_lifetime_detail', 0),
     '#options' => $period,
-    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated for details (event, actor, production)'),
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated for actor and event details'),
+    '#states' => array(
+      'invisible' => array(
+        'input[name="cnapi_cache_status"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
+  $form['cnapi_cache']['cnapi_cache_lifetime_production'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime for productions'),
+    '#default_value' => variable_get('cnapi_cache_lifetime_production', 0),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated for production details'),
     '#states' => array(
       'invisible' => array(
         'input[name="cnapi_cache_status"]' => array('checked' => FALSE),

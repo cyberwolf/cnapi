@@ -131,15 +131,18 @@ function _cnapi_cache_expires($request) {
   $var = 'cnapi_cache_lifetime';
 
   if ($request['action'] == 'detail') {
-    $var = 'cnapi_cache_lifetime_detail';
+    if ($request['type'] == 'production') {
+      $var = 'cnapi_cache_lifetime_production';
+    }
+    else {
+      $var = 'cnapi_cache_lifetime_detail';
+    }
   }
 
   $expire = CACHE_TEMPORARY;
   if (variable_get($var, 0) > 0) {
     $expire = $_SERVER['REQUEST_TIME'] + variable_get($var, 0);
   }
-
-  // @improvement add hook so other modules can alter this
 
   return $expire;
 }
