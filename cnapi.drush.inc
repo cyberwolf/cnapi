@@ -27,6 +27,6 @@ function cnapi_drush_command() {
 }
 
 function drush_cnapi_import_values() {
-  require_once 'cnapi.values.inc';
+  require_once 'cnapi.import.inc';
   cnapi_import();
 }
