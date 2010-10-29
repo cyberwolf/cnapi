@@ -65,6 +65,7 @@ function _cnapi_parse($request, $xml) {
   }
 
   elseif ($request['action'] == 'report') {
+    // parsing all report types
     $types = array('headings', 'geo', 'time', 'age', 'production', 'region', 'location');
     foreach ($types as $type) {
       $xml_items = $xml->xpath('report/' . $type . '/item');
@@ -73,6 +74,16 @@ function _cnapi_parse($request, $xml) {
         _cnapi_parse_report_item($item, $xml_item);
         if (!empty($item)) {
           $data[$type][] = $item;
+        }
+      }
+    }
+    
+    // in case of a "time" or "age" report, id should be the name
+    $types = array('time', 'age');
+    foreach ($types as $type) {
+      if (!empty($data[$type])) {
+        foreach ($data[$type] as $i => $item) {
+          $data[$type][$i]['id'] = $data[$type][$i]['name'];
         }
       }
     }
