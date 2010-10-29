@@ -76,7 +76,7 @@ function cnapi_schema() {
         'not null' => TRUE,
         'default' => ''
       ),
-      'dimension' => array(
+      'did' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,

@@ -137,7 +137,7 @@ function cnapi_import() {
     'type'      => 'city',
     'name'      => array('path' => '@city', 'parser' => 'strval'),
     'zip'       => array('path' => '@zip', 'parser' => 'strval'),
-    'dimension' => NULL,
+    'did'       => 0,
   );
   _cnapi_xml_import(CNAPI_XML_CITY, '/City/city', $mappings, 'cnapi_location');
 
@@ -154,7 +154,7 @@ function cnapi_import() {
     'type'      => 'region',
     'name'      => array('path' => '@title', 'parser' => 'strval'),
     'zip'       => NULL,
-    'dimension' => array('path' => '@dimension', 'parser' => 'intval'),
+    'did'       => array('path' => '@dimension', 'parser' => 'intval'),
   );
   _cnapi_xml_import(CNAPI_XML_REGION, '/Region/region', $mappings, 'cnapi_location', array(), FALSE);
 
@@ -221,6 +221,9 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
       }
 
       foreach ($objects as $object) {
+        if ($table == 'cnapi_location_hierarchy' && empty($object['pid'])) {
+          continue;
+        }
         drupal_write_record($table, $object, $primary_key);
       }
     }
