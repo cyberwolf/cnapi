@@ -228,6 +228,11 @@ function _cnapi_parse_actor_list_item(&$data, $xml) {
   // $data['zip']
   _cnapi_parse_str($data, 'zip', $xml, '@zip');
 
+  // $data['citid']
+  if (isset($data['zip']) && isset($data['city'])) {
+    $data['cityid'] = cnapi_get_cityid($data['zip'], $data['city']);
+  }
+
   // $data['address']
   _cnapi_parse_str($data, 'address', $xml, '@address');
   $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
