@@ -163,7 +163,7 @@ function cnapi_ui_get_request() {
   unset($qs_request['q']);
   $url = $_GET['q'];
   $qs = http_build_query($qs_request);
-  if (strlen($qs) > 0) $url .= '?'. $qs;
+  if (strlen($qs) > 0) $url .= '?' . $qs;
   $request = cnapi_ui_url_du2aa($url);
 
   cnapi_request_add_defaults($request);

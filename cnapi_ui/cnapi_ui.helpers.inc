@@ -22,7 +22,7 @@ function cnapi_ui_slug($string, $length = 50, $separator = '-') {
   $string = preg_replace('/[^a-z0-9]/i', $separator, $string);
 
   // replace multiple occurences of separator by one instance
-  $string = preg_replace('/'. preg_quote($separator) .'['. preg_quote($separator) .']*/', $separator, $string);
+  $string = preg_replace('/' . preg_quote($separator) . '[' . preg_quote($separator) . ']*/', $separator, $string);
 
   // cut off to maximum length
   if ($length > -1 && strlen($string) > $length) {
@@ -30,8 +30,8 @@ function cnapi_ui_slug($string, $length = 50, $separator = '-') {
   }
 
   // remove separator from start and end of string
-  $string = preg_replace('/'. preg_quote($separator) .'$/', '', $string);
-  $string = preg_replace('/^'. preg_quote($separator) .'/', '', $string);
+  $string = preg_replace('/' . preg_quote($separator) . '$/', '', $string);
+  $string = preg_replace('/^' . preg_quote($separator) . '/', '', $string);
 
   return $string;
 }
