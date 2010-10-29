@@ -95,3 +95,31 @@ function cnapi_timestamp($timestamp) {
 
   return strtotime($tmp);
 }
+
+function cnapi_datetypes($id = NULL) {
+  $map = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($map)) {
+    $map = array(
+      'today'        => t('Today'),
+      'tomorrow'     => t('Tomorrow'),
+      'thisweek'     => t('This week'),
+      'thisweekend'  => t('This weekend'),
+      'nextweekend'  => t('Next weekend'),
+      'thismonth'    => t('This month'),
+      'next30days'   => t('Next @days days', array('@days' => 30)),
+      'next3months'  => t('Next @months months', array('@months' => 3)),
+      'next6months'  => t('Next @months months', array('@months' => 6)),
+      'next12months' => t('Next @months months', array('@months' => 12)),
+    );
+  }
+
+  if (isset($id)) {
+    if (array_key_exists($id, $map)) {
+      return $map[$id];
+    }
+    return $id;
+  }
+
+  return $map;
+}
