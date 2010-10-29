@@ -114,7 +114,7 @@ function _cnapi_parse_report_item(&$data, $xml) {
   
   // adding data to requesting object
   if (!empty($item)) {
-    $data['item'] = $item;
+    $data = $item;
   }
 }
 
