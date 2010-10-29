@@ -52,7 +52,7 @@ function cnapi_ui_theme() {
   );
 }
 
-function cnapi_ui_preprocess_cnapi_ui_event_summary(&$vars) {
+function template_preprocess_cnapi_ui_event_summary(&$vars) {
   // title
   $vars['title'] = $vars['event']['title'];
 
@@ -82,7 +82,7 @@ function cnapi_ui_preprocess_cnapi_ui_event_summary(&$vars) {
   }
 }
 
-function cnapi_ui_preprocess_cnapi_ui_production_summary(&$vars) {
+function template_preprocess_cnapi_ui_production_summary(&$vars) {
   // title
   $vars['title'] = $vars['production']['title'];
 
@@ -106,7 +106,7 @@ function cnapi_ui_preprocess_cnapi_ui_production_summary(&$vars) {
   }
 }
 
-function cnapi_ui_preprocess_cnapi_ui_actor_summary(&$vars) {
+function template_preprocess_cnapi_ui_actor_summary(&$vars) {
   // title
   $vars['title'] = $vars['actor']['title'];
 
