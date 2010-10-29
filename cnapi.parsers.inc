@@ -98,6 +98,9 @@ function _cnapi_parse_report_item(&$data, $xml) {
   
   // $item['link']
   _cnapi_parse_str($item, 'link', $xml, '@link');
+  if (!empty($item['link'])) {
+    $item['link'] = cnapi_url_a2p($item['link']);
+  }
   
   // $item['children']
   $xml_children = $xml->xpath('item');
