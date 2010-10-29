@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 define('CNAPI_XML_OUTPUT_TYPE', '/lib/output_type.xml');
 define('CNAPI_XML_CITY', '/lib/city.xml');
