@@ -50,7 +50,7 @@ function cnapi_get_actors($query = NULL, $action = CNAPI_LIST_SUMMARY) {
   return cnapi_get($request);
 }
 
-function cnapi_get_report($type, $query = NULL) {
+function cnapi_get_report($type, $query = array()) {
   $request = array('action' => 'report', 'type' => $type, 'query' => $query);
   return cnapi_get($request);
 }
@@ -376,7 +376,7 @@ function cnapi_request_validate($request) {
       $valid_queries = $valid_queries_common;
     }
     elseif (in_array($request['type'], array('event', 'production'))) {
-      $valid_queries = $valid_queries_common + $valid_queries_events_productions;
+      $valid_queries = array_merge($valid_queries_common, $valid_queries_events_productions);
     }
     $diff = array_diff(array_keys($request['query']), $valid_queries);
     if (!empty($diff)) {
