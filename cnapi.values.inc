@@ -1,6 +1,10 @@
 <?php
 // $Id$
 
+function cnapi_get_province($lid) {
+  return db_query("SELECT cl.* FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = 1 AND clh.lid = :lid", array(':lid' => $lid))->fetchAssoc();
+}
+
 function cnapi_get_cities() {
   $cities = &drupal_static(__FUNCTION__, array());
   
