@@ -276,6 +276,9 @@ function cnapi_uninstall() {
     'cnapi_defaults_productions',
     'cnapi_defaults_actors',
     'cnapi_cache_status',
+    'cnapi_cache_lifetime',
+    'cnapi_cache_lifetime_detail',
+    'cnapi_cache_lifetime_production',
   );
   foreach ($variables as $variable) {
     variable_del($variable);
