@@ -82,39 +82,32 @@ function _cnapi_parse($request, $xml) {
 }
 
 function _cnapi_parse_report_item(&$data, $xml) {
-  $item = array();
+  // $data['name']
+  _cnapi_parse_str($data, 'name', $xml, '@name');
 
-  // $item['name']
-  _cnapi_parse_str($item, 'name', $xml, '@name');
+  // $data['id']
+  _cnapi_parse_str($data, 'id', $xml, '@id');
 
-  // $item['id']
-  _cnapi_parse_str($item, 'id', $xml, '@id');
+  // $data['total']
+  _cnapi_parse_int($data, 'total', $xml, '@total');
 
-  // $item['total']
-  _cnapi_parse_int($item, 'total', $xml, '@total');
-
-  // $item['total']
-  _cnapi_parse_str($item, 'total', $xml, '@total');
+  // $data['total']
+  _cnapi_parse_str($data, 'total', $xml, '@total');
   
-  // $item['link']
-  _cnapi_parse_str($item, 'link', $xml, '@link');
-  if (!empty($item['link'])) {
-    $item['link'] = cnapi_url_a2p($item['link']);
+  // $data['link']
+  _cnapi_parse_str($data, 'link', $xml, '@link');
+  if (!empty($data['link'])) {
+    $data['link'] = cnapi_url_a2p($data['link']);
   }
   
-  // $item['children']
+  // $data['children']
   $xml_children = $xml->xpath('item');
   foreach ($xml_children as $xml_child) {
     $child = array();
     _cnapi_parse_report_item($child, $xml_child);
     if (!empty($child)) {
-      $item['children'][] = $child;
+      $data['children'][] = $child;
     }
-  }
-  
-  // adding data to requesting object
-  if (!empty($item)) {
-    $data = $item;
   }
 }
 
