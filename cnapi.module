@@ -4,6 +4,7 @@
 require_once 'cnapi.helpers.inc';
 require_once 'cnapi.parsers.inc';
 require_once 'cnapi.api.inc';
+require_once 'cnapi.values.inc';
 
 define('CNAPI_API_LOCATION', 'http://build.uitdatabank.be/');
 
@@ -19,6 +20,9 @@ define('CNAPI_DEFAULT_SORT', 'date ASC');
 
 define('CNAPI_CACHE_DISABLED', 0);
 define('CNAPI_CACHE_ENABLED', 1);
+
+define('CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE', 2);
+define('CNAPI_LOCATIONS_DIMENSION_TOURIST', 3);
 
 /**
  * Implements hook_menu().

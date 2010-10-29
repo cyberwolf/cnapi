@@ -10,6 +10,62 @@ define('CNAPI_XML_CATEGORISATION',  '/lib/categorisation.xml');
 define('CNAPI_XML_HEADING',  '/lib/heading.xml');
 define('CNAPI_XML_HEADING_CATEGORISATION',  '/lib/heading_categorisation.xml');
 
+function cnapi_get_cities() {
+  $cities = &drupal_static(__FUNCTION__, array());
+  
+  if (!$cities) {
+    $sql = "SELECT cl.*, clh.pid FROM cnapi_location cl INNER JOIN cnapi_location_hierarchy clh ON clh.lid = cl.lid INNER JOIN cnapi_location cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0";
+    $sql .= " UNION ";
+    $sql .= "SELECT cl.*, 0 FROM cnapi_location cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM cnapi_location cl INNER JOIN cnapi_location_hierarchy clh ON clh.lid = cl.lid INNER JOIN cnapi_location cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
+    
+    $cities = db_query($sql)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+  }
+  
+  return $cities;
+}
+
+function cnapi_get_cities_tree() {
+  $cities = cnapi_get_cities();
+
+  $tree = array();
+  _cnapi_get_tree('cities', 0, $tree, $cities);
+  
+  return $tree;
+}
+
+function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
+  $locations = &drupal_static(__FUNCTION__, array());
+  
+  if (!isset($locations[$did][$type])) {
+    $sql_parts = array();
+    
+    $sql_parts[] = "SELECT cl.*, 0 AS pid FROM {cnapi_location} cl WHERE did = 1";
+    $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid WHERE cl.did = :did";
+    $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 4 AND cl2.did = :did";
+      
+    $params[':did'] = $did;
+    
+    if ($include_cities) {
+      $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 4";
+    }
+    
+    $sql = implode(' UNION ', $sql_parts);
+
+    $locations[$did][$type] = db_query($sql, $params)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+  }
+
+  return $locations[$did][$type];
+}
+
+function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
+  $locations = cnapi_get_locations($did, $include_cities);
+
+  $tree = array();
+  _cnapi_get_tree('locations', 0, $tree, $locations);
+  
+  return $tree;
+}
+
 function cnapi_get_output_types() {
   $output_types = &drupal_static(__FUNCTION__, NULL);
   
