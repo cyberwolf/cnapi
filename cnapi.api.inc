@@ -292,6 +292,9 @@ function cnapi_request_remove_defaults(&$request) {
 }
 
 function _cnapi_query_defaults($request) {
+  // format
+  $defaults['format'] = 'xml';
+  
   // api key
   $defaults['key'] = variable_get('cnapi_api_key', '');
 
