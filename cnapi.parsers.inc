@@ -65,10 +65,54 @@ function _cnapi_parse($request, $xml) {
   }
 
   elseif ($request['action'] == 'report') {
-    // @todo implement this
+    $types = array('headings', 'geo', 'time', 'age', 'production', 'region', 'location');
+    foreach ($types as $type) {
+      $xml_items = $xml->xpath('report/' . $type . '/item');
+      foreach ($xml_items as $xml_item) {
+        $item = array();
+        _cnapi_parse_report_item($item, $xml_item);
+        if (!empty($item)) {
+          $data[$type][] = $item;
+        }
+      }
+    }
   }
 
   return $data;
+}
+
+function _cnapi_parse_report_item(&$data, $xml) {
+  $item = array();
+
+  // $item['name']
+  _cnapi_parse_str($item, 'name', $xml, '@name');
+
+  // $item['id']
+  _cnapi_parse_str($item, 'id', $xml, '@id');
+
+  // $item['total']
+  _cnapi_parse_int($item, 'total', $xml, '@total');
+
+  // $item['total']
+  _cnapi_parse_str($item, 'total', $xml, '@total');
+  
+  // $item['link']
+  _cnapi_parse_str($item, 'link', $xml, '@link');
+  
+  // $item['children']
+  $xml_children = $xml->xpath('item');
+  foreach ($xml_children as $xml_child) {
+    $child = array();
+    _cnapi_parse_report_item($child, $xml_child);
+    if (!empty($child)) {
+      $item['children'][] = $child;
+    }
+  }
+  
+  // adding data to requesting object
+  if (!empty($item)) {
+    $data['item'] = $item;
+  }
 }
 
 function _cnapi_parse_event_list_item(&$data, $xml) {
