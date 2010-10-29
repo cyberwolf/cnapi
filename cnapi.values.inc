@@ -14,14 +14,33 @@ function cnapi_get_cities() {
   $cities = &drupal_static(__FUNCTION__, array());
   
   if (!$cities) {
-    $sql = "SELECT cl.*, clh.pid FROM cnapi_location cl INNER JOIN cnapi_location_hierarchy clh ON clh.lid = cl.lid INNER JOIN cnapi_location cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0";
+    $sql = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0";
     $sql .= " UNION ";
-    $sql .= "SELECT cl.*, 0 FROM cnapi_location cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM cnapi_location cl INNER JOIN cnapi_location_hierarchy clh ON clh.lid = cl.lid INNER JOIN cnapi_location cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
+    $sql .= "SELECT cl.*, 0 FROM {cnapi_location} cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
     
     $cities = db_query($sql)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
   }
   
   return $cities;
+}
+
+function cnapi_get_cityid($zip, $name) {
+  $mapping = &drupal_static(__FUNCTION__, array());
+  
+  if (!$mapping) {
+    $sql = "SELECT cl.lid, cl.zip, cl.name, cl2.lid as pid, cl2.zip as parent_zip, cl2.name as parent_name FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0";
+    $sql .= " UNION ";
+    $sql .= "SELECT cl.lid, cl.zip, cl.name, 0 as pid, 0 as parent_zip, '' as parent_name FROM {cnapi_location} cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
+    
+    $sql = "SELECT zip, IF(pid = 0, name, SUBSTRING(name, 1, LENGTH(name) - LENGTH(CONCAT(' ', '(', parent_name, ')')))) as name, lid FROM (" . $sql . ") AS tmp";
+
+    $items = db_query($sql, array(':zip' => $zip, ':name' => $name))->fetchAll();
+    foreach ($items as $item) {
+      $mapping[$item->zip][$item->name] = $item->lid;
+    }
+  }
+
+  return $mapping[$zip][$name];
 }
 
 function cnapi_get_cities_tree() {

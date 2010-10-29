@@ -145,6 +145,11 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   // $data['zip']
   _cnapi_parse_str($data, 'zip', $xml, '@zip');
 
+  // $data['citid']
+  if (isset($data['zip']) && isset($data['city'])) {
+    $data['cityid'] = cnapi_get_cityid($data['zip'], $data['city']);
+  }
+
   // $data['address']
   _cnapi_parse_str($data, 'address', $xml, '@address');
   $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
@@ -704,7 +709,10 @@ function _cnapi_parse_address(&$data, $field, $xml) {
     $address['gis'] = $gis;
   }
 
-  // @todo add cityid
+  // $address['cityid']
+  if (isset($address['zipcode']) && isset($address['city'])) {
+    $address['cityid'] = cnapi_get_cityid($address['zipcode'], $address['city']);
+  }
 
   // adding data to requesting object
   if (!empty($address)) {

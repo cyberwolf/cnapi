@@ -87,8 +87,9 @@ function cnapi_schema() {
     'indexes' => array(
       'type' => array('type'),
       'zip' => array('zip'),
-      'lid' => array('lid'),
+      'did' => array('did'),
     ),
+    'primary key' => array('lid'),
   );
 
   // locations
@@ -112,8 +113,8 @@ function cnapi_schema() {
     ),
     'indexes' => array(
       'pid' => array('pid'),
-      'lid' => array('lid'),
     ),
+    'primary key' => array('lid', 'pid'),
   );
 
   // headings
@@ -155,7 +156,7 @@ function cnapi_schema() {
       ),
     ),
     'indexes' => array(
-      'type' => array('hid'),
+      'tid' => array('tid'),
       'pid' => array('pid'),
     ),
     'primary key' => array('hid'),
