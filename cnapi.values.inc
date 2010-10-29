@@ -62,25 +62,34 @@ function cnapi_get_cities_tree() {
 function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
   $locations = &drupal_static(__FUNCTION__, array());
   
-  if (!isset($locations[$did][$type])) {
-    $sql_parts = array();
+  if (!isset($locations[$did][$include_cities])) {
+    $cid = sprintf('cnapi_locations:%d:%d', $did, $include_cities ? 1 : 0);
     
-    $sql_parts[] = "SELECT cl.*, 0 AS pid FROM {cnapi_location} cl WHERE did = 1";
-    $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid WHERE cl.did = :did";
-    $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 4 AND cl2.did = :did";
-      
-    $params[':did'] = $did;
-    
-    if ($include_cities) {
-      $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 4";
+    if ($cache = cache_get($cid)) {
+      $locations[$did][$include_cities] = $cache->data;
     }
-    
-    $sql = implode(' UNION ', $sql_parts);
-
-    $locations[$did][$type] = db_query($sql, $params)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+    else {
+      $sql_parts = array();
+      
+      $sql_parts[] = "SELECT cl.*, 0 AS pid FROM {cnapi_location} cl WHERE did = 1";
+      $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid WHERE cl.did = :did";
+      $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 4 AND cl2.did = :did";
+        
+      $params[':did'] = $did;
+      
+      if ($include_cities) {
+        $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 4";
+      }
+      
+      $sql = implode(' UNION ', $sql_parts);
+      
+      $locations[$did][$include_cities] = db_query($sql, $params)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+      
+      cache_set($cid, $locations[$did][$include_cities]);
+    }
   }
 
-  return $locations[$did][$type];
+  return $locations[$did][$include_cities];
 }
 
 function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
