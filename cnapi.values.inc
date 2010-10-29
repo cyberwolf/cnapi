@@ -117,7 +117,7 @@ function cnapi_import() {
     'cid'       => array('path' => '@cnet_id', 'parser' => 'strval'),
     'pid'       => array('path' => '@parent_id', 'parser' => 'strval'),
     'name'      => array('path' => '@title', 'parser' => 'strval'),
-    'dimension' => array('path' => '@dimension', 'parser' => 'intval'),
+    'did'       => array('path' => '@dimension', 'parser' => 'intval'),
   );
   _cnapi_xml_import(CNAPI_XML_CATEGORISATION, '/Categorisation/categorisation', $mappings, 'cnapi_category');
 
