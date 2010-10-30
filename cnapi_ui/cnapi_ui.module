@@ -114,7 +114,9 @@ function template_preprocess_cnapi_ui_actor_summary(&$vars) {
   $vars['short_description'] = $vars['actor']['shortdescription'];
 
   // where
-  $vars['where'] = $vars['actor']['city'];
+  if (isset($vars['actor']['city'])) {
+    $vars['where'] = $vars['actor']['city'];
+  }
 
   $vars['thumbnail'] = '';
   // thumbnail

@@ -8,7 +8,7 @@
   <div class="short-description"><?php print $short_description ?></div>
 
   <dl>
-    <?php if ($where) : ?>
+    <?php if (isset($where)) : ?>
       <dt class="where"><?php print t('Where')?></dd>
         <dd class="where"><?php print $where ?></dd>
     <?php endif; ?>
