@@ -270,7 +270,7 @@ function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth
   }
 }
 
-function _cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $blank = NULL, $dashes = TRUE) {
+function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $blank = NULL, $dashes = TRUE) {
   $options = array();
 
   if ($blank) {
