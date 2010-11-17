@@ -265,3 +265,19 @@ function _cnapi_get_tree($type, $pid, &$tree, $flat, &$flat_tree, $depth = 0) {
     }
   }
 }
+
+function _cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $blank = NULL, $dashes = TRUE) {
+  $options = array();
+
+  if ($blank) {
+    $options[-1] = $blank;
+  }
+  
+  if ($tree) {
+    foreach ($tree as $item) {
+      $options[$item[$id_key]] = ($dashes ? str_repeat('-', $item['depth']) : '') . $item[$name_key];
+    }
+  }
+
+  return $options;
+}
