@@ -189,7 +189,7 @@ function cnapi_api_request($request) {
   return cnapi_http_request($url);
 }
 
-function cnapi_http_request($url) {
+function cnapi_http_request($url, $method = 'GET', $data = array()) {
   $reponse = FALSE;
 
   _cnapi_timer('start', $url);
@@ -204,6 +204,14 @@ function cnapi_http_request($url) {
     curl_setopt($ch, CURLOPT_PROXY, trim(variable_get('cnapi_proxy_server', '')));
     curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cnapi_proxy_port', ''));
     curl_setopt($ch, CURLOPT_PROXYUSERPWD, sprintf('%s:%s', variable_get('cnapi_proxy_username', ''), variable_get('cnapi_proxy_password', '')));
+  }
+  
+  // support for POST method
+  if ($method == 'POST') {
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    if (!empty($data)) {
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    }
   }
 
   $response = curl_exec($ch);
