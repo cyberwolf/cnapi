@@ -200,6 +200,7 @@ function cnapi_http_request($url, $method = 'GET', $data = array()) {
   curl_setopt($ch, CURLOPT_TIMEOUT, CNAPI_HTTP_REQUEST_TIMEOUT);
   curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
 
+  // support for proxy servers
   if (variable_get('cnapi_proxy_enabled', FALSE)) {
     curl_setopt($ch, CURLOPT_PROXY, trim(variable_get('cnapi_proxy_server', '')));
     curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cnapi_proxy_port', ''));
