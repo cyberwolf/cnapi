@@ -76,11 +76,11 @@ function cnapi_get_cityid($zip, $name) {
   return $mapping[$zip][$name];
 }
 
-function cnapi_get_cities_tree() {
+function cnapi_get_cities_tree($tree_type = 'tree') {
   $cities = cnapi_get_cities();
 
   $tree = array();
-  _cnapi_get_tree('cities', 0, $tree, $cities);
+  _cnapi_get_tree('cities', 0, $tree, $cities, $tree_type);
   
   return $tree;
 }
@@ -118,11 +118,11 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
   return $locations[$did][$include_cities];
 }
 
-function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
+function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE, $tree_type = 'tree') {
   $locations = cnapi_get_locations($did, $include_cities);
 
   $tree = array();
-  _cnapi_get_tree('locations', 0, $tree, $locations);
+  _cnapi_get_tree('locations', 0, $tree, $locations, $tree_type);
   
   return $tree;
 }
@@ -203,11 +203,11 @@ function cnapi_get_categories($did) {
   return $categories[$did];
 }
 
-function cnapi_get_categories_tree($did) {
+function cnapi_get_categories_tree($did, $tree_type = 'tree') {
   $categories = cnapi_get_categories($did);
   
   $tree = array();
-  _cnapi_get_tree('categories', '', $tree, $categories);
+  _cnapi_get_tree('categories', '', $tree, $categories, $tree_type);
   
   return $tree;
 }
@@ -222,11 +222,11 @@ function cnapi_get_headings($tid) {
   return $headings;
 }
 
-function cnapi_get_headings_tree($tid) {
+function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
   $headings = cnapi_get_headings($tid);
   
   $tree = array();
-  _cnapi_get_tree('headings', 0, $tree, $headings);
+  _cnapi_get_tree('headings', 0, $tree, $headings, $tree_type);
   
   return $tree;
 }
