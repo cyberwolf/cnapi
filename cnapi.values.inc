@@ -231,8 +231,8 @@ function cnapi_get_headings_tree($tid) {
   return $tree;
 }
 
-function _cnapi_get_tree($type, $pid, &$tree, $flat) {
-   $parents = &drupal_static(__FUNCTION__, NULL);
+function _cnapi_get_tree($type, $pid, &$tree, &$flat, $depth = 0) {
+  $parents = &drupal_static(__FUNCTION__, NULL);
   
   // setting parents if we haven't yet 
   if (!isset($parents[$type])) {
@@ -245,12 +245,17 @@ function _cnapi_get_tree($type, $pid, &$tree, $flat) {
   $children = isset($parents[$type][$pid]) ? $parents[$type][$pid] : array();
 
   if ($children) {
+    $child_depth = $depth + 1;
+
     foreach ($children as $child) {
       // setting item
       $tree[$child] = $flat[$child];
       
+      // setting item depth on flat array
+      $flat[$child]['depth'] = $depth;
+      
       // setting children recursively
-      _cnapi_get_tree($type, $child, $tree[$child]['children'], $flat);
+      _cnapi_get_tree($type, $child, $tree[$child]['children'], $flat, $child_depth);
       if (empty($tree[$child]['children'])) {
         unset($tree[$child]['children']);
       }
