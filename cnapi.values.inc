@@ -1,8 +1,30 @@
 <?php
 // $Id$
 
-function cnapi_get_province($lid) {
-  return db_query("SELECT cl.* FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = 1 AND clh.lid = :lid", array(':lid' => $lid))->fetchAssoc();
+function cnapi_get_provinces() {
+  return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_PROVINCE);
+}
+
+function cnapi_get_regions_administrative() {
+  return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE);
+}
+
+function cnapi_get_regions_tourist() {
+  return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_TOURIST);
+}
+
+function cnapi_get_municipalities() {
+  return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY);
+}
+
+function cnapi_get_regions($did) {
+  $regions = &drupal_static(__FUNCTION__, array());
+  
+  if (!isset($regions[$did])) {
+    $regions[$did] = db_query("SELECT cl.* FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = :did", array(':did' => $did))->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+  }
+  
+  return $regions[$did];
 }
 
 function cnapi_get_cities() {
@@ -17,6 +39,8 @@ function cnapi_get_cities() {
       $sql = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0";
       $sql .= " UNION ";
       $sql .= "SELECT cl.*, 0 FROM {cnapi_location} cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
+      
+      $sql = "SELECT * FROM (" . $sql . ") AS tmp ORDER BY zip ASC";
       
       $cities = db_query($sql)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
       
@@ -121,6 +145,52 @@ function cnapi_get_dimensions($key = 'machinename') {
   }
   
   return $dimensions[$key];
+}
+
+function cnapi_get_event_types() {
+  return cnapi_get_categories(CNAPI_DIMENSION_EVENTTYPE);
+}
+
+function cnapi_get_themes() {
+  return cnapi_get_categories(CNAPI_DIMENSION_THEME);
+}
+
+function cnapi_get_targetaudiences() {
+  return cnapi_get_categories(CNAPI_DIMENSION_TARGETAUDIENCE);
+}
+
+function cnapi_get_facilities() {
+  return cnapi_get_categories(CNAPI_DIMENSION_FACILITY);
+}
+
+function cnapi_get_publicscopes() {
+  return cnapi_get_categories(CNAPI_DIMENSION_PUBLICSCOPE);
+}
+
+function cnapi_get_actortypes() {
+  return cnapi_get_categories(CNAPI_DIMENSION_ACTORTYPE);
+}
+
+function cnapi_get_municipals() {
+  return cnapi_get_categories(CNAPI_DIMENSION_MUNICIPAL);
+}
+
+function cnapi_get_ipe() {
+  return cnapi_get_categories(CNAPI_DIMENSION_IPE);
+}
+
+function cnapi_get_misc() {
+  return cnapi_get_categories(CNAPI_DIMENSION_MISC);
+}
+
+function cnapi_get_age_types() {
+  $types = &drupal_static(__FUNCTION__, array());
+  
+  if (!isset($categories[$did])) {
+    $types = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND cid LIKE '2.2.%'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+  }
+  
+  return $types;
 }
 
 function cnapi_get_categories($did) {
