@@ -5,7 +5,7 @@ function cnapi_location_autocomplete($string = '') {
   $matches = array();
   
   if ($string) {
-    $locations = db_query_range("SELECT lid, zip, NAME NAME FROM cnapi_location cl WHERE cl.did = 4 AND cl.name LIKE 'sint-lievens%' UNION SELECT lid, zip, NAME FROM cnapi_location cl WHERE cl.type = 'city' AND cl.name LIKE 'sint-lievens%'", 0, 10)->fetchAll(PDO::FETCH_ASSOC);
+    $locations = db_query_range("SELECT lid, zip, name FROM {cnapi_location} cl WHERE cl.did = 4 AND cl.name LIKE :start UNION SELECT lid, zip, NAME FROM {cnapi_location} cl WHERE cl.type = 'city' AND cl.name LIKE :start", 0, 10, array(':start' => $string . '%'))->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($locations as $location) {
       if ($location['zip']) {
