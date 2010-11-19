@@ -5,14 +5,20 @@ function cnapi_location_autocomplete($string = '') {
   $matches = array();
   
   if ($string) {
-    $locations = db_query_range("SELECT lid, zip, name FROM {cnapi_location} cl WHERE cl.did = 4 AND cl.name LIKE :start UNION SELECT lid, zip, NAME FROM {cnapi_location} cl WHERE cl.type = 'city' AND cl.name LIKE :start", 0, 10, array(':start' => $string . '%'))->fetchAll(PDO::FETCH_ASSOC);
-
+    $sql = "SELECT lid, zip, name, type FROM (";
+    $sql .= "SELECT DISTINCT cl2.lid, MIN(cl.zip) AS zip, cl2.name, 'regio' AS type, IF(:string REGEXP '^[0-9]+.*$', min(cl.zip), cl2.name) AS sort FROM cnapi_location cl INNER JOIN cnapi_location_hierarchy clh ON clh.lid = cl.lid INNER JOIN cnapi_location cl2 ON cl2.lid = clh.pid WHERE cl2.did = " . CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY . " AND cl.type = 'city' AND (cl2.name LIKE :start OR (cl.name LIKE :start AND cl2.name LIKE :start) OR cl.zip LIKE :start OR (CONCAT(cl.zip, ' - ', cl.name) LIKE :start AND cl2.name LIKE :start)) GROUP BY cl2.lid";
+    $sql .= " UNION ";
+    $sql .= "SELECT cl.lid, cl.zip, cl.name, 'city' AS type, IF(:string REGEXP '^[0-9]+.*$', cl.zip, cl.name) AS sort FROM cnapi_location cl WHERE cl.type = 'city' AND (cl.name LIKE :start OR cl.zip LIKE :start OR CONCAT(cl.zip, ' - ', cl.name) LIKE :start)";
+    $sql .= ") AS tmp ORDER BY sort ASC";
+    
+    $locations = db_query_range($sql, 0, 10, array(':start' => strtolower($string) . '%', ':string' => strtolower($string)))->fetchAll(PDO::FETCH_ASSOC);
+    
     foreach ($locations as $location) {
-      if ($location['zip']) {
+      if ($location['type'] == 'city') {
         $text = $location['zip'] . ' - ' . $location['name'];
       }
       else {
-        $text = 'Regio ' . $location['name'];
+        $text = $location['name'] . ' (Regio)';
       }
       $matches[$text] = $text;
     }
