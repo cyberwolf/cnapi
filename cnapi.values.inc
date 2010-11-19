@@ -1,6 +1,26 @@
 <?php
 // $Id$
 
+function cnapi_location_autocomplete($string = '') {
+  $matches = array();
+  
+  if ($string) {
+    $locations = db_query_range("SELECT lid, zip, NAME NAME FROM cnapi_location cl WHERE cl.did = 4 AND cl.name LIKE 'sint-lievens%' UNION SELECT lid, zip, NAME FROM cnapi_location cl WHERE cl.type = 'city' AND cl.name LIKE 'sint-lievens%'", 0, 10)->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($locations as $location) {
+      if ($location['zip']) {
+        $text = $location['zip'] . ' - ' . $location['name'];
+      }
+      else {
+        $text = 'Regio ' . $location['name'];
+      }
+      $matches[$text] = $text;
+    }
+  }
+  
+  drupal_json_output($matches);
+}
+
 function cnapi_get_provinces() {
   return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_PROVINCE);
 }
