@@ -65,6 +65,13 @@ function cnapi_menu() {
     'weight' => 0,
     'file' => 'cnapi.admin.inc',
   );
+  $items['cnapi/autocomplete/location'] = array(
+    'title' => 'Locations autocomplete',
+    'page callback' => 'cnapi_location_autocomplete',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
   return $items;
 }
 
