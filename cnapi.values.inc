@@ -56,7 +56,7 @@ function cnapi_location_parse($input = '') {
   if (count($locations) == 1) {
     return array(
       'type' => 'region',
-      'value' => $name,
+      'value' => $locations[0]['lid'],
     );
   }
   
@@ -319,57 +319,33 @@ function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
   return $tree;
 }
 
-function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth = 0) {
-  $parents = &drupal_static(__FUNCTION__, NULL);
+function cnapi_get_datetype($id) {
+  $types = cnapi_get_datetypes();
   
-  // setting parents if we haven't yet 
-  if (!isset($parents[$type])) {
-    foreach ($flat as $id => $item) {
-      $parents[$type][$item['pid']][] = $id;
-    }
+  if (array_key_exists($id, $types)) {
+    return $types[$id];
   }
   
-  // getting children ids for current item
-  $children = isset($parents[$type][$pid]) ? $parents[$type][$pid] : array();
-
-  if ($children) {
-    $child_depth = $depth + 1;
-
-    foreach ($children as $child) {
-      // setting item
-      $tree[$child] = $flat[$child];
-      
-      // setting item depth on flat tree
-      if ($tree_type == 'flat') {
-        $tree[$child]['depth'] = $depth;
-      }
-      
-      // setting children recursively
-      if ($tree_type == 'tree') {
-        _cnapi_get_tree($type, $child, $tree[$child]['children'], $flat, $tree_type, $child_depth);
-        if (empty($tree[$child]['children'])) {
-          unset($tree[$child]['children']);
-        }
-      }
-      else {
-        _cnapi_get_tree($type, $child, $tree, $flat, $tree_type, $child_depth);
-      }
-    }
-  }
+  return $id;
 }
 
-function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $blank = NULL, $dashes = TRUE) {
-  $options = array();
-
-  if ($blank) {
-    $options[-1] = $blank;
-  }
+function cnapi_get_datetypes() {
+  $map = &drupal_static(__FUNCTION__, array());
   
-  if ($tree) {
-    foreach ($tree as $item) {
-      $options[$item[$id_key]] = ($dashes ? str_repeat('-', $item['depth']) : '') . $item[$name_key];
-    }
+  if (empty($map)) {
+    $map = array(
+      'today'        => t('Today'),
+      'tomorrow'     => t('Tomorrow'),
+      'thisweek'     => t('This week'),
+      'thisweekend'  => t('This weekend'),
+      'nextweekend'  => t('Next weekend'),
+      'thismonth'    => t('This month'),
+      'next30days'   => t('Next @days days', array('@days' => 30)),
+      'next3months'  => t('Next @months months', array('@months' => 3)),
+      'next6months'  => t('Next @months months', array('@months' => 6)),
+      'next12months' => t('Next @months months', array('@months' => 12)),
+    );
   }
 
-  return $options;
+  return $map;
 }

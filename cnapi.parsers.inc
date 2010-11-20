@@ -85,7 +85,7 @@ function _cnapi_parse($request, $xml) {
         foreach ($data[$type] as $i => $item) {
           $data[$type][$i]['id'] = $data[$type][$i]['name'];
           if ($type == 'time') {
-            $data[$type][$i]['name'] = cnapi_datetypes($data[$type][$i]['id']);
+            $data[$type][$i]['name'] = cnapi_get_datetype($data[$type][$i]['id']);
           }
         }
       }
