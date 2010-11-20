@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * Hooks provided by the Cultuurnet API module.
+ */
+
+/**
  * Alter the request from a request done using cnapi_get. Mostly used to add some defaults.
  *
  * @param $request

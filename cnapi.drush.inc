@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * Drush integration for the Cultuurnet API module.
+ */
+
+/**
  * Implements hook_drush_help().
  */
 function cnapi_drush_help($section) {
@@ -26,6 +31,9 @@ function cnapi_drush_command() {
   return $items;
 }
 
+/**
+ * Implementation of the 'cnapi-import-values' drush command.
+ */
 function drush_cnapi_import_values() {
   require_once 'cnapi.import.inc';
   cnapi_import();

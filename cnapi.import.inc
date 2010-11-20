@@ -1,6 +1,14 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Functions to import cities, headings, ... from the Cultuunret API server.
+ */
+
+/**
+ * Location of the XML files containg cities, headings, ... on the Cultuurnet API server. The path is relative to the cnapi_api_location configuration variable.
+ */
 define('CNAPI_XML_OUTPUT_TYPE', '/lib/output_type.xml');
 define('CNAPI_XML_CITY', '/lib/city.xml');
 define('CNAPI_XML_REGION', '/lib/region.xml');
@@ -10,6 +18,9 @@ define('CNAPI_XML_CATEGORISATION',  '/lib/categorisation.xml');
 define('CNAPI_XML_HEADING',  '/lib/heading.xml');
 define('CNAPI_XML_HEADING_CATEGORISATION',  '/lib/heading_categorisation.xml');
 
+/**
+ * Import the cities, headings, ... from the Cultuurnet API XML files to the local database tables.
+ */
 function cnapi_import() {
   // output types
   $mappings = array(
@@ -99,15 +110,37 @@ function cnapi_import() {
   drupal_set_message(t('Succesfully imported all values.'), 'status');
 }
 
+/**
+ * Import an XML (like the one containing cities, headings, ...) from the the Cultuurnet API server to a local database table.
+ *
+ * @param $xml
+ *   The path of the XML files, relative to the cnapi_api_location configuration variable.
+ * @param $path
+ *   The XPath path that represents the nodes to be imported as individual rows in the destination table.
+ * @param $mapping
+ *   An associative array representing the mappings of all fields. The key of each row in the array represents the field name of the local table. The value of each row is an associative array having keys 'path' and 'parser'. The value of 'path' is the XPath path relative to a node from $path. The value of 'parser' is the function (intval, strval, ...) that should be used to transform the SimpleXML element to a value.
+ * @param $table
+ *   The table to import the elements in.
+ * @param $primary_key
+ *   The primary key of the table as is should be used in drupal_write_record.
+ * @param $truncate
+ *   A boolean indicating wether the table should be truncated before importing.
+ * @param $multiple_key
+ *   If an item representated as node in the XML document should be multiplexed into multiple rows in the local table, $multiple_key indicated what Xpath path should used to indicate the multiple values.
+ */
 function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(), $truncate = TRUE, $multiple_key = '') {
   $url = variable_get('cnapi_api_location', CNAPI_API_LOCATION) . $xml;
+  
+  // fetch the xml from the api server
   $xml = cnapi_http_request($url);
 
   if ($xml && $xml = new SimpleXMLElement($xml)) {
+    // truncate the table if necessary
     if ($truncate) {
       db_truncate($table)->execute();
     }
 
+    // iterate over all xml nodes represented by $path
     foreach ($xml->xpath($path) as $row) {
       $object = array();
       foreach ($mappings as $id => $mapping) {
