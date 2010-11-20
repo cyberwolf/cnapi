@@ -318,7 +318,7 @@ function cnapi_requirements($phase) {
         'value' => variable_get('cnapi_api_key', ''),
       );
     }
-    
+
     // Raise warning if Cultuurnet API location has not been set yet.
     $requirements['cnapi_api_location']['title'] = $t('Cultuurnet API location');
     if (trim(variable_get('cnapi_api_location', CNAPI_API_LOCATION)) == '') {
@@ -332,7 +332,7 @@ function cnapi_requirements($phase) {
         'value' => variable_get('cnapi_api_location', CNAPI_API_LOCATION),
       );
     }
-    
+
     // Check if locations, headings, ... have been imported
     $tables = array(
       'cnapi_output_type',
@@ -343,7 +343,7 @@ function cnapi_requirements($phase) {
       'cnapi_category',
       'cnapi_heading_category'
     );
-    
+
     $has_empty_table = FALSE;
     foreach ($tables as $table) {
       $count = db_query('SELECT COUNT(*) FROM {' . $table . '}')->fetchField();
@@ -352,7 +352,7 @@ function cnapi_requirements($phase) {
         break;
       }
     }
-    
+
     $requirements['cnapi_import']['title'] = $t('Cultuurnet API import');
     if ($has_empty_table) {
       $requirements['cnapi_import']['description'] = $t('Locations, headings, ... have not been imported yet. Use "drush cnapi-import-values to import these.');

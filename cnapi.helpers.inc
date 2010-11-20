@@ -98,14 +98,14 @@ function cnapi_timestamp($timestamp) {
 
 function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth = 0) {
   $parents = &drupal_static(__FUNCTION__, NULL);
-  
-  // setting parents if we haven't yet 
+
+  // setting parents if we haven't yet
   if (!isset($parents[$type])) {
     foreach ($flat as $id => $item) {
       $parents[$type][$item['pid']][] = $id;
     }
   }
-  
+
   // getting children ids for current item
   $children = isset($parents[$type][$pid]) ? $parents[$type][$pid] : array();
 
@@ -115,12 +115,12 @@ function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth
     foreach ($children as $child) {
       // setting item
       $tree[$child] = $flat[$child];
-      
+
       // setting item depth on flat tree
       if ($tree_type == 'flat') {
         $tree[$child]['depth'] = $depth;
       }
-      
+
       // setting children recursively
       if ($tree_type == 'tree') {
         _cnapi_get_tree($type, $child, $tree[$child]['children'], $flat, $tree_type, $child_depth);
@@ -141,7 +141,7 @@ function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $bl
   if ($blank) {
     $options[-1] = $blank;
   }
-  
+
   if ($tree) {
     foreach ($tree as $item) {
       $options[$item[$id_key]] = ($dashes ? str_repeat('-', $item['depth']) : '') . $item[$name_key];

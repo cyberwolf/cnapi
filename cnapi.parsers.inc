@@ -77,7 +77,7 @@ function _cnapi_parse($request, $xml) {
         }
       }
     }
-    
+
     // in case of a "time" or "age" report, id should be the name
     $types = array('time', 'age');
     foreach ($types as $type) {
@@ -107,14 +107,14 @@ function _cnapi_parse_report_item(&$data, $xml) {
 
   // $data['total']
   _cnapi_parse_str($data, 'total', $xml, '@total');
-  
+
   // $data['link']
   _cnapi_parse_str($data, 'link', $xml, '@link');
   if (!empty($data['link'])) {
     $data['link'] = cnapi_url_a2p($data['link']);
     cnapi_request_remove_defaults($data['link']);
   }
-  
+
   // $data['children']
   $xml_children = $xml->xpath('item');
   foreach ($xml_children as $xml_child) {

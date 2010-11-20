@@ -206,7 +206,7 @@ function cnapi_http_request($url, $method = 'GET', $data = array()) {
     curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cnapi_proxy_port', ''));
     curl_setopt($ch, CURLOPT_PROXYUSERPWD, sprintf('%s:%s', variable_get('cnapi_proxy_username', ''), variable_get('cnapi_proxy_password', '')));
   }
-  
+
   // support for POST method
   if ($method == 'POST') {
     curl_setopt($ch, CURLOPT_POST, TRUE);
@@ -280,7 +280,7 @@ function _cnapi_default_values($key = NULL, $namespace = NULL) {
 // stuff like pagelength, page and sort are always specified although not necessary to get a meaningful cache id (cid still works if defaults change)
 function cnapi_request_add_defaults(&$request) {
   $defaults = _cnapi_query_defaults($request);
-  
+
   // setting defaults
   foreach ($defaults as $key => $value) {
     if (!isset($request['query'][$key])) {
@@ -291,7 +291,7 @@ function cnapi_request_add_defaults(&$request) {
 
 function cnapi_request_remove_defaults(&$request) {
   $defaults = _cnapi_query_defaults($request);
-  
+
   // setting defaults
   foreach ($defaults as $key => $value) {
     if (isset($request['query'][$key]) && $request['query'][$key] == $value) {
@@ -303,7 +303,7 @@ function cnapi_request_remove_defaults(&$request) {
 function _cnapi_query_defaults($request) {
   // format
   $defaults['format'] = 'xml';
-  
+
   // api key
   $defaults['key'] = variable_get('cnapi_api_key', '');
 
