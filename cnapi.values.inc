@@ -244,7 +244,13 @@ function cnapi_get_themes() {
 }
 
 function cnapi_get_targetaudiences() {
-  return cnapi_get_categories(CNAPI_DIMENSION_TARGETAUDIENCE);
+  $targetaudiences = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($targetaudiences)) {
+    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND NOT cid LIKE '2.2.%'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+  }
+  
+  return $targetaudiences;
 }
 
 function cnapi_get_facilities() {
