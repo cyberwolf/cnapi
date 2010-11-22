@@ -236,11 +236,11 @@ function cnapi_get_dimensions($key = 'machinename') {
 }
 
 function cnapi_get_event_types() {
-  return cnapi_get_categories(CNAPI_DIMENSION_EVENTTYPE);
+  return _cnapi_get_categories(CNAPI_DIMENSION_EVENTTYPE);
 }
 
 function cnapi_get_themes() {
-  return cnapi_get_categories(CNAPI_DIMENSION_THEME);
+  return _cnapi_get_categories(CNAPI_DIMENSION_THEME);
 }
 
 function cnapi_get_targetaudiences() {
@@ -254,27 +254,27 @@ function cnapi_get_targetaudiences() {
 }
 
 function cnapi_get_facilities() {
-  return cnapi_get_categories(CNAPI_DIMENSION_FACILITY);
+  return _cnapi_get_categories(CNAPI_DIMENSION_FACILITY);
 }
 
 function cnapi_get_publicscopes() {
-  return cnapi_get_categories(CNAPI_DIMENSION_PUBLICSCOPE);
+  return _cnapi_get_categories(CNAPI_DIMENSION_PUBLICSCOPE);
 }
 
 function cnapi_get_actortypes() {
-  return cnapi_get_categories(CNAPI_DIMENSION_ACTORTYPE);
+  return _cnapi_get_categories(CNAPI_DIMENSION_ACTORTYPE);
 }
 
 function cnapi_get_municipals() {
-  return cnapi_get_categories(CNAPI_DIMENSION_MUNICIPAL);
+  return _cnapi_get_categories(CNAPI_DIMENSION_MUNICIPAL);
 }
 
 function cnapi_get_ipe() {
-  return cnapi_get_categories(CNAPI_DIMENSION_IPE);
+  return _cnapi_get_categories(CNAPI_DIMENSION_IPE);
 }
 
 function cnapi_get_misc() {
-  return cnapi_get_categories(CNAPI_DIMENSION_MISC);
+  return _cnapi_get_categories(CNAPI_DIMENSION_MISC);
 }
 
 function cnapi_get_age_types() {
@@ -287,7 +287,7 @@ function cnapi_get_age_types() {
   return $types;
 }
 
-function cnapi_get_categories($did) {
+function _cnapi_get_categories($did) {
   $categories = &drupal_static(__FUNCTION__, array());
   
   if (!isset($categories[$did])) {
@@ -295,15 +295,6 @@ function cnapi_get_categories($did) {
   }
   
   return $categories[$did];
-}
-
-function cnapi_get_categories_tree($did, $tree_type = 'tree') {
-  $categories = cnapi_get_categories($did);
-  
-  $tree = array();
-  _cnapi_get_tree('categories', '', $tree, $categories, $tree_type);
-  
-  return $tree;
 }
 
 function cnapi_get_headings($tid) {
