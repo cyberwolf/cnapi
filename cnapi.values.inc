@@ -274,7 +274,7 @@ function cnapi_get_misc() {
 function cnapi_get_age_types() {
   $types = &drupal_static(__FUNCTION__, array());
   
-  if (!isset($types)) {
+  if (empty($types)) {
     $types = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND cid LIKE '2.2.%'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
   
