@@ -96,7 +96,16 @@ function cnapi_timestamp($timestamp) {
   return strtotime($tmp);
 }
 
-function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth = 0) {
+function _cnapi_get_tree($tree_type = 'tree', $function, $params = array(), $pid = 0) {
+  $items = call_user_func_array($function, $params);
+  
+  $tree = array();
+  _cnapi_build_tree(__FUNCTION__, $pid, $tree, $items, $tree_type);
+  
+  return $tree;
+}
+
+function _cnapi_build_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth = 0) {
   $parents = &drupal_static(__FUNCTION__, NULL);
 
   // setting parents if we haven't yet
@@ -123,13 +132,13 @@ function _cnapi_get_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $depth
 
       // setting children recursively
       if ($tree_type == 'tree') {
-        _cnapi_get_tree($type, $child, $tree[$child]['children'], $flat, $tree_type, $child_depth);
+        _cnapi_build_tree($type, $child, $tree[$child]['children'], $flat, $tree_type, $child_depth);
         if (empty($tree[$child]['children'])) {
           unset($tree[$child]['children']);
         }
       }
       else {
-        _cnapi_get_tree($type, $child, $tree, $flat, $tree_type, $child_depth);
+        _cnapi_build_tree($type, $child, $tree, $flat, $tree_type, $child_depth);
       }
     }
   }

@@ -139,6 +139,10 @@ function cnapi_get_cities() {
   return $cities;
 }
 
+function cnapi_get_cities_tree($tree_type = 'tree') {
+  return _cnapi_get_tree($tree_type, 'cnapi_get_cities');
+}
+
 function cnapi_get_cityid($zip, $name) {
   $mapping = &drupal_static(__FUNCTION__, array());
   
@@ -162,15 +166,6 @@ function cnapi_get_cityid($zip, $name) {
   }
 
   return $mapping[$zip][$name];
-}
-
-function cnapi_get_cities_tree($tree_type = 'tree') {
-  $cities = cnapi_get_cities();
-
-  $tree = array();
-  _cnapi_get_tree('cities', 0, $tree, $cities, $tree_type);
-  
-  return $tree;
 }
 
 function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
@@ -207,12 +202,7 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
 }
 
 function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE, $tree_type = 'tree') {
-  $locations = cnapi_get_locations($did, $include_cities);
-
-  $tree = array();
-  _cnapi_get_tree('locations', 0, $tree, $locations, $tree_type);
-  
-  return $tree;
+  return _cnapi_get_tree($tree_type, 'cnapi_get_locations', array($did, $include_cities));
 }
 
 function cnapi_get_output_types() {
@@ -239,18 +229,30 @@ function cnapi_get_event_types() {
   return _cnapi_get_categories(CNAPI_DIMENSION_EVENTTYPE);
 }
 
+function cnapi_get_event_types_tree($tree_type = 'tree') {
+  return _cnapi_get_tree($tree_type, 'cnapi_get_event_types', array(), '');
+}
+
 function cnapi_get_themes() {
   return _cnapi_get_categories(CNAPI_DIMENSION_THEME);
+}
+
+function cnapi_get_themes_tree($tree_type = 'tree') {
+  return _cnapi_get_tree($tree_type, 'cnapi_get_themes', array(), '');
 }
 
 function cnapi_get_targetaudiences() {
   $targetaudiences = &drupal_static(__FUNCTION__, array());
   
   if (empty($targetaudiences)) {
-    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND NOT cid LIKE '2.2.%'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
   
   return $targetaudiences;
+}
+
+function cnapi_get_targetaudiences_tree($tree_type = 'tree') {
+  return _cnapi_get_tree($tree_type, 'cnapi_get_targetaudiences', array(), '');
 }
 
 function cnapi_get_facilities() {
@@ -263,6 +265,10 @@ function cnapi_get_publicscopes() {
 
 function cnapi_get_actortypes() {
   return _cnapi_get_categories(CNAPI_DIMENSION_ACTORTYPE);
+}
+
+function cnapi_get_actortypes_tree($tree_type = 'tree') {
+  return _cnapi_get_tree($tree_type, 'cnapi_get_actortypes', array(), '');
 }
 
 function cnapi_get_municipals() {
@@ -281,7 +287,7 @@ function cnapi_get_age_types() {
   $types = &drupal_static(__FUNCTION__, array());
   
   if (empty($types)) {
-    $types = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND cid LIKE '2.2.%'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $types = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
   
   return $types;
@@ -308,12 +314,7 @@ function cnapi_get_headings($tid) {
 }
 
 function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
-  $headings = cnapi_get_headings($tid);
-  
-  $tree = array();
-  _cnapi_get_tree('headings', 0, $tree, $headings, $tree_type);
-  
-  return $tree;
+  return _cnapi_get_tree($tree_type, 'cnapi_get_headings', array($tid));
 }
 
 function cnapi_get_datetype($id) {
