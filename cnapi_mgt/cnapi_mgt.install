@@ -1,0 +1,58 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Cultuurnet API management module.
+ */
+
+function cnapi_mgt_uninstall() {
+  $variables = array(
+    'cnapi_mgt_user',
+    'cnapi_mgt_password',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function cnapi_mgt_requirements($phase) {
+  $requirements = array();
+
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Raise warning if Cultuurnet API username has not been set yet.
+    $requirements['cnapi_mgt_user']['title'] = $t('Cultuurnet API username');
+    if (trim(variable_get('cnapi_mgt_user', '')) == '') {
+      $requirements['cnapi_mgt_user']['description'] = $t('Your Cultuurnet API username has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API Management settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_mgt_user']['severity'] = REQUIREMENT_ERROR;
+      $requirements['cnapi_mgt_user']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['cnapi_mgt_user'] = array(
+        'title' => $t('Cultuurnet API username'),
+        'value' => variable_get('cnapi_mgt_user', ''),
+      );
+    }
+
+    // Raise warning if Cultuurnet API password has not been set yet.
+    $requirements['cnapi_mgt_password']['title'] = $t('Cultuurnet API password');
+    if (trim(variable_get('cnapi_mgt_password', '')) == '') {
+      $requirements['cnapi_mgt_password']['description'] = $t('Your Cultuurnet API password has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API Management settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_mgt_password']['severity'] = REQUIREMENT_ERROR;
+      $requirements['cnapi_mgt_password']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['cnapi_mgt_password'] = array(
+        'title' => $t('Cultuurnet API password'),
+        'value' => variable_get('cnapi_mgt_password', ''),
+      );
+    }
+  }
+
+  return $requirements;
+}

@@ -1,0 +1,10 @@
+; $Id$
+name = Cultuurnet API Managment
+description = Provides Drupal integration with Cultuurnet's API management functionality: management of userpools, ...
+package = Cultuurnet API
+version = VERSION
+core = 7.x
+dependencies[] = cnapi
+files[] = cnapi_mgt.module
+files[] = cnapi_mgt.install
+configure = admin/config/services/cnapi/mgt

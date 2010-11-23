@@ -1,0 +1,206 @@
+<?php
+// $Id$
+
+/**
+ * Implements hook_menu().
+ */
+function cnapi_mgt_form_cnapi_admin_settings_alter(&$form, $form_state) {
+  $form['settings']['cnapi_mgt_user'] = array(
+    '#type' => 'textfield',
+    '#title' => t('API Username'),
+    '#description' => t('Your Cultuurnet API username.'),
+    '#default_value' => variable_get('cnapi_mgt_user', ''),
+  );
+  $form['settings']['cnapi_mgt_password'] = array(
+    '#type' => 'textfield',
+    '#title' => t('API Password'),
+    '#description' => t('Your Cultuurnet API password.'),
+    '#default_value' => variable_get('cnapi_mgt_password', ''),
+  );
+}
+
+function cnapi_mgt_edit_userpool($userpool) {
+  if (isset($userpool['userpoolkey'])) {
+    $path = 'userpool/modify';
+  }
+  else {
+    $path = 'userpool/new';
+  }
+
+  $query = $userpool;
+
+  // domains
+  if (isset($query['domains'])) {
+    $query['domains'] = implode(';', $query['domains']);
+  }
+
+  // geofilters
+  $geofilters = array();
+  if (isset($query['filters']['cities'])) {
+    $geofilters = array_merge($geofilters, $query['filters']['cities']);
+    unset($query['filters']['cities']);
+  }
+  if (isset($query['filters']['regions'])) {
+    $geofilters = array_merge($geofilters, $query['filters']['regions']);
+    unset($query['filters']['regions']);
+  }
+  if (!empty($geofilters)) {
+    $query['geofilters'] = implode(';', $geofilters);
+  }
+
+  // other filters
+  $mapping = array(
+    'keywords' => 'keywordfilters',
+    'locations' => 'locationfilters',
+    'categories' => 'categoryfilters',
+  );
+
+  foreach ($mapping as $local_key => $url_key) {
+    $filters = array();
+    if (isset($query['filters'][$local_key])) {
+      if (isset($query['filters'][$local_key]['include'])) {
+        $filters += $query['filters'][$local_key]['include'];
+      }
+      if (isset($query['filters'][$local_key]['exclude'])) {
+        foreach ($query['filters'][$local_key]['exclude'] as $keyword) {
+          $filters[] = '!' . $keyword;
+        }
+      }
+      unset($query['filters'][$local_key]);
+    }
+    if (!empty($filters)) {
+      $query[$url_key] = implode(';', $filters);
+    }
+  }
+
+  unset($query['filters']);
+
+  $result = _cnapi_mgt_request($path, $query);
+
+  if ($result['key']) {
+    return $result['key'];
+  }
+  else {
+    watchdog('cnapi_mgt', 'Failed creating userpool !pool with message !message.', array('!pool' => serialize($userpool), '!message' => $result['message']), WATCHDOG_ERROR);
+    return FALSE;
+  }
+}
+
+function cnapi_mgt_get_userpools($page = 1, $pagelength = 100) {
+  $path = 'userpools/xmlview';
+
+  $query['page'] = $page;
+  $query['pagelength'] = $pagelength;
+
+  return _cnapi_mgt_request($path, $query);
+}
+
+function _cnapi_mgt_parse($path, $xml) {
+  $data = array();
+
+  // we don't care for namespaces here
+  $xml = str_replace(' xmlns=', ' ns=', $xml);
+
+  // trying to parse the xml
+  try {
+    $xml = new SimpleXMLElement($xml);
+
+    // parsing userpools
+    if ($path == 'userpools/xmlview') {
+      $data['total'] = _cnapi_xpath_str($xml, 'nofrecords');
+
+      $xml_items = $xml->xpath('/cdbxml/userpools/userpool');
+      foreach ($xml_items as $xml_item) {
+        $object = array();
+        call_user_func('_cnapi_parse_userpool', &$object, $xml_item);
+
+        $data['data'][] = $object;
+      }
+    }
+
+    // parsing userpool creation/editing results
+    elseif ($path == 'userpool/new') {
+      $data['key'] = _cnapi_xpath_str($xml, '/cdbxml/response/userpoolkey');
+      $data['message'] = _cnapi_xpath_str($xml, '/cdbxml/response/message');
+    }
+  }
+  catch (Exception $e) {
+    watchdog('cnapi_mgt', 'Could not parse request result for request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
+    return FALSE;
+  }
+
+  return $data;
+}
+
+function _cnapi_parse_userpool(&$data, $xml) {
+  // $data['id']
+  _cnapi_parse_str($data, 'id', $xml, '@id');
+
+  // $data['title']
+  _cnapi_parse_str($data, 'title', $xml, '@title');
+
+  // $data['key']
+  _cnapi_parse_str($data, 'key', $xml, '@key');
+
+  // $data['type']
+  _cnapi_parse_str($data, 'type', $xml, '@type');
+
+  // $data['domains']
+  _cnapi_parse_str($data, 'domains', $xml, 'domains/domain', TRUE);
+
+  // $data['filters']
+  $filters = array();
+
+  // $filters['categories']
+  $categories = array();
+  _cnapi_parse_str($categories, 'include', $xml, 'filters/categories/categorie[@type="include"]', TRUE);
+  _cnapi_parse_str($categories, 'exclude', $xml, 'filters/categories/categorie[@type="exclude"]', TRUE);
+  if (!empty($categories)) {
+    $filters['categories'] = $categories;
+  }
+
+  // $filters['keywords']
+  $keywords = array();
+  _cnapi_parse_str($keywords, 'include', $xml, 'filters/keywords/keyword[@type="include"]', TRUE);
+  _cnapi_parse_str($keywords, 'exclude', $xml, 'filters/keywords/keyword[@type="exclude"]', TRUE);
+  if (!empty($keywords)) {
+    $filters['keywords'] = $keywords;
+  }
+
+  // $filters['locations']
+  $locations = array();
+  _cnapi_parse_str($locations, 'include', $xml, 'filters/locations/location[@type="include"]', TRUE);
+  _cnapi_parse_str($locations, 'exclude', $xml, 'filters/locations/location[@type="exclude"]', TRUE);
+  if (!empty($locations)) {
+    $filters['locations'] = $locations;
+  }
+
+  // $filters['cities']
+  _cnapi_parse_str($filters, 'cities', $xml, 'filters/cities/city', TRUE);
+
+  // $filters['regions']
+  _cnapi_parse_str($filters, 'regions', $xml, 'filters/regions/regio', TRUE);
+
+  // adding filters if there are any
+  if (!empty($filters)) {
+    $data['filters'] = $filters;
+  }
+}
+
+function _cnapi_mgt_request($path, $query = array()) {
+  $query['key'] = trim(variable_get('cnapi_api_key', ''));
+  $query['user'] = trim(variable_get('cnapi_mgt_user', ''));
+  $query['password'] = trim(variable_get('cnapi_mgt_password', ''));
+
+  $url = rtrim(variable_get('cnapi_api_location', CNAPI_API_LOCATION), '/') . '/api/' . $path . '?' . http_build_query($query);
+
+  $result = cnapi_http_request($url);
+
+  if ($result) {
+    return _cnapi_mgt_parse($path, $result);
+  }
+  else {
+    watchdog('cnapi_mgt', 'Failed doing request !path with query !query.', array('!path' => $path, '!query' => serialize($query)), WATCHDOG_ERROR);
+    return FALSE;
+  }
+}
