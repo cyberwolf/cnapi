@@ -362,7 +362,7 @@ function _cnapi_query_defaults($request) {
   $defaults['format'] = 'xml';
 
   // api key
-  $defaults['key'] = variable_get('cnapi_api_key', '');
+  $defaults['key'] = trim(variable_get('cnapi_api_key', ''));
 
   // detail
   if ($request['action'] == 'detail' && in_array($request['type'], array('event', 'production'))) {
