@@ -4,6 +4,7 @@ description = User Interface example implementation for Cultuurnet API
 package = Cultuurnet API
 version = VERSION
 core = 7.x
+dependencies[] = cnapi
 files[] = cnapi_ui.module
 files[] = cnapi_ui.pages.inc
 files[] = cnapi_ui.install
