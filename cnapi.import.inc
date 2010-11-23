@@ -130,7 +130,7 @@ function cnapi_import() {
  */
 function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(), $truncate = TRUE, $multiple_key = '') {
   $url = variable_get('cnapi_api_location', CNAPI_API_LOCATION) . $xml;
-  
+
   // fetch the xml from the api server
   $xml = cnapi_http_request($url);
 

@@ -98,10 +98,10 @@ function cnapi_timestamp($timestamp) {
 
 function _cnapi_get_tree($tree_type = 'tree', $function, $params = array(), $pid = 0) {
   $items = call_user_func_array($function, $params);
-  
+
   $tree = array();
   _cnapi_build_tree(__FUNCTION__, $pid, $tree, $items, $tree_type);
-  
+
   return $tree;
 }
 

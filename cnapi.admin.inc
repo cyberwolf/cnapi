@@ -181,6 +181,6 @@ function cnapi_admin_defaults_submit($form, &$form_state) {
   variable_set('cnapi_defaults_events', $defaults['event']);
   variable_set('cnapi_defaults_productions', $defaults['production']);
   variable_set('cnapi_defaults_actors', $defaults['actor']);
-  
+
   drupal_set_message(t('Your defaults have been saved.'));
 }
