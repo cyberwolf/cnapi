@@ -109,7 +109,7 @@ function cnapi_get_regions($did) {
   $regions = &drupal_static(__FUNCTION__, array());
 
   if (!isset($regions[$did])) {
-    $regions[$did] = db_query("SELECT cl.* FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = :did", array(':did' => $did))->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+    $regions[$did] = db_query("SELECT cl.lid, cl.name FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = :did", array(':did' => $did))->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
   }
 
   return $regions[$did];
@@ -128,7 +128,7 @@ function cnapi_get_cities() {
       $sql .= " UNION ";
       $sql .= "SELECT cl.*, 0 FROM {cnapi_location} cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
 
-      $sql = "SELECT * FROM (" . $sql . ") AS tmp ORDER BY zip ASC";
+      $sql = "SELECT lid, zip, name, pid FROM (" . $sql . ") AS tmp ORDER BY zip ASC";
 
       $cities = db_query($sql)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
 
@@ -287,7 +287,7 @@ function cnapi_get_age_types() {
   $types = &drupal_static(__FUNCTION__, array());
 
   if (empty($types)) {
-    $types = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $types = db_query("SELECT cid, pid, name FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $types;
@@ -297,7 +297,14 @@ function _cnapi_get_categories($did) {
   $categories = &drupal_static(__FUNCTION__, array());
 
   if (!isset($categories[$did])) {
-    $categories[$did] = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did", array(':did' => $did))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $hierarchical = array(
+      CNAPI_DIMENSION_EVENTTYPE,
+      CNAPI_DIMENSION_THEME,
+      CNAPI_DIMENSION_TARGETAUDIENCE,
+      CNAPI_DIMENSION_ACTORTYPE,
+    );
+    
+    $categories[$did] = db_query("SELECT cid" . (in_array($did, $hierarchical) ? ", pid" : "") . ", name FROM {cnapi_category} WHERE did = :did", array(':did' => $did))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $categories[$did];
@@ -307,7 +314,7 @@ function cnapi_get_headings($tid) {
   $headings = &drupal_static(__FUNCTION__, NULL);
 
   if (!$headings) {
-    $headings = db_query("SELECT hid, pid, tid, name, weight FROM {cnapi_heading} WHERE tid = :tid ORDER BY pid, weight", array(':tid' => $tid))->fetchAllAssoc('hid', PDO::FETCH_ASSOC);
+    $headings = db_query("SELECT hid, pid, name, weight FROM {cnapi_heading} WHERE tid = :tid ORDER BY pid, weight", array(':tid' => $tid))->fetchAllAssoc('hid', PDO::FETCH_ASSOC);
   }
 
   return $headings;
