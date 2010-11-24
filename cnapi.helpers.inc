@@ -136,6 +136,7 @@ function _cnapi_build_tree($type, $pid, &$tree, $flat, $tree_type = 'tree', $dep
         if (empty($tree[$child]['children'])) {
           unset($tree[$child]['children']);
         }
+        unset($tree[$child]['pid']);
       }
       else {
         _cnapi_build_tree($type, $child, $tree, $flat, $tree_type, $child_depth);
@@ -153,7 +154,10 @@ function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $bl
 
   if ($tree) {
     foreach ($tree as $item) {
-      $options[$item[$id_key]] = ($dashes ? str_repeat('-', $item['depth']) : '') . $item[$name_key];
+      if (isset($item['depth'])) {
+        $prefix = $dashes ? str_repeat('-', $item['depth']) : '';
+      }
+      $options[$item[$id_key]] = $prefix . $item[$name_key];
     }
   }
 
