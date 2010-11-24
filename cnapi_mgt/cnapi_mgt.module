@@ -30,8 +30,8 @@ function cnapi_mgt_edit_userpool($userpool) {
   $query = $userpool;
 
   // domains
-  if (isset($query['domains'])) {
-    $query['domains'] = implode(';', $query['domains']);
+  if (isset($query['domain'])) {
+    $query['domain'] = implode(';', $query['domain']);
   }
 
   // geofilters
