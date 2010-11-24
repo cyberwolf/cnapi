@@ -19,7 +19,30 @@ function cnapi_mgt_form_cnapi_admin_settings_alter(&$form, $form_state) {
   );
 }
 
+/**
+ * Create or modify a certain userpool.
+ *
+ * @param $userpool
+ *   The userpool to create or modify.
+ *
+ *   Following is an example of how a userpool should be formatted. This format is also used in the result of cnapi_mgt_get_userpools.
+ *
+ *     $pool = array(
+ *       'userpoolkey' => '31ac4fab-13cd-4a42-9bf9-b238744452fb',
+ *       'name' => 'The name of the pool',
+ *       'domain' => array('www.somedomain.com', 'www.someotherdomain.net'),
+ *       'type' => 1,
+ *       'filters' => array(
+ *         'categories' => array('include' => array('1.0.0.0.0'), 'exclude' => array('1.1.0.0.0')),
+ *         'keywords' => array('include' => array('do include'), 'exclude' => array('do exclude')),
+ *       ),
+ *     );
+ *
+ * @return
+ *   If the request was successfull, the userpoolkey of the resulting pool is returned. In case of an error, FALSE is returned.
+ */
 function cnapi_mgt_edit_userpool($userpool) {
+  // if a userpoolkey is specified, the request is a "modify", else a "create"
   if (isset($userpool['userpoolkey'])) {
     $path = 'userpool/modify';
   }
@@ -27,28 +50,75 @@ function cnapi_mgt_edit_userpool($userpool) {
     $path = 'userpool/new';
   }
 
-  $query = $userpool;
+  // convert the userpool array to a url query part array that can be used in http_build_query 
+  $query = _cnapi_mgt_prepare_userpool_query($userpool);
 
-  // domains
-  if (isset($query['domain'])) {
-    $query['domain'] = implode(';', $query['domain']);
+  // do the request
+  $result = _cnapi_mgt_request($path, $query);
+
+  // if a key is in the response, the request was successfull, so return the key as result
+  if (isset($result['key'])) {
+    return $result['key'];
+  }
+  
+  // if no key was found in the response, we're logging an error
+  watchdog('cnapi_mgt', 'Failed creating userpool !pool with message !message.', array('!pool' => serialize($userpool), '!message' => $result['message']), WATCHDOG_ERROR);
+  return FALSE;
+}
+
+/**
+ * Get a list of userpools. Results are paged.
+ *
+ * @param $page
+ *   The page to return.
+ * @param $pagelength
+ *   The number of pools to return for this page. Use $page to indicate what page needs to be returned.
+ *
+ * @return
+ *   An array of userpools. For the format of each userpool, @see cnapi_mgt_edit_userpool.
+ */
+function cnapi_mgt_get_userpools($page = 1, $pagelength = 100) {
+  // set the path part of the url of the api request
+  $path = 'userpools/xmlview';
+
+  // set the query part of the url of the api request
+  $query['page'] = $page;
+  $query['pagelength'] = $pagelength;
+
+  // do the request
+  return _cnapi_mgt_request($path, $query);
+}
+
+/**
+ * Get a list of userpools. Results are paged.
+ *
+ * @param $userpool
+ *   The userpool to re-format. For the format, @see cnapi_mgt_edit_userpool.
+ *
+ * @return
+ *   The userpool re-formatted to a url query part array that can be used in http_build_query.
+ */
+function _cnapi_mgt_prepare_userpool_query($userpool) {
+  // domains (convert array to ;-joined string)
+  if (isset($userpool['domain'])) {
+    $userpool['domain'] = implode(';', $userpool['domain']);
   }
 
-  // geofilters
+  // geofilters (merge cities and regions in ;-joined geofilters string)
   $geofilters = array();
-  if (isset($query['filters']['cities'])) {
-    $geofilters = array_merge($geofilters, $query['filters']['cities']);
-    unset($query['filters']['cities']);
+  if (isset($userpool['filters']['cities'])) {
+    $geofilters = array_merge($geofilters, $userpool['filters']['cities']);
+    unset($userpool['filters']['cities']);
   }
-  if (isset($query['filters']['regions'])) {
-    $geofilters = array_merge($geofilters, $query['filters']['regions']);
-    unset($query['filters']['regions']);
+  if (isset($userpool['filters']['regions'])) {
+    $geofilters = array_merge($geofilters, $userpool['filters']['regions']);
+    unset($userpool['filters']['regions']);
   }
   if (!empty($geofilters)) {
-    $query['geofilters'] = implode(';', $geofilters);
+    $userpool['geofilters'] = implode(';', $geofilters);
   }
 
-  // other filters
+  // other filters having include/exclude part (onvert array to ;-joined string, excludes should be prefixed with !)
   $mapping = array(
     'keywords' => 'keywordfilters',
     'locations' => 'locationfilters',
@@ -57,42 +127,26 @@ function cnapi_mgt_edit_userpool($userpool) {
 
   foreach ($mapping as $local_key => $url_key) {
     $filters = array();
-    if (isset($query['filters'][$local_key])) {
-      if (isset($query['filters'][$local_key]['include'])) {
-        $filters += $query['filters'][$local_key]['include'];
+    if (isset($userpool['filters'][$local_key])) {
+      if (isset($userpool['filters'][$local_key]['include'])) {
+        $filters += $userpool['filters'][$local_key]['include'];
       }
-      if (isset($query['filters'][$local_key]['exclude'])) {
-        foreach ($query['filters'][$local_key]['exclude'] as $keyword) {
+      if (isset($userpool['filters'][$local_key]['exclude'])) {
+        foreach ($userpool['filters'][$local_key]['exclude'] as $keyword) {
           $filters[] = '!' . $keyword;
         }
       }
-      unset($query['filters'][$local_key]);
+      unset($userpool['filters'][$local_key]);
     }
     if (!empty($filters)) {
-      $query[$url_key] = implode(';', $filters);
+      $userpool[$url_key] = implode(';', $filters);
     }
   }
 
-  unset($query['filters']);
-
-  $result = _cnapi_mgt_request($path, $query);
-
-  if ($result['key']) {
-    return $result['key'];
-  }
-  else {
-    watchdog('cnapi_mgt', 'Failed creating userpool !pool with message !message.', array('!pool' => serialize($userpool), '!message' => $result['message']), WATCHDOG_ERROR);
-    return FALSE;
-  }
-}
-
-function cnapi_mgt_get_userpools($page = 1, $pagelength = 100) {
-  $path = 'userpools/xmlview';
-
-  $query['page'] = $page;
-  $query['pagelength'] = $pagelength;
-
-  return _cnapi_mgt_request($path, $query);
+  // remove (now) redundant filters part
+  unset($userpool['filters']);
+  
+  return $userpool;
 }
 
 function _cnapi_mgt_parse($path, $xml) {
@@ -187,15 +241,28 @@ function _cnapi_parse_userpool(&$data, $xml) {
   }
 }
 
+/**
+ * Do an API request. API key, API username and API password are automatically added to the request and should not be specified.
+ *
+ * @param $path
+ *   The path part of the API url (without /api/). Examples are userpools/xmlview, userpool/modify, ...
+ *
+ * @return
+ *   The parsed result in case of success. FALSE in caise of failure.
+ */
 function _cnapi_mgt_request($path, $query = array()) {
+  // add key, username and password
   $query['key'] = trim(variable_get('cnapi_api_key', ''));
   $query['user'] = trim(variable_get('cnapi_mgt_user', ''));
   $query['password'] = trim(variable_get('cnapi_mgt_password', ''));
 
+  // construct the full api call url
   $url = rtrim(variable_get('cnapi_api_location', CNAPI_API_LOCATION), '/') . '/api/' . $path . '?' . http_build_query($query);
 
+  // do the request
   $result = cnapi_http_request($url);
 
+  // in case of success, parse the result, else log an error and return FALSE
   if ($result) {
     return _cnapi_mgt_parse($path, $result);
   }
