@@ -6,7 +6,11 @@
  * Install, update and uninstall functions for the Cultuurnet API management module.
  */
 
+/**
+ * Implements hook_uninstall().
+ */
 function cnapi_mgt_uninstall() {
+  // clean up variables
   $variables = array(
     'cnapi_mgt_user',
     'cnapi_mgt_password',
