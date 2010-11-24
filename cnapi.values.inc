@@ -245,7 +245,7 @@ function cnapi_get_targetaudiences() {
   $targetaudiences = &drupal_static(__FUNCTION__, array());
 
   if (empty($targetaudiences)) {
-    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND NOT pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $targetaudiences;
