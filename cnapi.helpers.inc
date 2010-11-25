@@ -149,7 +149,7 @@ function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $bl
   $options = array();
 
   if ($blank) {
-    $options[-1] = $blank;
+    $options[CNAPI_OPTION_NONE] = $blank;
   }
 
   if ($tree) {

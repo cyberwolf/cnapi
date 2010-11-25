@@ -36,6 +36,8 @@ define('CNAPI_DIMENSION_MUNICIPAL', 12);
 define('CNAPI_DIMENSION_IPE', 13);
 define('CNAPI_DIMENSION_MISC', 14);
 
+define('CNAPI_OPTION_NONE', '_none');
+
 /**
  * Implements hook_menu().
  */
