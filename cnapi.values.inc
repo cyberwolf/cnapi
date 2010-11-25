@@ -140,7 +140,7 @@ function cnapi_get_cities() {
 }
 
 function cnapi_get_cities_tree($tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_cities');
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_cities');
 }
 
 function cnapi_get_cityid($zip, $name) {
@@ -202,7 +202,7 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
 }
 
 function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE, $tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_locations', array($did, $include_cities));
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_locations', array($did, $include_cities));
 }
 
 function cnapi_get_output_types() {
@@ -230,7 +230,7 @@ function cnapi_get_event_types() {
 }
 
 function cnapi_get_event_types_tree($tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_event_types', array(), '');
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_event_types', array(), '');
 }
 
 function cnapi_get_themes() {
@@ -238,7 +238,7 @@ function cnapi_get_themes() {
 }
 
 function cnapi_get_themes_tree($tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_themes', array(), '');
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_themes', array(), '');
 }
 
 function cnapi_get_targetaudiences() {
@@ -252,7 +252,7 @@ function cnapi_get_targetaudiences() {
 }
 
 function cnapi_get_targetaudiences_tree($tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_targetaudiences', array(), '');
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_targetaudiences', array(), '');
 }
 
 function cnapi_get_facilities() {
@@ -268,7 +268,7 @@ function cnapi_get_actortypes() {
 }
 
 function cnapi_get_actortypes_tree($tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_actortypes', array(), '');
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_actortypes', array(), '');
 }
 
 function cnapi_get_municipals() {
@@ -321,7 +321,7 @@ function cnapi_get_headings($tid) {
 }
 
 function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
-  return _cnapi_get_tree($tree_type, 'cnapi_get_headings', array($tid));
+  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_headings', array($tid));
 }
 
 function cnapi_get_datetype($id) {
