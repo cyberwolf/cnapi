@@ -154,6 +154,7 @@ function cnapi_get_select_options($tree, $id_key = 'id', $name_key = 'name', $bl
 
   if ($tree) {
     foreach ($tree as $item) {
+      $prefix = '';
       if (isset($item['depth'])) {
         $prefix = $dashes ? str_repeat('-', $item['depth']) : '';
       }
