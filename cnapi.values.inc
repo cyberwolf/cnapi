@@ -245,7 +245,7 @@ function cnapi_get_targetaudiences() {
   $targetaudiences = &drupal_static(__FUNCTION__, array());
 
   if (empty($targetaudiences)) {
-    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND NOT pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $targetaudiences = db_query("SELECT cid, pid, name, did FROM {cnapi_category} WHERE did = :did AND NOT pid = '2.0.0.0.0' ORDER BY name", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $targetaudiences;
@@ -287,7 +287,7 @@ function cnapi_get_age_types() {
   $types = &drupal_static(__FUNCTION__, array());
 
   if (empty($types)) {
-    $types = db_query("SELECT cid, pid, name FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0'", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $types = db_query("SELECT cid, pid, name FROM {cnapi_category} WHERE did = :did AND pid = '2.0.0.0.0' ORDER BY name", array(':did' => CNAPI_DIMENSION_TARGETAUDIENCE))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $types;
@@ -304,7 +304,7 @@ function _cnapi_get_categories($did) {
       CNAPI_DIMENSION_ACTORTYPE,
     );
     
-    $categories[$did] = db_query("SELECT cid" . (in_array($did, $hierarchical) ? ", pid" : "") . ", name FROM {cnapi_category} WHERE did = :did", array(':did' => $did))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+    $categories[$did] = db_query("SELECT cid" . (in_array($did, $hierarchical) ? ", pid" : "") . ", name FROM {cnapi_category} WHERE did = :did ORDER BY name", array(':did' => $did))->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
   }
 
   return $categories[$did];
