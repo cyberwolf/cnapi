@@ -109,17 +109,21 @@ function cnapi_get_regions($did) {
   $regions = &drupal_static(__FUNCTION__, array());
 
   if (!isset($regions[$did])) {
-    $regions[$did] = db_query("SELECT cl.lid, cl.name FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.pid = cl.lid WHERE cl.did = :did", array(':did' => $did))->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
+    $regions[$did] = db_query("SELECT cl.lid, cl.name FROM {cnapi_location} cl WHERE cl.did = :did ORDER BY cl.name ASC", array(':did' => $did))->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
   }
 
   return $regions[$did];
 }
 
-function cnapi_get_cities() {
+function cnapi_get_cities($order = 'zip') {
   $cities = &drupal_static(__FUNCTION__, array());
+  
+  if (!in_array($order, array('zip', 'name'))) {
+    $order = 'zip';
+  }
 
   if (!$cities) {
-    $cid = 'cnapi_cities';
+    $cid = 'cnapi_cities:' . $order;
     if ($cache = cache_get($cid)) {
       $cities = $cache->data;
     }
@@ -128,7 +132,7 @@ function cnapi_get_cities() {
       $sql .= " UNION ";
       $sql .= "SELECT cl.*, 0 FROM {cnapi_location} cl WHERE cl.did = 0 AND cl.lid NOT IN (SELECT cl.lid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 0)";
 
-      $sql = "SELECT lid, zip, name, pid FROM (" . $sql . ") AS tmp ORDER BY zip ASC";
+      $sql = "SELECT lid, zip, name, pid FROM (" . $sql . ") AS tmp ORDER BY " . $order . " ASC";
 
       $cities = db_query($sql)->fetchAllAssoc('lid', PDO::FETCH_ASSOC);
 
