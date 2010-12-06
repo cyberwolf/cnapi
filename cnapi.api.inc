@@ -93,6 +93,7 @@ function cnapi_get_actor($cdbid) {
 
 function cnapi_get_events($query = NULL, $action = CNAPI_LIST_SUMMARY) {
   $request = array('action' => ($action == CNAPI_LIST_SUMMARY ? 'list_summary' : 'list_detail'), 'type' => 'event', 'query' => $query);
+
   return cnapi_get($request);
 }
 
@@ -279,15 +280,57 @@ function cnapi_http_request($url, $method = 'GET', $data = array()) {
 
   _cnapi_timer('stop', $url);
 
-  if ($curl_info['http_code'] != 200) return FALSE;
-
-  if ($response) {
-    return $response;
-  }
-  else {
+  if ($curl_info['http_code'] != 200 || !$response) {
+    if ($response) {
+      if ($error = _cnapi_parse_error($response)) {
+        _cnapi_set_last_request_error($error);
+      }
+      else {
+        _cnapi_set_last_request_error(FALSE);
+      }
+    }
+    else {
+      _cnapi_set_last_request_error(FALSE);
+    }
     watchdog('cnapi', 'Error doing request !request in cnapi_request_api_xml : Return code was !error', array('!request' => $url, '!error' => $curl_info['http_code']), WATCHDOG_ERROR);
     return FALSE;
   }
+  else {
+    _cnapi_set_last_request_error(FALSE);
+    return $response;
+  }
+}
+
+/**
+ * Get detailed information on the error status of the last request made using cnapi_http_request.
+ *
+ * @param $request
+ *   A CNAPI request array (@see _cnapi_get) representing the request.
+ *
+ * @return
+ *   An associative array containing detailed information on the last error in case of an error (that was returned with a detailed error description) .
+ *   FALSE in case the last request was successfull or in case no detailed error message was returned.
+ *
+ *   Error format is:
+ *     $error = array(
+ *       'code' => 'AuthenticationFailed',
+ *       'level' => 'ERROR',
+ *       'message' => 'Authentication failed for test@test.net',
+ *       'resource' => '/userpool/new',
+ *     );
+ */
+function cnapi_get_last_request_error() {
+  return _cnapi_set_last_request_error();
+}
+
+function _cnapi_set_last_request_error($error = NULL) {
+  $last_error = &drupal_static(__FUNCTION__, NULL);
+  
+  if ($error !== NULL) {
+    $last_error = $error;
+  }
+
+  return $last_error;
 }
 
 function _cnapi_timer($action, $url = NULL) {
