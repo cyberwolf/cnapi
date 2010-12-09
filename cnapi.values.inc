@@ -328,6 +328,36 @@ function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
   return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_headings', array($tid));
 }
 
+function cnapi_get_sort_options() {
+  $options = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($options)) {
+    $options = array(
+      'title' => t('By title'),
+      'date' => t('By date'),
+      'location' => t('By location'),
+      'city' => t('By city'),
+      'weight' => t('By weight'),
+      'random' => t('Random'),
+    );
+  }
+  
+  return $options;
+}
+
+function cnapi_get_sort_direction_options() {
+  $options = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($options)) {
+    $options = array(
+      'desc' => t('Descending'),
+      'asc' => t('Ascending'),
+    );
+  }
+  
+  return $options;
+}
+
 function cnapi_get_datetype($id) {
   $types = cnapi_get_datetypes();
 
