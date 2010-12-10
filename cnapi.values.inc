@@ -350,8 +350,8 @@ function cnapi_get_sort_direction_options() {
   
   if (empty($options)) {
     $options = array(
-      'desc' => t('Descending'),
       'asc' => t('Ascending'),
+      'desc' => t('Descending'),
     );
   }
   
