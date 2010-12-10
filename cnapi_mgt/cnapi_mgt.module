@@ -57,12 +57,23 @@ function cnapi_mgt_edit_userpool($userpool) {
   $result = _cnapi_mgt_request($path, $query);
 
   // if a key is in the response, the request was successfull, so return the key as result
-  if (isset($result['key'])) {
+  if (isset($result['key']) && !empty($result['key'])) {
     return $result['key'];
   }
   
+  $message = 'Generic error';
+
+  $error = cnapi_get_last_request_error();
+
+  if ($error) {
+    $message = $error['message'];
+  }
+  elseif (isset($result['message'])) {
+    $message = $result['message'];
+  }
+
   // if no key was found in the response, we're logging an error
-  watchdog('cnapi_mgt', 'Failed creating userpool !pool with message !message.', array('!pool' => serialize($userpool), '!message' => $result['message']), WATCHDOG_ERROR);
+  watchdog('cnapi_mgt', 'Failed creating userpool !pool with message !message.', array('!pool' => serialize($userpool), '!message' => $message), WATCHDOG_ERROR);
   return FALSE;
 }
 
