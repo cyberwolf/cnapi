@@ -333,12 +333,14 @@ function cnapi_get_sort_options() {
   
   if (empty($options)) {
     $options = array(
-      'title' => t('By title'),
-      'date' => t('By date'),
-      'location' => t('By location'),
-      'city' => t('By city'),
-      'weight' => t('By weight'),
-      'random' => t('Random'),
+      'title'     => t('By title'),
+      'created'   => t('By creation date'),
+      'proximity' => t('By proximity'),
+      'date'      => t('By date'),
+      'location'  => t('By location'),
+      'city'      => t('By city'),
+      'weight'    => t('By weight'),
+      'random'    => t('Random'),
     );
   }
   
