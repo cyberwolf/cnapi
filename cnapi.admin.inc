@@ -120,15 +120,17 @@ function cnapi_admin_settings() {
  */
 function cnapi_admin_defaults() {
   $pagelength_options = drupal_map_assoc(array(5, 10, 15, 20, 25, 50, 100));
-
-  $sort_options = array(
-    'date ASC' => t('By date ascending'),
-    'date DESC' => t('By date descending'),
-    'title ASC' => t('By title ascending'),
-    'title DESC' => t('By title descending'),
-    'location ASC' => t('By location ascending'),
-    'location DESC' => t('By location descending'),
-  );
+  
+  $combined_sort_options = array();
+  
+  $sort_options = cnapi_get_sort_options();
+  $sort_direction_options = cnapi_get_sort_direction_options();
+  
+  foreach ($sort_options as $sort_option_key => $sort_option_value) {
+    foreach ($sort_direction_options as $sort_direction_option_key => $sort_direction_option_value) {
+      $combined_sort_options[$sort_option_key . ' ' . strtoupper($sort_direction_option_key)] = $sort_option_value . ' ' . $sort_direction_option_value;
+    }
+  }
 
   $contexts = array(
     'general' => array(
@@ -166,7 +168,7 @@ function cnapi_admin_defaults() {
       '#type' => 'select',
       '#title' => t('Sort'),
       '#description' => t('The amount of items to request by default per API call.'),
-      '#options' => array(-1 => t('Use general pagelength settings')) + $sort_options,
+      '#options' => array(-1 => t('Use general pagelength settings')) + $combined_sort_options,
       '#default_value' => _cnapi_default_values('sort', $context),
     );
   }
