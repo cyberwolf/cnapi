@@ -183,10 +183,14 @@ function _cnapi_mgt_parse($path, $xml) {
       }
     }
 
-    // parsing userpool creation/editing results
+    // parsing userpool creation results
     elseif ($path == 'userpool/new') {
-      $data['key'] = _cnapi_xpath_str($xml, '/cdbxml/response/userpoolkey');
-      $data['message'] = _cnapi_xpath_str($xml, '/cdbxml/response/message');
+      $data = _cnapi_xpath_str($xml, '/cdbxml/response/userpoolkey');
+    }
+    
+    // parsing userpool modification results
+    elseif ($path == 'userpool/modify') {
+      $data = TRUE;
     }
   }
   catch (Exception $e) {
