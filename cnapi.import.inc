@@ -9,14 +9,14 @@
 /**
  * Location of the XML files containg cities, headings, ... on the Cultuurnet API server. The path is relative to the cnapi_api_location configuration variable.
  */
-define('CNAPI_XML_OUTPUT_TYPE', '/lib/output_type.xml');
-define('CNAPI_XML_CITY', '/lib/city.xml');
-define('CNAPI_XML_REGION', '/lib/region.xml');
-define('CNAPI_XML_CITY_REGION',  '/lib/city_region.xml');
-define('CNAPI_XML_DIMENSION',  '/lib/dimension.xml');
-define('CNAPI_XML_CATEGORISATION',  '/lib/categorisation.xml');
-define('CNAPI_XML_HEADING',  '/lib/heading.xml');
-define('CNAPI_XML_HEADING_CATEGORISATION',  '/lib/heading_categorisation.xml');
+define('CNAPI_XML_OUTPUT_TYPE', 'output_type.xml');
+define('CNAPI_XML_CITY', 'city.xml');
+define('CNAPI_XML_REGION', 'region.xml');
+define('CNAPI_XML_CITY_REGION',  'city_region.xml');
+define('CNAPI_XML_DIMENSION',  'dimension.xml');
+define('CNAPI_XML_CATEGORISATION',  'categorisation.xml');
+define('CNAPI_XML_HEADING',  'heading.xml');
+define('CNAPI_XML_HEADING_CATEGORISATION',  'heading_categorisation.xml');
 
 /**
  * Import the cities, headings, ... from the Cultuurnet API XML files to the local database tables.
@@ -41,7 +41,6 @@ function cnapi_import() {
   // categories
   $mappings = array(
     'cid'       => array('path' => '@cnet_id', 'parser' => 'strval'),
-    'pid'       => array('path' => '@parent_id', 'parser' => 'strval'),
     'name'      => array('path' => '@title', 'parser' => 'strval'),
     'did'       => array('path' => '@dimension', 'parser' => 'intval'),
   );
@@ -129,7 +128,7 @@ function cnapi_import() {
  *   If an item representated as node in the XML document should be multiplexed into multiple rows in the local table, $multiple_key indicated what Xpath path should used to indicate the multiple values.
  */
 function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(), $truncate = TRUE, $multiple_key = '') {
-  $url = variable_get('cnapi_api_location', CNAPI_API_LOCATION) . $xml;
+  $url = variable_get('cnapi_api_location', CNAPI_API_LOCATION) . '/lib/' . variable_get('cnapi_lib_version', '') . '/' . $xml;
 
   // fetch the xml from the api server
   $xml = cnapi_http_request($url);
@@ -147,7 +146,7 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
         if (is_array($mapping)) {
           $value = $row->xpath($mapping['path']);
           if (isset($value[0])) {
-            $object[$id] = call_user_func($mapping['parser'], $value[0]);
+            $object[$id] = trim(call_user_func($mapping['parser'], $value[0]));
           }
         }
         else {
@@ -163,7 +162,7 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
       else {
         $values = $row->xpath($mappings[$multiple_key]['path']);
         foreach ($values as $value) {
-          $object[$multiple_key] = call_user_func($mappings[$multiple_key]['parser'], $value);
+          $object[$multiple_key] = trim(call_user_func($mappings[$multiple_key]['parser'], $value));
           $objects[] = $object;
         }
       }

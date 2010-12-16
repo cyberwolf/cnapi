@@ -42,6 +42,14 @@ function cnapi_admin_settings() {
     '#size' => 2,
     '#maxlength' => 2,
   );
+  $form['settings']['cnapi_lib_version'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Library version'),
+    '#description' => t('Version identifier of the values XML files.'),
+    '#default_value' => variable_get('cnapi_lib_version', ''),
+    '#size' => 4,
+    '#maxlength' => 4,
+  );
 
   // proxy settings
   $form['proxy'] = array(

@@ -201,13 +201,6 @@ function cnapi_schema() {
         'not null' => TRUE,
         'default' => ''
       ),
-      'pid' => array(
-        'description' => 'ID of the parent category (0 if no parent).',
-        'type' => 'varchar',
-        'length' => 128,
-        'not null' => TRUE,
-        'default' => ''
-      ),
       'name' => array(
         'description' => 'Category name.',
         'type' => 'varchar',
@@ -225,7 +218,6 @@ function cnapi_schema() {
     ),
     'indexes' => array(
       'did' => array('did'),
-      'pid' => array('pid'),
     ),
     'primary key' => array('cid'),
   );
@@ -262,6 +254,7 @@ function cnapi_uninstall() {
     'cnapi_api_location',
     'cnapi_api_key',
     'cnapi_api_output_type',
+    'cnapi_lib_version',
     'cnapi_proxy_enabled',
     'cnapi_proxy_server',
     'cnapi_proxy_port',
@@ -321,6 +314,17 @@ function cnapi_requirements($phase) {
     }
     else {
       $requirements['cnapi_api_location']['value'] = variable_get('cnapi_api_location', CNAPI_API_LOCATION);
+    }    
+    
+    // Raise warning if Cultuurnet API lib version has not been set yet.
+    $requirements['cnapi_lib_version']['title'] = $t('Cultuurnet API library version');
+    if (trim(variable_get('cnapi_lib_version', cnapi_lib_version)) == '') {
+      $requirements['cnapi_lib_version']['description'] = $t('The Cultuurnet API library version has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_lib_version']['severity'] = REQUIREMENT_ERROR;
+      $requirements['cnapi_lib_version']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['cnapi_lib_version']['value'] = variable_get('cnapi_lib_version', '');
     }
 
     // Check if locations, headings, ... have been imported
