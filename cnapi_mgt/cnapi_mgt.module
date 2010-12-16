@@ -39,7 +39,7 @@ function cnapi_mgt_form_cnapi_admin_settings_alter(&$form, $form_state) {
  *     );
  *
  * @return
- *   If the request was successfull, the userpoolkey of the resulting pool is returned. In case of an error, FALSE is returned.
+ *   If the request was successfull, the userpoolkey of the resulting pool is returned in case of a creation, TRUE in case of a modification. In case of an error, FALSE is returned.
  */
 function cnapi_mgt_edit_userpool($userpool) {
   // if a userpoolkey is specified, the request is a "modify", else a "create"
