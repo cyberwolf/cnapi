@@ -3,14 +3,14 @@
 
 function cnapi_ui_page_events() {
   $items = array();
-  
+
   $request = cnapi_ui_get_request();
 
   $events = cnapi_get_events($request['query']);
   foreach ($events['data'] as $event) {
     $items[] = theme('cnapi_ui_event_summary', array('event' => $event));
   }
-  
+
   pager_default_initialize($events['total'], $request['query']['pagelength']);
 
   return array(
@@ -28,14 +28,14 @@ function cnapi_ui_page_events() {
 
 function cnapi_ui_page_productions() {
   $items = array();
-  
+
   $request = cnapi_ui_get_request();
 
   $productions = cnapi_get_productions($request['query']);
   foreach ($productions['data'] as $production) {
     $items[] = theme('cnapi_ui_production_summary', array('production' => $production));
   }
-  
+
   pager_default_initialize($productions['total'], $request['query']['pagelength']);
 
   return array(
@@ -53,14 +53,14 @@ function cnapi_ui_page_productions() {
 
 function cnapi_ui_page_actors() {
   $items = array();
-  
+
   $request = cnapi_ui_get_request();
 
   $actors = cnapi_get_actors($request['query']);
   foreach ($actors['data'] as $actor) {
     $items[] = theme('cnapi_ui_actor_summary', array('actor' => $actor));
   }
-  
+
   pager_default_initialize($actors['total'], $request['query']['pagelength']);
 
   return array(

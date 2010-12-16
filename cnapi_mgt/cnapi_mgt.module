@@ -50,7 +50,7 @@ function cnapi_mgt_edit_userpool($userpool) {
     $path = 'userpool/new';
   }
 
-  // convert the userpool array to a url query part array that can be used in http_build_query 
+  // convert the userpool array to a url query part array that can be used in http_build_query
   $query = _cnapi_mgt_prepare_userpool_query($userpool);
 
   // do the request
@@ -60,7 +60,7 @@ function cnapi_mgt_edit_userpool($userpool) {
   if (isset($result['key']) && !empty($result['key'])) {
     return $result['key'];
   }
-  
+
   $message = 'Generic error';
 
   $error = cnapi_get_last_request_error();
@@ -156,7 +156,7 @@ function _cnapi_mgt_prepare_userpool_query($userpool) {
 
   // remove (now) redundant filters part
   unset($userpool['filters']);
-  
+
   return $userpool;
 }
 

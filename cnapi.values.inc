@@ -117,7 +117,7 @@ function cnapi_get_regions($did) {
 
 function cnapi_get_cities($order = 'zip') {
   $cities = &drupal_static(__FUNCTION__, array());
-  
+
   if (!in_array($order, array('zip', 'name'))) {
     $order = 'zip';
   }
@@ -307,7 +307,7 @@ function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
 
 function cnapi_get_sort_options() {
   $options = &drupal_static(__FUNCTION__, array());
-  
+
   if (empty($options)) {
     $options = array(
       'title'     => t('By title'),
@@ -320,20 +320,20 @@ function cnapi_get_sort_options() {
       'random'    => t('Random'),
     );
   }
-  
+
   return $options;
 }
 
 function cnapi_get_sort_direction_options() {
   $options = &drupal_static(__FUNCTION__, array());
-  
+
   if (empty($options)) {
     $options = array(
       'asc' => t('Ascending'),
       'desc' => t('Descending'),
     );
   }
-  
+
   return $options;
 }
 

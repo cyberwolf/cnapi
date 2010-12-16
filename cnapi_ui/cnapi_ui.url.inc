@@ -59,11 +59,11 @@ function cnapi_ui_url_du2aa($url = '') {
 
 function cnapi_ui_url_aa2da($request = array()) {
   cnapi_request_remove_defaults($request);
-  
+
   if (!in_array($request['type'], array('event', 'production', 'actor'))) {
     return FALSE;
   }
-    
+
   $slug = 'undefined';
   if (isset($request['query']['title'])) $slug = cnapi_ui_slug($request['query']['title'], variable_get('cnapi_max_slug_length', -1));
 

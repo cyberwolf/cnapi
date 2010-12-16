@@ -120,12 +120,12 @@ function cnapi_admin_settings() {
  */
 function cnapi_admin_defaults() {
   $pagelength_options = drupal_map_assoc(array(5, 10, 15, 20, 25, 50, 100));
-  
+
   $combined_sort_options = array();
-  
+
   $sort_options = cnapi_get_sort_options();
   $sort_direction_options = cnapi_get_sort_direction_options();
-  
+
   foreach ($sort_options as $sort_option_key => $sort_option_value) {
     foreach ($sort_direction_options as $sort_direction_option_key => $sort_direction_option_value) {
       $combined_sort_options[$sort_option_key . ' ' . strtoupper($sort_direction_option_key)] = $sort_option_value . ' ' . $sort_direction_option_value;

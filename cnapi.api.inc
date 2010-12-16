@@ -325,7 +325,7 @@ function cnapi_get_last_request_error() {
 
 function _cnapi_set_last_request_error($error = NULL) {
   $last_error = &drupal_static(__FUNCTION__, NULL);
-  
+
   if ($error !== NULL) {
     $last_error = $error;
   }

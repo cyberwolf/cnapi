@@ -3,7 +3,7 @@
 
 function _cnapi_parse_error($xml) {
   $data = array();
-  
+
   $xml = str_replace(' xmlns=', ' ns=', $xml);
 
   // trying to parse the xml
@@ -14,17 +14,17 @@ function _cnapi_parse_error($xml) {
     watchdog('cnapi', 'Could not parse error !xml.', array('!xml' => $xml), WATCHDOG_ERROR);
     return FALSE;
   }
-  
+
   _cnapi_parse_str($data, 'code', $xml, '/cdbxml/response/code');
   _cnapi_parse_str($data, 'level', $xml, '/cdbxml/response/level');
   _cnapi_parse_str($data, 'message', $xml, '/cdbxml/response/message');
   _cnapi_parse_str($data, 'resource', $xml, '/cdbxml/response/resource');
-  
+
   // return if we could succesfully parse fields
   if (!empty($data)) {
     return $data;
   }
-  
+
   // return FALSE in other cases
   return FALSE;
 }
