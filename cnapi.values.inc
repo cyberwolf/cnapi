@@ -10,10 +10,12 @@ function cnapi_location_parse($input = '') {
   // 9000, 9000 Gent, 9000 - Gent, 9000-Gent, ...
   $matches = array();
   $pattern_zip_name = preg_match_all("/^\s*(\d+)\s*-{0,1}\s*(.*)\s*$/", $input, $matches);
+
   if ($pattern_zip_name) {
     $zip = $matches[1][0];
     $name = $matches[2][0];
 
+    // zip and name are known
     if (!empty($name)) {
       $locations = db_query("SELECT * FROM {cnapi_location} cl WHERE zip = :zip AND (LOWER(name) = :name OR LOWER(name) LIKE :fullname)", array(':zip' => $zip, ':name' => strtolower($name), ':fullname' => strtolower($name) . ' (%)'))->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,6 +37,20 @@ function cnapi_location_parse($input = '') {
         else {
           return FALSE;
         }
+      }
+    }
+  
+    // only zip is known
+    else {
+      $locations = db_query("SELECT * FROM {cnapi_location} cl WHERE zip = :zip", array(':zip' => $zip))->fetchAll(PDO::FETCH_ASSOC);
+      if (count($locations) > 0) {
+        return array(
+          'type' => 'zip',
+          'value' => $zip,
+        );
+      }
+      else {
+        return FALSE;
       }
     }
   }
