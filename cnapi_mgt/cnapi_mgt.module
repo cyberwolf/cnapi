@@ -55,6 +55,11 @@ function cnapi_mgt_edit_userpool($userpool) {
 
   // do the request
   $result = _cnapi_mgt_request($path, $query);
+  
+  // if the result was TRUE, return it
+  if ($result === TRUE) {
+    return TRUE;
+  } 
 
   // if a key is in the response, the request was successfull, so return the key as result
   if (isset($result['key']) && !empty($result['key'])) {
