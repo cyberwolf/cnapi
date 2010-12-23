@@ -128,7 +128,7 @@ function cnapi_import() {
  *   If an item representated as node in the XML document should be multiplexed into multiple rows in the local table, $multiple_key indicated what Xpath path should used to indicate the multiple values.
  */
 function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(), $truncate = TRUE, $multiple_key = '') {
-  $url = variable_get('cnapi_api_location', CNAPI_API_LOCATION) . '/lib/' . variable_get('cnapi_lib_version', '') . '/' . $xml;
+  $url = rtrim(variable_get('cnapi_api_location', CNAPI_API_LOCATION), '/') . '/lib/' . variable_get('cnapi_lib_version', '') . '/' . $xml;
 
   // fetch the xml from the api server
   $xml = cnapi_http_request($url);
