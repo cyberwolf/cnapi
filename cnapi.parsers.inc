@@ -759,7 +759,7 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
   if ($xml_performers = $xml->xpath('performers/performer')) {
     foreach ($xml_performers as $xml_performer) {
       // performer as an actor
-      if ($xml_actor = $xml->xpath('actor')) {
+      if ($xml_actor = $xml_performer->xpath('actor')) {
         // parsing the actor
         $actor = array();
         _cnapi_parse_actor($actor, NULL, reset($xml_actor));
@@ -783,7 +783,7 @@ function _cnapi_parse_performers(&$data, $field, $xml) {
       }
 
       // peformer as a label
-      elseif ($xml->xpath('label')) {
+      elseif ($xml_performer->xpath('label')) {
         $performer = array();
 
         // $perfomer['role']
