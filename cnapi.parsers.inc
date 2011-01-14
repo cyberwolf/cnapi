@@ -299,16 +299,9 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
 
   // $event['contactinfo'][...]
   _cnapi_parse_contactinfo($event, 'contactinfo', $xml);
-
-  // $event['location']['address'][...]
-  if ($xml_location = $xml->xpath('location')) {
-    _cnapi_parse_address($event['location'], 'address', reset($xml_location));
-  }
-
-  // $event['location']['actor'][...]
-  if ($xml_location_actor = $xml->xpath('location/actor')) {
-    _cnapi_parse_actor($event['location'], 'actor', reset($xml_location_actor));
-  }
+  
+  // $event['location'][...]
+  _cnapi_parse_location($event, 'location', $xml);
 
   // $event['organiser'][...]
   if ($xml_organiser = $xml->xpath('organiser/actor')) {
@@ -750,6 +743,27 @@ function _cnapi_parse_address(&$data, $field, $xml) {
   // adding data to requesting object
   if (!empty($address)) {
     $data[$field] = $address;
+  }
+}
+
+function _cnapi_parse_location(&$data, $field = NULL, $xml) {
+  $location = array();
+  
+  // $location['address'][...]
+  if ($xml_location = $xml->xpath('location')) {
+    $xml_location = reset($xml_location);
+    _cnapi_parse_str($location, 'location', $xml_location, 'label');
+    _cnapi_parse_address($location, 'address', $xml_location);
+  }
+
+  // $location['actor'][...]
+  if ($xml_location_actor = $xml->xpath('location/actor')) {
+    _cnapi_parse_actor($location, 'actor', reset($xml_location_actor));
+  }
+
+  // adding data to requesting object
+  if (!empty($location)) {
+    $data[$field] = $location;
   }
 }
 

@@ -185,7 +185,11 @@ function cnapi_get_cityid($zip, $name) {
     }
   }
 
-  return $mapping[$zip][$name];
+  if (isset($mapping[$zip][$name])) {
+    return $mapping[$zip][$name];
+  }
+  
+  return NULL;
 }
 
 function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE) {
