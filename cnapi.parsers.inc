@@ -198,6 +198,9 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   // $data['locationid']
   _cnapi_parse_str($data, 'locationid', $xml, '@locationid');
 
+  // $data['location']
+  _cnapi_parse_str($data, 'location', $xml, '@location');
+
   // $data['available_to']
   _cnapi_parse_str($data, 'available_to', $xml, '@available_to');
   if (isset($data['available_to'])) {
