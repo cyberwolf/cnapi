@@ -62,8 +62,8 @@ function cnapi_mgt_edit_userpool($userpool) {
   } 
 
   // if a key is in the response, the request was successfull, so return the key as result
-  if (isset($result['key']) && !empty($result['key'])) {
-    return $result['key'];
+  if ($result) {
+    return $result;
   }
 
   $message = 'Generic error';

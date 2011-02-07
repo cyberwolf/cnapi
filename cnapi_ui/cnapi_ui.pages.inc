@@ -12,6 +12,18 @@ function cnapi_ui_page_events() {
   }
 
   pager_default_initialize($events['total'], $request['query']['pagelength']);
+  
+  $pool = array(
+    'name' => 'The name of the pool',
+    'domain' => array('www.somedomain.com', 'www.someotherdomain.net'),
+    'type' => 1,
+    'filters' => array(
+      'categories' => array('include' => array('1.0.0.0.0'), 'exclude' => array('1.1.0.0.0')),
+      'keywords' => array('include' => array('do include'), 'exclude' => array('do exclude')),
+    ),
+  );
+  
+  print "<pre>".print_r(cnapi_mgt_edit_userpool($pool), TRUE)."</pre>";
 
   return array(
     'number_of_events' => array(
