@@ -130,9 +130,8 @@ function _cnapi_mgt_prepare_userpool_query($userpool) {
     $geofilters = array_merge($geofilters, $userpool['filters']['regions']);
     unset($userpool['filters']['regions']);
   }
-  if (!empty($geofilters)) {
-    $userpool['geofilters'] = implode(';', $geofilters);
-  }
+
+  $userpool['geofilters'] = implode(';', $geofilters);
 
   // other filters having include/exclude part (onvert array to ;-joined string, excludes should be prefixed with !)
   $mapping = array(
@@ -154,9 +153,8 @@ function _cnapi_mgt_prepare_userpool_query($userpool) {
       }
       unset($userpool['filters'][$local_key]);
     }
-    if (!empty($filters)) {
-      $userpool[$url_key] = implode(';', $filters);
-    }
+    
+    $userpool[$url_key] = implode(';', $filters);
   }
 
   // remove (now) redundant filters part
