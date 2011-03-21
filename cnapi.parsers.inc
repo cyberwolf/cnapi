@@ -302,7 +302,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
 
   // $event['contactinfo'][...]
   _cnapi_parse_contactinfo($event, 'contactinfo', $xml);
-  
+
   // $event['location'][...]
   _cnapi_parse_location($event, 'location', $xml);
 
@@ -381,6 +381,9 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) {
 
   // $actor['cdbid']
   _cnapi_parse_str($actor, 'cdbid', $xml, '@cdbid');
+
+  // $actor['asset']
+  _cnapi_parse_bool($actor, 'asset', $xml, '@asset');
 
   // $actor['detail'][...]
   _cnapi_parse_actor_details($actor, 'detail', $xml);
@@ -751,7 +754,7 @@ function _cnapi_parse_address(&$data, $field, $xml) {
 
 function _cnapi_parse_location(&$data, $field = NULL, $xml) {
   $location = array();
-  
+
   // $location['address'][...]
   if ($xml_location = $xml->xpath('location')) {
     $xml_location = reset($xml_location);
