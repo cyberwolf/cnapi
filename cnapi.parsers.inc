@@ -295,7 +295,7 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
   _cnapi_parse_str($event, 'headings', $xml, 'headings/heading/@id', TRUE);
 
   // $event['agefrom']
-  _cnapi_parse_str($event, 'agefrom', $xml, '@agefrom');
+  _cnapi_parse_str($event, 'agefrom', $xml, 'agefrom');
 
   // $event['calendar'][...]
   _cnapi_parse_calendar($event, 'calendar', $xml);
@@ -357,7 +357,7 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) {
   }
 
   // $production['agefrom']
-  _cnapi_parse_str($production, 'agefrom', $xml, '@agefrom');
+  _cnapi_parse_str($production, 'agefrom', $xml, 'agefrom');
 
   // $production['related_events'][...]
   _cnapi_parse_related_events($production, 'related_events', $xml);
