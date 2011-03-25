@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Make a request to the Cultuurnet API using the defaults added by this module and others. The request will also be cleaned to remove redundant parameters before firing off the request.

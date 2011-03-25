@@ -1,4 +1,3 @@
-; $Id$
 name = Cultuurnet API Managment
 description = Provides Drupal integration with Cultuurnet's API management functionality: management of userpools, ...
 package = Cultuurnet API

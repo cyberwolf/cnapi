@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function cnapi_location_parse($input = '') {
   // empty input never parses succesfully

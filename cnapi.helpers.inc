@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function _cnapi_xpath_cast($cast_function, $xml, $query, $multiple = FALSE) {
   $result = $multiple ? array() : NULL;

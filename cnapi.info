@@ -1,4 +1,3 @@
-; $Id$
 name = Cultuurnet API
 description = Provides Drupal integration with Cultuurnet's API: PHP level API implementation, import of headings, locations, ...
 package = Cultuurnet API

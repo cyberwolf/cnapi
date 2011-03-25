@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function _cnapi_parse_error($xml) {
   $data = array();

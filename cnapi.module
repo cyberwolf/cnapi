@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 require_once 'cnapi.helpers.inc';
 require_once 'cnapi.parsers.inc';
