@@ -616,7 +616,7 @@ function cnapi_url_p2a($request = array()) {
       $path = $request['type'] . 's/' . $action;
   }
 
-  $qs = http_build_query($request['query']);
+  $qs = http_build_query($request['query'], '', '&');
   if (strlen($qs) > 0) $qs = '?' . $qs;
   return $path . $qs;
 }
