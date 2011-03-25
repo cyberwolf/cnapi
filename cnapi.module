@@ -43,7 +43,7 @@ define('CNAPI_OPTION_NONE', '_none');
 function cnapi_menu() {
   $items['admin/config/services/cnapi'] = array(
     'title' => 'Cultuurnet API',
-    'description' => 'Change site name, e-mail address, slogan, default front page, and number of posts per page, error pages.',
+    'description' => 'Change CultuurNet API setting like API key, location, ...',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cnapi_admin_settings'),
     'access arguments' => array('administer site configuration'),
