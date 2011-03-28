@@ -120,8 +120,6 @@ function _cnapi_get($request) {
 
   $result = NULL;
 
-  $cid = cnapi_cache_cid($request);
-
   $cache = _cnapi_cache_get($request);
 
   if ($cache != NULL) {
