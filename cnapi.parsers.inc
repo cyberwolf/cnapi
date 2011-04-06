@@ -648,7 +648,8 @@ function _cnapi_parse_contactinfo(&$data, $field, $xml) {
   );
 
   // $info['address'][...]
-  _cnapi_parse_address($info, 'contactinfo/address', $xml);
+  $contactinfo_xml = $xml->xpath('contactinfo');
+  _cnapi_parse_address($info, 'address', $contactinfo_xml[0]);;
 
   // $info['main']['mail']
   _cnapi_parse_str($info['main'], 'mail', $xml, 'contactinfo/mail[@main="true"]');
