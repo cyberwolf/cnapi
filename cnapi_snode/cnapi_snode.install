@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Cultuurnet API module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function cnapi_snode_install() {
+	// Rebuild node types to install our content types.
+	node_types_rebuild();
+	
+  // Create a user for syncing "anonymous" nodes.
+  $url = parse_url($GLOBALS['base_url']);
+  $account = user_save(
+    drupal_anonymous_user(),
+    array(
+      'name' => 'CultuurNet API node sync',
+      'pass' => user_password(),
+      'mail' => 'cnapinodesync@'. $url['host'],
+      'roles' => array(),
+      'status' => 1,
+    )
+  );
+
+  // Check success.
+  if ($account->uid) {
+    // Storing the account ID in a setting.
+    variable_set('cnapi_snode_sync_user', $account->uid);
+
+    // Reporting success.
+    $account_link = l($account->name, 'user/'. $account->uid);
+    drupal_set_message(t('Created CultuurNet API shadow node sync user : !link', array('!link' => $account_link)));
+  }
+  else {
+    drupal_set_message(t('Failed creating CultuurNet API shadow node sync user. Shadow nodes will be created by the anonymous user'), 'error');
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function cnapi_snode_uninstall() {
+  // Delete the user for syncing "anonymous" nodes.
+  if ($uid = variable_get('cnapi_snode_sync_user', 0)) {
+    user_delete($uid);
+  }
+
+  $variables = array(
+    'cnapi_snode_sync_user',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function cnapi_snode_schema() {
+  $schema['cnapi_snode'] = array(
+    'description' => t("Stores shadow node mapping for CultuurNet API objects."),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t("The node's {node}.nid."),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t("The node's {node_revisions}.vid."),
+      ),
+      'id' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t("The object's ID on the API."),
+      ),
+      'data' => array(
+        'description' => t('Some extra data about the API object we want quick access to.'),
+        'type' => 'blob',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('nid', 'vid'),
+    'unique keys' => array(
+      'vid' => array('vid')
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'id' => array('id'),
+    ),
+  );
+
+  return $schema;
+}

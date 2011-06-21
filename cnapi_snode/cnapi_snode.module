@@ -1,0 +1,153 @@
+<?php
+
+require_once 'cnapi_snode.helpers.inc';
+
+/**
+ * Implementation of hook_menu_alter().
+ */
+function cnapi_snode_menu_alter(&$callbacks) {
+  // We don't want people to add new places or articles manually.
+  $callbacks['node/add/oxynade-event']['access callback'] = FALSE;
+  unset($callbacks['node/add/oxynade-event']['access arguments']);
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function cnapi_snode_node_info() {
+  return array(
+    'cnapi_event' => array(
+      'name' => t('CultuurNet API event'),
+      'base' => 'cnapi_snode',
+      'description' => t('Holds shadow nodes for a <em>CultuurNet API event</em>.'),
+      'title_label' => t('Name'),
+    )
+  );
+}
+
+/**
+ * Implements hook_form().
+ */
+function cnapi_snode_form($node, $form_state) {
+	return node_content_form($node, $form_state);
+}
+
+/**
+ * Implementation of hook_insert().
+ */
+function cnapi_snode_insert($node) {
+	db_insert('cnapi_snode')
+    ->fields(array(
+      'nid' => $node->nid,
+			'vid' => $node->vid,
+			'id' => $node->id,
+			'data' => serialize($node->data),
+    ))
+    ->execute();
+}
+
+/**
+ * Implementation of hook_update().
+ */
+function cnapi_snode_update($node) {
+  if (isset($node->revision)) {
+    cnapi_snode_insert($node);
+  }
+  else {
+    db_update('cnapi_snode')
+      ->fields(array(
+				'id' => $node->id,
+				'data' => serialize($node->data),
+			))
+      ->condition('vid', $node->vid)
+      ->execute();
+  }
+}
+
+/**
+ * Implementation of hook_delete().
+ */
+function cnapi_snode_delete(&$node) {
+  db_delete('cnapi_snode')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implementation of hook_load().
+ */
+function cnapi_snode_load($nodes) {
+	$vids = array();
+	foreach ($nodes as $node) {
+		$vids[] = $node->vid;
+	}
+  $result = db_select('cnapi_snode', 'cn')
+  	->fields('cn', array(
+			'nid',
+			'vid',
+			'id',
+			'data',
+  	))
+  	->where('vid IN (:vids)', array(':vids' => $vids))
+  	->execute();
+  foreach ($result as $record) {
+    $nodes[$record->nid]->id = $record->id;
+    $nodes[$record->nid]->data = unserialize($record->data);
+  }
+}
+
+/**
+ * Alters inbound URL requests.
+ *
+ * @param $path
+ *   The path being constructed, which, if a path alias, has been resolved to a
+ *   Drupal path by the database, and which also may have been altered by other
+ *   modules before this one.
+ * @param $original_path
+ *   The original path, before being checked for path aliases or altered by any
+ *   modules.
+ * @param $path_language
+ *   The language of the path.
+ *
+ * @see drupal_get_normal_path()
+ */
+function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
+  // Create the path user/me/edit, which allows a user to edit their account.
+  if (preg_match('|^user/me/edit(/.*)?|', $path, $matches)) {
+    global $user;
+    $path = 'user/' . $user->uid . '/edit' . $matches[1];
+  }
+}
+
+/**
+ * Alters outbound URLs.
+ *
+ * @param $path
+ *   The outbound path to alter, not adjusted for path aliases yet. It won't be
+ *   adjusted for path aliases until all modules are finished altering it, thus
+ *   being consistent with hook_url_alter_inbound(), which adjusts for all path
+ *   aliases before allowing modules to alter it. This may have been altered by
+ *   other modules before this one.
+ * @param $options
+ *   A set of URL options for the URL so elements such as a fragment or a query
+ *   string can be added to the URL.
+ * @param $original_path
+ *   The original path, before being altered by any modules.
+ *
+ * @see url()
+ */
+function cnapi_snode_url_outbound_alter(&$path, &$options, $original_path) {
+  // Use an external RSS feed rather than the Drupal one.
+  if ($path == 'rss.xml') {
+    $path = 'http://example.com/rss.xml';
+    $options['external'] = TRUE;
+  }
+
+  // Instead of pointing to user/[uid]/edit, point to user/me/edit.
+  if (preg_match('|^user/([0-9]*)/edit(/.*)?|', $path, $matches)) {
+    global $user;
+    if ($user->uid == $matches[1]) {
+      $path = 'user/me/edit' . $matches[2];
+    }
+  }
+}
