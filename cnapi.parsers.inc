@@ -100,7 +100,7 @@ function _cnapi_parse($request, $xml) {
         $item = array();
         _cnapi_parse_report_item($item, $xml_item);
         if (!empty($item)) {
-          $data[$type][] = $item;
+          $data[$type][$item['id']] = $item;
         }
       }
     }
@@ -148,7 +148,7 @@ function _cnapi_parse_report_item(&$data, $xml) {
     $child = array();
     _cnapi_parse_report_item($child, $xml_child);
     if (!empty($child)) {
-      $data['children'][] = $child;
+      $data['children'][$child['id']] = $child;
     }
   }
 }
