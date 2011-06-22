@@ -71,7 +71,7 @@ function cnapi_url_dus2dp($url) {
 }
 
 function cnapi_url_dua2dp($url) {
-  $request = array();
+  $request = FALSE;
   
   $path = $url['path'];
   
@@ -86,12 +86,7 @@ function cnapi_url_dua2dp($url) {
   }
   
   else {
-    $contexts = cnapi_ui_contexts('path');
-    
-    $context = NULL;
-    if (isset($contexts[$path])) {
-      $context = $contexts[$path];
-      
+    if ($context = cnapi_ui_contexts('path', $path)) {
       $request['context'] = $context['id'];
       $request['query'] = $url['options']['query'];
     }
