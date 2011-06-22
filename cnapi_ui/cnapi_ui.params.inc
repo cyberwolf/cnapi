@@ -103,47 +103,52 @@ function cnapi_url_dua2dp($url) {
 }
 
 function cnapi_url_dp2p($request) {
+  $request_p = FALSE;
   
   if (isset($request['context'])) {
-    $request['action'] = CNAPI_LIST_SUMMARY;
+    $request_p['action'] = CNAPI_LIST_SUMMARY;
     
     $context = cnapi_ui_contexts('id', $request['context']);
     
-    unset($request['context']);
-    $request['type'] = $context['type'];
+    $request_p['type'] = $context['type'];
+    $request_p['query'] = $request['query'];
 
     if ($query = $context['query']) {
       foreach ($query as $key => $value) {
-        $request['query'][$key] = $value;
+        $request_p['query'][$key] = $value;
       }
     }
     
-    if (isset($request['query']['page'])) {
-      $request['query']['page']++;
+    if (isset($request_p['query']['page'])) {
+      $request_p['query']['page']++;
     }
     
-    if (isset($request['query']['query'])) {
-      $request['query']['q'] = $request['query']['query'];
-      unset($request['query']['query']);
+    if (isset($request_p['query']['query'])) {
+      $request_p['query']['q'] = $request_p['query']['query'];
+      unset($request_p['query']['query']);
     }
   }
   else {
-    $request['action'] = 'detail';
+    $request_p['action'] = 'detail';
+    
     if (isset($request['event'])) {
-      $request['type'] = 'event';
+      $type = 'event';
     }
     elseif (isset($request['actor'])) {
-      $request['type'] = 'actor';
+      $type = 'actor';
     }
     elseif (isset($request['production'])) {
-      $request['type'] = 'production';
+      $type = 'production';
     }
     
-    $type = $request['type'];
-    $request['query']['cdbid'] = $request[$type];
+    $request_p = array(
+      'action' => 'detail',
+      'type' => $type,
+      'cdbid' => $request[$type],
+    );
   }
   
-  return $request;
+  return $request_p;
 }
 
 function cnapi_url_dp2a($request) {
@@ -182,11 +187,11 @@ function cnapi_url_p2dus($request, $context) {
 }
 
 function cnapi_url_p2dp($request, $context = FALSE) {
+  $request_dp = FALSE;
+  
   if ($request['action'] == 'detail') {
     $type = $request['type'];
-    $request[$type] = $request['query']['cdbid'];
-    unset($request['action']);
-    unset($request['query']);
+    $request_dp[$type] = $request['query']['cdbid'];
   }
   elseif ($request['action'] == 'list_summary') {
     if ($context === TRUE) {
@@ -198,11 +203,13 @@ function cnapi_url_p2dp($request, $context = FALSE) {
       $context = cnapi_ui_get_active_context(); // if there's no active context, default context should be determined
     }
     
-    $result['context'] = $context;
-    $result['query'] = $request['query'];
+    $request_dp['context'] = $context;
+    $request_dp['query'] = $request['query'];
+    
+    // @todo remove context query values
   }
   
-  return $result;
+  return $request_dp;
 }
 
 function cnapi_url_a2dua($request, $context) {
