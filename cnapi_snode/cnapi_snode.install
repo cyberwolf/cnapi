@@ -11,7 +11,7 @@
 function cnapi_snode_install() {
 	// Rebuild node types to install our content types.
 	node_types_rebuild();
-	
+
   // Create a user for syncing "anonymous" nodes.
   $url = parse_url($GLOBALS['base_url']);
   $account = user_save(
