@@ -78,9 +78,10 @@ function cnapi_snode_schema() {
         'description' => t("The node's {node_revisions}.vid."),
       ),
       'id' => array(
-        'type' => 'int',
-        'not null' => FALSE,
-        'description' => t("The object's ID on the API."),
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => ''
       ),
       'data' => array(
         'description' => t('Some extra data about the API object we want quick access to.'),

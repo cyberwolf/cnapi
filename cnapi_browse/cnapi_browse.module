@@ -1,0 +1,27 @@
+<?php
+
+require_once('cnapi_browse.helpers.inc');
+
+/**
+ * Implements hook_block_info().
+ */
+function cnapi_browse_block_info() {
+  $block['navigation']['info'] = t('CultuurNet API navigation');
+  $block['navigation']['cache'] = DRUPAL_CACHE_GLOBAL;
+  
+  $block['search']['info'] = t('CultuurNet API search');
+  $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
+  
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cnapi_browse_block_view($delta = '') {
+  module_load_include('inc', 'cnapi_browse', 'cnapi_browse.blocks');
+
+  if (function_exists('cnapi_browse_block_' . $delta)) {
+    return call_user_func('cnapi_browse_block_' . $delta);
+  }
+}

@@ -1,0 +1,10 @@
+name = Cultuurnet API browse
+description = Creates a default user interface for browsing and filtering objects (events, actors, productions) on the Cultuurnet API.
+package = Cultuurnet API
+version = VERSION
+core = 7.x
+dependencies[] = cnapi
+files[] = cnapi_browse.module
+files[] = cnapi_browse.install
+files[] = cnapi_browse.helpers.inc
+files[] = cnapi_browse.blocks.inc

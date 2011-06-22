@@ -1,0 +1,76 @@
+<?php
+
+require_once('cnapi_ui.params.inc');
+require_once('cnapi_ui.helpers.inc');
+
+/**
+ * Implements hook_menu().
+ */
+function cnapi_ui_menu() {
+  $contexts = cnapi_ui_contexts();
+  foreach ($contexts as $context => $info) {
+    $path = $info['path'];
+    $type = $info['type'];
+    
+    $items[$path] = array(
+      'title' => 'List',
+      'page callback' => 'cnapi_ui_page_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+      'file' => 'cnapi_ui.pages.inc',
+    );
+  }
+  
+  // @todo detail
+  // @todo rss
+  
+  return $items;
+}
+
+// @todo add static caching
+function cnapi_ui_contexts($key = 'id', $id = NULL) {
+  $contexts = array(
+    'event' => array(
+      'id' => 'event',
+      'type' => 'event',
+      'query' => array('locationtype' => '!8.9.1.0.0'),
+      'path' => 'agenda/r',
+    ),
+    'actor' => array(
+      'id' => 'actor',
+      'type' => 'actor',
+      'query' => array(),
+      'path' => 'agenda/ar',
+    ),
+    'movie' => array(
+      'id' => 'movie',
+      'type' => 'production',
+      'query' => array('type' => '0.50.6.0.0'),
+      'path' => 'agenda/film',
+    ),
+    'movie_children' => array(
+      'id' => 'movie_children',
+      'type' => 'production',
+      'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
+      'path' => 'agenda/film/kinderen'
+    ),
+  );
+  
+  if ($key == 'path') {
+    $result = array();
+    
+    foreach ($contexts as $context => $info) {
+      $path = $info['path'];
+      
+      $result[$path] = $info;
+    }
+    
+    $contexts = $result;
+  }
+  
+  if ($id) {
+    return isset($contexts[$id]) ? $contexts[$id] : NULL;
+  }
+  
+  return $contexts;
+}

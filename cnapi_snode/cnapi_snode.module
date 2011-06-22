@@ -1,14 +1,21 @@
 <?php
 
 require_once 'cnapi_snode.helpers.inc';
+require_once 'cnapi_snode.rewrite.inc';
 
 /**
  * Implementation of hook_menu_alter().
  */
 function cnapi_snode_menu_alter(&$callbacks) {
-  // We don't want people to add new places or articles manually.
-  $callbacks['node/add/oxynade-event']['access callback'] = FALSE;
-  unset($callbacks['node/add/oxynade-event']['access arguments']);
+  // We don't want people to add new nodes manually.
+  $callbacks['node/add/cnapi-actor']['access callback'] = FALSE;
+  unset($callbacks['node/add/cnapi-actor']['access arguments']);
+  
+  $callbacks['node/add/cnapi-event']['access callback'] = FALSE;
+  unset($callbacks['node/add/cnapi-event']['access arguments']);
+  
+  $callbacks['node/add/cnapi-production']['access callback'] = FALSE;
+  unset($callbacks['node/add/cnpai-production']['access arguments']);
 }
 
 /**
@@ -16,12 +23,24 @@ function cnapi_snode_menu_alter(&$callbacks) {
  */
 function cnapi_snode_node_info() {
   return array(
+    'cnapi_actor' => array(
+      'name' => t('CultuurNet API actor'),
+      'base' => 'cnapi_snode',
+      'description' => t('Holds shadow nodes for a <em>CultuurNet API actor</em>.'),
+      'title_label' => t('Name'),
+    ),
     'cnapi_event' => array(
       'name' => t('CultuurNet API event'),
       'base' => 'cnapi_snode',
       'description' => t('Holds shadow nodes for a <em>CultuurNet API event</em>.'),
       'title_label' => t('Name'),
-    )
+    ),
+    'cnapi_production' => array(
+      'name' => t('CultuurNet API production'),
+      'base' => 'cnapi_snode',
+      'description' => t('Holds shadow nodes for a <em>CultuurNet API production</em>.'),
+      'title_label' => t('Name'),
+    ),
   );
 }
 

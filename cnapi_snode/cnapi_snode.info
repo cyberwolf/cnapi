@@ -4,5 +4,6 @@ package = Cultuurnet API
 version = VERSION
 core = 7.x
 dependencies[] = cnapi
+dependencies[] = cnapi_ui
 files[] = cnapi_snode.module
 files[] = cnapi_snode.install
