@@ -100,7 +100,12 @@ function _cnapi_parse($request, $xml) {
         $item = array();
         _cnapi_parse_report_item($item, $xml_item);
         if (!empty($item)) {
-          $data[$type][$item['id']] = $item;
+          if ($type != 'time') {
+            $data[$type][$item['id']] = $item;
+          }
+          else {
+            $data[$type][$item['name']] = $item;
+          }
         }
       }
     }
