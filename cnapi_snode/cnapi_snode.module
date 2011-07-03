@@ -4,7 +4,7 @@ require_once 'cnapi_snode.helpers.inc';
 require_once 'cnapi_snode.rewrite.inc';
 
 /**
- * Implementation of hook_menu_alter().
+ * Implements hook_menu_alter().
  */
 function cnapi_snode_menu_alter(&$callbacks) {
   // We don't want people to add new nodes manually.
@@ -19,7 +19,7 @@ function cnapi_snode_menu_alter(&$callbacks) {
 }
 
 /**
- * Implementation of hook_node_info().
+ * Implements hook_node_info().
  */
 function cnapi_snode_node_info() {
   return array(
@@ -52,7 +52,7 @@ function cnapi_snode_form($node, $form_state) {
 }
 
 /**
- * Implementation of hook_insert().
+ * Implements hook_insert().
  */
 function cnapi_snode_insert($node) {
   db_insert('cnapi_snode')
@@ -66,7 +66,7 @@ function cnapi_snode_insert($node) {
 }
 
 /**
- * Implementation of hook_update().
+ * Implements hook_update().
  */
 function cnapi_snode_update($node) {
   if (isset($node->revision)) {
@@ -84,7 +84,7 @@ function cnapi_snode_update($node) {
 }
 
 /**
- * Implementation of hook_delete().
+ * Implements hook_delete().
  */
 function cnapi_snode_delete(&$node) {
   db_delete('cnapi_snode')
@@ -93,7 +93,7 @@ function cnapi_snode_delete(&$node) {
 }
 
 /**
- * Implementation of hook_load().
+ * Implements hook_load().
  */
 function cnapi_snode_load($nodes) {
   $vids = array();

@@ -31,7 +31,7 @@ function cnapi_drush_command() {
 }
 
 /**
- * Implementation of the 'cnapi-import-values' drush command.
+ * Implements the 'cnapi-import-values' drush command.
  */
 function drush_cnapi_import_values() {
   require_once 'cnapi.import.inc';

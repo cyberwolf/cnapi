@@ -66,7 +66,7 @@ function cnapi_snode_add_node($object) {
   $node->type = $object->type;
 
   // Get the default options from the cont
-  $options = variable_get('node_options_'. $node->type, FALSE);
+  $options = variable_get('node_options_' . $node->type, FALSE);
   if (is_array($options)) {
     $node->status = in_array('status', $options) ? 1 : 0;
     $node->promote = in_array('promote', $options) ? 1 : 0;
@@ -75,7 +75,7 @@ function cnapi_snode_add_node($object) {
   else {
     $node->status = 1;
   }
-  $node->comment = variable_get('comment_'. $node->type, COMMENT_NODE_OPEN);
+  $node->comment = variable_get('comment_' . $node->type, COMMENT_NODE_OPEN);
 
   $type = node_type_get_type($node);
   if ($type->has_title) {

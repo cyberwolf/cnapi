@@ -19,7 +19,7 @@ function cnapi_snode_install() {
     array(
       'name' => 'CultuurNet API node sync',
       'pass' => user_password(),
-      'mail' => 'cnapinodesync@'. $url['host'],
+      'mail' => 'cnapinodesync@' . $url['host'],
       'roles' => array(),
       'status' => 1,
     )
@@ -31,11 +31,11 @@ function cnapi_snode_install() {
     variable_set('cnapi_snode_sync_user', $account->uid);
 
     // Reporting success.
-    $account_link = l($account->name, 'user/'. $account->uid);
-    drupal_set_message(t('Created CultuurNet API shadow node sync user : !link', array('!link' => $account_link)));
+    $account_link = l($account->name, 'user/' . $account->uid);
+    drupal_set_message(st('Created CultuurNet API shadow node sync user : !link', array('!link' => $account_link)));
   }
   else {
-    drupal_set_message(t('Failed creating CultuurNet API shadow node sync user. Shadow nodes will be created by the anonymous user'), 'error');
+    drupal_set_message(st('Failed creating CultuurNet API shadow node sync user. Shadow nodes will be created by the anonymous user'), 'error');
   }
 }
 

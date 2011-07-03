@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_url_inbound_alter().
+ * Implements hook_url_inbound_alter().
  */
 function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
   $map = &drupal_static(__FUNCTION__, array());
@@ -10,7 +10,7 @@ function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
   if (isset($map[$path])) {
     // in case we have a hit and it's not FALSE, rewrite the path
     if ($map[$path] !== FALSE) {
-      $path = 'node/'. $map[$path];
+      $path = 'node/' . $map[$path];
     }
 
     // in case of a hit and a FALSE result, we know the process will fail, so return
@@ -58,14 +58,14 @@ function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
     return;
   }
 
-  $path = 'node/'. $nid;
+  $path = 'node/' . $nid;
 
   // set our static cache
   $map[$path] = $nid;
 }
 
 /**
- * Implementation of hook_url_outbound_alter().
+ * Implements hook_url_outbound_alter().
  */
 function cnapi_snode_url_outbound_alter(&$path, &$options, $original_path) {
   $map = &drupal_static(__FUNCTION__, array());
