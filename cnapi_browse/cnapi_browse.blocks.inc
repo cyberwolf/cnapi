@@ -327,6 +327,8 @@ function cnapi_browse_filter_where($report, $type) {
 	if (isset($request['query']['regio'])) {
 		$region = $request['query']['regio'];
 		
+		$id = $region;
+		
 		$municipalities = cnapi_get_municipalities();
 		$provinces = cnapi_get_provinces();
 
@@ -350,6 +352,9 @@ function cnapi_browse_filter_where($report, $type) {
 	}
 	elseif (isset($request['query']['location'])) {
 		$location = $request['query']['location'];
+		
+		$id = $location;
+		
 		if (isset($report['location'][$location])) {
 			$name = $report['location'][$location]['name'];
 			$total = $report['location'][$location]['total'];
@@ -357,18 +362,26 @@ function cnapi_browse_filter_where($report, $type) {
 	}
 	elseif (isset($request['query']['zip'])) {
 		$name = $request['query']['zip'];
+		
+		$id = $zip;
+		
 		if ($report_geo) {
 			$total = NULL;
 		}
 	}
 	elseif (isset($request['query']['city'])) {
 		$name = $request['query']['city'];
+
+		$id = $request['query']['city'];
+		
 		if ($report_geo) {
 			$total = NULL;
 		}
 	}
 	elseif (isset($request['query']['cityid'])) {
 		$cityid = $request['query']['cityid'];
+
+		$id = cityid;
   
 		$cities = cnapi_get_cities($request['query']['cityid']);
 		if (isset($cities[$cityid])) {
@@ -390,6 +403,7 @@ function cnapi_browse_filter_where($report, $type) {
 		$filter_options = array();
 		
 		$filter_option = array(
+			'id' => NULL,
 			'name' => t('In Flanders'),
 			'url' => $request_remove,
 			'total' => 0, // @todo get total
@@ -399,6 +413,7 @@ function cnapi_browse_filter_where($report, $type) {
 		$filter_options[] = $filter_option;
 		
 		$filter_option = array(
+			'id' => $id,
 			'name' => $name,
 			'url' => $request,
 			'active' => TRUE,
