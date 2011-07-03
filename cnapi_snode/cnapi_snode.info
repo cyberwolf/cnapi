@@ -1,4 +1,4 @@
-name = Cultuurnet API nhadow nodes
+name = Cultuurnet API shadow nodes
 description = Creates shadow nodes for objects (events, actors, productions) on the Cultuurnet API.
 package = Cultuurnet API
 version = VERSION

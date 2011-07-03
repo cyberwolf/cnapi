@@ -9,7 +9,7 @@ function cnapi_snode_short_type_name($type) {
   return substr($type, 6, strlen($type) - 6); // 8 = strlen('cnapi_')
 }
 
-function cnapi_snode_get_shadow_node_nid($object, $create = TRUE, $update = FALSE) {
+function cnapi_snode_get_shadow_node_nid($type, $object, $create = TRUE, $update = FALSE) {
   // Check if we already have a corresponding node and fetch its nid.
   $type = cnapi_snode_short_type_name($object->type);
   $nid = db_query("SELECT oxn.nid FROM {cnapi_snode} oxn INNER JOIN {node} n ON n.nid = oxn.nid AND n.vid = oxn.vid WHERE oxn.id = :id AND n.type = :type", array(':id' => $object->id, ':type' => $object->type))->fetchObject();
