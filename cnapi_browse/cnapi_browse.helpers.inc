@@ -40,20 +40,20 @@ function cnapi_browse_get_event_report($query = array()) {
 
     $movies_children = cnapi_get_productions($movies_children_query);
 
-    $movies_children__item = NULL;
+    $movies_children_item = NULL;
     if (isset($report['headings'][98])) {
-      $movies_children__item = &$report['headings'][98];
+      $movies_children_item = &$report['headings'][98];
     }
     elseif (isset($report['headings'][179]['children'][98])) {
-      $movies_children__item = &$report['headings'][179]['children'][98];
+      $movies_children_item = &$report['headings'][179]['children'][98];
     }
 
-    if ($movies_children__item) {
-      $movies_children__item['total'] = $movies_children['total'];
-      $movies_children__item['link']['type'] = 'production';
-      cnapi_ui_remove_context_query($movies_children__item['link']['query'], 'event');
-      unset($movies_children__item['link']['query']['heading']);
-      $movies_children__item['link']['context'] = 'movie_children';
+    if ($movies_children_item) {
+      $movies_children_item['total'] = $movies_children['total'];
+      $movies_children_item['link']['type'] = 'production';
+      cnapi_ui_remove_context_query($movies_children_item['link']['query'], 'event');
+      unset($movies_children_item['link']['query']['heading']);
+      $movies_children_item['link']['context'] = 'movie_children';
     }
   }
 
