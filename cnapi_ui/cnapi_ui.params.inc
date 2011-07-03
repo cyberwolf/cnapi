@@ -1,5 +1,32 @@
 <?php
 
+function cnapi_ui_remove_context_query(&$query, $context) {
+	$context = cnapi_ui_contexts('id', $context);
+  if (isset($context['query'])) {
+    foreach ($context['query'] as $key => $value) {
+      if (isset($query[$key]) && $query[$key] == $value) {
+        unset($query[$key]);
+      }
+    }
+  }
+}
+
+function cnapi_ui_apply_context_query(&$query, $context) {
+	$context = cnapi_ui_contexts('id', $context);
+	
+  if (isset($context['query'])) {
+    foreach ($context['query'] as $key => $value) {
+      $query[$key] = $value;
+    }
+  }
+}
+
+function cnapi_url_p2dul($text, $request, $context) {
+	$request_dp = cnapi_url_p2dp($request, $context);
+
+	return cnapi_url_dp2dul($text, $request_dp);
+}
+
 function cnapi_url_dp2dul($text, $request) {
   $url = cnapi_url_dp2dua($request);
 
@@ -13,7 +40,7 @@ function cnapi_url_dp2dus($request) {
 
 function cnapi_url_dp2dua($request) {
   $url = array('path' => '', 'options' => array());
-  
+
   if (isset($request['context'])) {
     $context = cnapi_ui_contexts('id', $request['context']);
     
@@ -21,13 +48,7 @@ function cnapi_url_dp2dua($request) {
       $url['path'] = $context['path'];
                   
       $query = isset($request['query']) ? $request['query'] : NULL;
-      if (isset($context['query'])) {
-        foreach ($context['query'] as $key => $value) {
-          if (isset($query[$key]) && $query[$key] == $value) { // @todo fix for value overrides
-            unset($query[$key]);
-          }
-        }
-      }
+     	cnapi_ui_remove_context_query($query, $request['context']);
       
       if ($query) {
         $url['options']['query'] = $query;
@@ -201,7 +222,7 @@ function cnapi_url_p2dp($request, $context = FALSE) {
     $request_dp['context'] = $context;
     $request_dp['query'] = $request['query'];
     
-    // @todo remove context query values
+    cnapi_ui_remove_context_query($request_dp['query'], $context);
   }
   
   return $request_dp;

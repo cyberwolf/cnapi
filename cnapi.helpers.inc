@@ -1,5 +1,9 @@
 <?php
 
+function cnapi_report_sort_total($a, $b) {
+  return $a['total'] == $b['total'] ? 0 : ($a['total'] < $b['total'] ? 1 : -1);
+}
+
 function _cnapi_xpath_cast($cast_function, $xml, $query, $multiple = FALSE) {
   $result = $multiple ? array() : NULL;
 

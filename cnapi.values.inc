@@ -1,5 +1,9 @@
 <?php
 
+function cnapi_output_type_has_heading_groups() {
+  return variable_get('cnapi_api_output_type', 1) == 3;
+}
+
 function cnapi_location_parse($input = '') {
   // empty input never parses succesfully
   if (empty($input)) {
@@ -70,7 +74,7 @@ function cnapi_location_parse($input = '') {
 
   if (count($locations) == 1) {
     return array(
-      'type' => 'region',
+      'type' => 'regio',
       'value' => $locations[0]['lid'],
     );
   }
@@ -312,6 +316,10 @@ function _cnapi_get_categories($did) {
 
 function cnapi_get_headings($tid) {
   $headings = &drupal_static(__FUNCTION__, NULL);
+  
+  if (!$tid) {
+    $tid = variable_get('cnapi_api_output_type', 1);
+  }
 
   if (!$headings) {
     $headings = db_query("SELECT hid, pid, name, weight FROM {cnapi_heading} WHERE tid = :tid ORDER BY pid, weight", array(':tid' => $tid))->fetchAllAssoc('hid', PDO::FETCH_ASSOC);
