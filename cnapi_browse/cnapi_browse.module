@@ -1,6 +1,7 @@
 <?php
 
 require_once('cnapi_browse.helpers.inc');
+require_once('cnapi_browse.preprocess.inc');
 
 /**
  * Implements hook_block_info().
@@ -11,6 +12,9 @@ function cnapi_browse_block_info() {
   
   $block['search']['info'] = t('CultuurNet API search');
   $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
+  
+  $block['filters']['info'] = t('CultuurNet API filters');
+  $block['filters']['cache'] = DRUPAL_CACHE_PER_PAGE; // @todo is the same per $_GET['page']
   
   return $block;
 }
@@ -24,4 +28,28 @@ function cnapi_browse_block_view($delta = '') {
   if (function_exists('cnapi_browse_block_' . $delta)) {
     return call_user_func('cnapi_browse_block_' . $delta);
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnapi_browse_theme() {
+  return array(
+    'cnapi_browse_navigation' => array(
+      'variables' => array('items' => array()),
+      'template' => 'cnapi-browse-navigation',
+    ),
+    'cnapi_browse_navigation_item' => array(
+      'variables' => array('item' => array()),
+      'template' => 'cnapi-browse-navigation-item',
+    ),
+    'cnapi_browse_filter_options' => array(
+      'variables' => array('options' => array()),
+      'template' => 'cnapi-browse-filter-options',
+    ),
+    'cnapi_browse_filter_option' => array(
+      'variables' => array('option' => NULL),
+      'template' => 'cnapi-browse-filter-option',
+    ),
+	);
 }
