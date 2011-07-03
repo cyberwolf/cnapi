@@ -21,14 +21,9 @@ function cnapi_ui_menu() {
     );
   }
   
-  // @todo detail
-  // @todo rss
-  
   return $items;
 }
 
-// @todo add static caching
-// @todo add a hook to add new contexts
 function cnapi_ui_contexts($key = 'id', $id = NULL) {
   $contexts = array(
     'event' => array(

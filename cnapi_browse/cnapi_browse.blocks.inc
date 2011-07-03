@@ -440,8 +440,6 @@ function cnapi_browse_filter_where($report, $type) {
 function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
 	$form = array();
 	
-	// @todo add jquery for autosubmit on change
-	
 	$provinces = cnapi_get_provinces();
 	$options = cnapi_get_select_options($provinces, 'lid', 'name', t('Choose a province'));
 	
@@ -552,7 +550,6 @@ function cnapi_browse_filter_where_form_submit($form, &$form_state) {
 	cnapi_ui_goto($request);
 }
 
-// @todo custom date picker
 function cnapi_browse_filter_when($report) {
   $request = cnapi_ui_get_active_request();
 

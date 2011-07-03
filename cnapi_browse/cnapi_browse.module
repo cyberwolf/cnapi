@@ -14,7 +14,7 @@ function cnapi_browse_block_info() {
   $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
   
   $block['filters']['info'] = t('CultuurNet API filters');
-  $block['filters']['cache'] = DRUPAL_CACHE_PER_PAGE; // @todo is the same per $_GET['page']
+  $block['filters']['cache'] = DRUPAL_CACHE_PER_PAGE;
   
   return $block;
 }

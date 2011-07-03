@@ -30,7 +30,6 @@ function cnapi_ui_get_active_url() {
   return $url;
 }
 
-// @todo add static caching
 function cnapi_ui_get_active_request() {
   $url = cnapi_ui_get_active_url();
   return cnapi_url_dua2dp($url);
