@@ -58,7 +58,7 @@ function cnapi_snode_add_node($object) {
   // Constructs the node object.
   $types = node_type_get_types();
 
-	$uid = isset($object->uid) ? $object->uid : variable_get('cnapi_snode_sync_user', 0);
+  $uid = isset($object->uid) ? $object->uid : variable_get('cnapi_snode_sync_user', 0);
   $node = (object) array('uid' => $uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $object->type, 'language' => LANGUAGE_NONE);
 
   node_object_prepare($node);

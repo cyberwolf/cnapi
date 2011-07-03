@@ -11,7 +11,7 @@ function cnapi_ui_menu() {
   foreach ($contexts as $context => $info) {
     $path = $info['path'];
     $type = $info['type'];
-    
+
     $items[$path] = array(
       'title' => 'List',
       'page callback' => 'cnapi_ui_page_list',
@@ -20,7 +20,7 @@ function cnapi_ui_menu() {
       'file' => 'cnapi_ui.pages.inc',
     );
   }
-  
+
   return $items;
 }
 
@@ -51,22 +51,22 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       'path' => 'agenda/film/kinderen'
     ),
   );
-  
+
   if ($key == 'path') {
     $result = array();
-    
+
     foreach ($contexts as $context => $info) {
       $path = $info['path'];
-      
+
       $result[$path] = $info;
     }
-    
+
     $contexts = $result;
   }
-  
+
   if ($id) {
     return isset($contexts[$id]) ? $contexts[$id] : NULL;
   }
-  
+
   return $contexts;
 }

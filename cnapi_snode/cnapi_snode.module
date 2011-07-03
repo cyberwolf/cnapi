@@ -10,10 +10,10 @@ function cnapi_snode_menu_alter(&$callbacks) {
   // We don't want people to add new nodes manually.
   $callbacks['node/add/cnapi-actor']['access callback'] = FALSE;
   unset($callbacks['node/add/cnapi-actor']['access arguments']);
-  
+
   $callbacks['node/add/cnapi-event']['access callback'] = FALSE;
   unset($callbacks['node/add/cnapi-event']['access arguments']);
-  
+
   $callbacks['node/add/cnapi-production']['access callback'] = FALSE;
   unset($callbacks['node/add/cnpai-production']['access arguments']);
 }
@@ -48,19 +48,19 @@ function cnapi_snode_node_info() {
  * Implements hook_form().
  */
 function cnapi_snode_form($node, $form_state) {
-	return node_content_form($node, $form_state);
+  return node_content_form($node, $form_state);
 }
 
 /**
  * Implementation of hook_insert().
  */
 function cnapi_snode_insert($node) {
-	db_insert('cnapi_snode')
+  db_insert('cnapi_snode')
     ->fields(array(
       'nid' => $node->nid,
-			'vid' => $node->vid,
-			'id' => $node->id,
-			'data' => serialize($node->data),
+      'vid' => $node->vid,
+      'id' => $node->id,
+      'data' => serialize($node->data),
     ))
     ->execute();
 }
@@ -75,9 +75,9 @@ function cnapi_snode_update($node) {
   else {
     db_update('cnapi_snode')
       ->fields(array(
-				'id' => $node->id,
-				'data' => serialize($node->data),
-			))
+        'id' => $node->id,
+        'data' => serialize($node->data),
+      ))
       ->condition('vid', $node->vid)
       ->execute();
   }
@@ -96,19 +96,19 @@ function cnapi_snode_delete(&$node) {
  * Implementation of hook_load().
  */
 function cnapi_snode_load($nodes) {
-	$vids = array();
-	foreach ($nodes as $node) {
-		$vids[] = $node->vid;
-	}
+  $vids = array();
+  foreach ($nodes as $node) {
+    $vids[] = $node->vid;
+  }
   $result = db_select('cnapi_snode', 'cn')
-  	->fields('cn', array(
-			'nid',
-			'vid',
-			'id',
-			'data',
-  	))
-  	->where('vid IN (:vids)', array(':vids' => $vids))
-  	->execute();
+    ->fields('cn', array(
+      'nid',
+      'vid',
+      'id',
+      'data',
+    ))
+    ->where('vid IN (:vids)', array(':vids' => $vids))
+    ->execute();
   foreach ($result as $record) {
     $nodes[$record->nid]->id = $record->id;
     $nodes[$record->nid]->data = unserialize($record->data);

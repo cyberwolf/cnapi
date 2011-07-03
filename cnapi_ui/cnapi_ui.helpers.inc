@@ -2,16 +2,16 @@
 
 function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) {
   $url = cnapi_url_dp2dua($request);
-  
+
   $path = $url['path'];
   $options = $url['options'];
-  
+
   if (!empty($options)) {
     foreach ($options as $key => $value) {
       $options[$key] = $value;
     }
   }
-  
+
   drupal_goto($path, $url['options'], $http_response_code);
 }
 
@@ -19,14 +19,14 @@ function cnapi_ui_get_active_url() {
   $path = $_GET['q'];
   $query = $_GET;
   unset($query['q']);
-  
+
   $url = array(
     'path' => $_GET['q'],
     'options' => array(
       'query' => $query,
     ),
   );
-  
+
   return $url;
 }
 
