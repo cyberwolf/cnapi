@@ -36,10 +36,10 @@
 	    $('.has-datepicker').bind('change', function () {
         if ($(this).val() == '_datepicker') {
           $('.date-picker[rel=' + $(this).attr('id') + ']').dpDisplay();
-        }
         
-        // we need to reset the selected option so we won't submit invalid options to Drupal
-        $(this).val('_none');
+          // we need to reset the selected option so we won't submit invalid options to Drupal
+          $(this).val('_none');
+        }
         
         return false;
       });
@@ -75,6 +75,7 @@
           }
         });
       
+      // highlighting selected dates in datepicker
       $('.is-datepicker').each(function () {
         if ($(this).val() != '') {
           var dates = $(this).val().split(';');

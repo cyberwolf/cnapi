@@ -70,13 +70,13 @@ function cnapi_browse_block_search() {
 function cnapi_browse_search_form() {
   $form = array();
 
-  $form['what'] = array(
+  $form['query'] = array(
     '#type' => 'textfield',
     '#title' => t('What'),
     '#size' => 20,
   );
 
-  $form['where'] = array(
+  $form['city'] = array(
     '#type' => 'textfield',
     '#title' => t('Where'),
     '#autocomplete_path' => 'cnapi/autocomplete/location',
@@ -106,6 +106,10 @@ function cnapi_browse_search_form() {
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
+  
+  $form['advanced_search'] = array(
+    '#markup' => '<div id="link-advanced-search">' . l(t('Advanced search'), 'agenda/s') . '</div>',
+  );
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -127,39 +131,7 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   // initialising the request object with the event context
   $request = array('context' => 'event');
 
-  // what
-  $what = $form_state['values']['what'];
-  if (!empty($what)) {
-    $request['query']['query'] = $what;
-  }
-
-  // where
-  $where = $form_state['values']['where'];
-  if (!empty($where)) {
-    $where_parsed = cnapi_location_parse($where);
-
-    if ($where_parsed) {
-      $type = $where_parsed['type'];
-      $value = $where_parsed['value'];
-
-      $request['query'][$type] = $value;
-    }
-    else {
-      $request['query']['city'] = $where;
-    }
-  }
-
-  // when
-  $when = $form_state['values']['when'];
-  if ($when != CNAPI_OPTION_NONE) {
-    $request['query']['datetype'] = $when;
-  }
-  
-  // when date
-  $when_date = $form_state['values']['when_date'];
-  if (!empty($when_date)) {
-    $request['query']['date'] = $when_date;
-  }
+  cnapi_browse_process_form($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }
@@ -401,7 +373,7 @@ function cnapi_browse_filter_where($report, $type) {
   elseif (isset($request['query']['cityid'])) {
     $cityid = $request['query']['cityid'];
 
-    $id = cityid;
+    $id = $cityid;
 
     $cities = cnapi_get_cities($request['query']['cityid']);
     if (isset($cities[$cityid])) {
@@ -518,55 +490,8 @@ function cnapi_browse_filter_where_form_submit($form, &$form_state) {
   unset($request['query']['zip']);
   unset($request['query']['regio']);
   unset($request['query']['location']);
-
-  $filter_is_set = FALSE;
-
-  // city and radius
-  $city = isset($form_state['values']['city']) ? $form_state['values']['city'] : NULL;
-  if (!empty($city)) {
-    // city
-    $city_parsed = cnapi_location_parse($city);
-
-    if ($city_parsed) {
-      $type = $city_parsed['type'];
-      $value = $city_parsed['value'];
-
-      $request['query'][$type] = $value;
-    }
-    else {
-      $request['query']['city'] = $where;
-    }
-
-    // radius
-    $radius = $form_state['values']['radius'];
-    if (!empty($radius) && !empty($city) && is_numeric($radius)) {
-      if (!$city_parsed) {
-        $request['query']['city'] . '!' . $radius . 'km';
-      }
-      elseif (in_array($city_parsed['type'], array('city', 'cityid', 'zip'))) {
-        $type = $city_parsed['type'];
-        $request['query'][$type] .= '!' . $radius . 'km';
-      }
-    }
-
-    $filter_is_set = TRUE;
-  }
-
-  // location (only if no city was chosen)
-  if (!$filter_is_set && isset($form_state['values']['location'])) {
-    $location = $form_state['values']['location'];
-    if ($location != CNAPI_OPTION_NONE) {
-      $request['query']['location'] = $location;
-
-      $filter_is_set = TRUE;
-    }
-  }
-
-  // province (only if no city or location was chosen)
-  $province = $form_state['values']['province'];
-  if (!$filter_is_set && $province != CNAPI_OPTION_NONE) {
-    $request['query']['regio'] = $province;
-  }
+  
+  cnapi_browse_process_form($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }
@@ -626,7 +551,7 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
   
   $request = cnapi_ui_get_active_request();
   
-  $form['date'] = array(
+  $form['when_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Date'),
     '#default_value' => isset($request['query']['date']) ? $request['query']['date'] : '',
@@ -634,6 +559,9 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
     '#size' => 10,
     '#attributes' => array('class' => array('is-datepicker')),
   );
+  
+  $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
+  $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
   
   $form['submit'] = array(
     '#type' => 'submit',
@@ -650,11 +578,7 @@ function cnapi_browse_filter_when_form_submit($form, &$form_state) {
   unset($request['query']['date']);
   unset($request['query']['datetype']);
   
-  // date
-  $date = $form_state['values']['date'];
-  if (!empty($date)) {
-    $request['query']['date'] = $date;
-  }
+  cnapi_browse_process_form($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }

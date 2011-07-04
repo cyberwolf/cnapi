@@ -4,6 +4,22 @@ require_once('cnapi_browse.helpers.inc');
 require_once('cnapi_browse.preprocess.inc');
 
 /**
+ * Implements hook_menu().
+ */
+function cnapi_browse_menu() {
+  $items['agenda/s'] = array(
+    'title' => 'Advanced search',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cnapi_browse_advanced_search_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_browse.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_block_info().
  */
 function cnapi_browse_block_info() {

@@ -63,3 +63,69 @@ function cnapi_browse_get_event_report($query = array()) {
 
   return $report;
 }
+
+function cnapi_browse_process_form(&$request, $values) {
+  // what
+  if (isset($values['query'])) {
+    $query = $values['query'];
+    if (!empty($query)) {
+      $request['query']['query'] = $query;
+    }
+  }
+  
+  $filter_is_set = FALSE;
+
+  // where
+  $city = isset($values['city']) ? $values['city'] : NULL;
+  if (!empty($city)) {
+    $city_parsed = cnapi_location_parse($city);
+
+    if ($city_parsed) {
+      $type = $city_parsed['type'];
+      $value = $city_parsed['value'];
+
+      $request['query'][$type] = $value;
+    }
+    else {
+      $request['query']['city'] = $where;
+    }
+
+    // radius
+    $radius = isset($values['radius']) ? $values['radius'] : NULL;
+    if (!empty($radius) && is_numeric($radius)) {
+      if (!$city_parsed) {
+        $request['query']['city'] . '!' . $radius . 'km';
+      }
+      elseif (in_array($city_parsed['type'], array('city', 'cityid', 'zip'))) {
+        $type = $city_parsed['type'];
+        $request['query'][$type] .= '!' . $radius . 'km';
+      }
+    }
+    
+    $filter_is_set = TRUE;
+  }
+
+  // province (only if no city or location was chosen)
+  $province = isset($values['province']) ? $values['province'] : NULL;
+  if (!$filter_is_set && !empty($province) && $province != CNAPI_OPTION_NONE) {
+    $request['query']['regio'] = $province;
+  }
+
+  // region (only if no city or province was chosen)
+  $region = isset($values['region']) ? $values['region'] : NULL;
+  if (!$filter_is_set && !empty($region) && $region != CNAPI_OPTION_NONE) {
+    $request['query']['regio'] = $region;
+  }
+
+  // when date
+  $when_date = isset($values['when_date']) ? $values['when_date'] : NULL;
+  if (!empty($when_date)) {
+    $request['query']['date'] = $when_date;
+  }
+
+  // when
+  $when = isset($values['when']) ? $values['when'] : NULL;
+  if (!empty($when) && $when != CNAPI_OPTION_NONE && empty($when_date)) {
+    $request['query']['datetype'] = $when;
+  }
+}
