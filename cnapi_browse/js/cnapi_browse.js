@@ -73,7 +73,17 @@
           else {
             $('#' + $(this).attr('rel') + '-date').val(result.join(';'));
           }
-        }); 
+        });
+      
+      $('.is-datepicker').each(function () {
+        if ($(this).val() != '') {
+          var dates = $(this).val().split(';');
+          for (var i in dates) {
+            var date = Date.fromString(dates[i], 'yyyy-mm-dd').asString('dd/mm/yyyy');
+            $('.date-picker[rel=' + $(this).attr('id') + ']').dpSetSelected(date);
+          }
+        }
+      });
     }
   };
 })(jQuery);
