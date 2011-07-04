@@ -97,8 +97,10 @@ function cnapi_browse_search_form() {
   );
   
   $form['when_date'] = array(
-    '#type' => 'hidden',
+    '#title' => t('Date'),
+    '#type' => 'textfield',
     '#default_value' => '',
+    '#description' => t('Format is yyyy/mm/dd'),
   );
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
