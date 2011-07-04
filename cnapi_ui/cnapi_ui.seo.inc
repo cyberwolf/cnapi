@@ -12,6 +12,15 @@ function template_preprocess_link(&$variables) {
     if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
+    
+    $classes = isset($variables['options']['attributes']['class']) ? $variables['options']['attributes']['class'] : array();
+    
+    $classes = array_diff($classes, array('active'));
+    
+    unset($variables['options']['attributes']['class']);
+    if (!empty($classes)) {
+      $variables['options']['attributes']['class'] = $classes;
+    }
   }
 }
 
