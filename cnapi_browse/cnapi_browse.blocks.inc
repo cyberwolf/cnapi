@@ -7,10 +7,8 @@ function cnapi_browse_block_navigation() {
     return;
   }
 
-  $report_headings = $report['headings'];
-
   $items = array();
-  foreach ($report_headings as $report_item) {
+  foreach ($report['headings'] as $report_item) {
     $link_context = isset($report_item['link']['context']) ? $report_item['link']['context'] : 'event';
 
     $item = array(
@@ -199,11 +197,9 @@ function cnapi_browse_filter_what_event($report) {
     }
   }
 
-  $report_headings = $report['headings'];
-
   $filter_options = array();
 
-  foreach ($report_headings as $report_item) {
+  foreach ($report['headings'] as $report_item) {
     if (cnapi_output_type_has_heading_groups() && !empty($active_headings) && !in_array($report_item['id'], $active_headings)) {
       continue;
     }
