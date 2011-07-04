@@ -85,7 +85,9 @@ function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = 
         }
       }
       else {
-        cnapi_browse_sort_subreport($report[$type]);
+        if (isset($report[$type])) {
+          cnapi_browse_sort_subreport($report[$type]);
+        }
       }
     }
   }
