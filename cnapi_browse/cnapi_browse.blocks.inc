@@ -107,14 +107,14 @@ function cnapi_browse_search_form() {
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
-  
-  $form['advanced_search'] = array(
-    '#markup' => '<div id="link-advanced-search">' . l(t('Advanced search'), 'agenda/s') . '</div>',
-  );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Search'),
+  );
+  
+  $form['advanced_search'] = array(
+    '#markup' => '<div id="link-advanced-search">' . l(t('Advanced search'), 'agenda/s') . '</div>',
   );
 
   return $form;
