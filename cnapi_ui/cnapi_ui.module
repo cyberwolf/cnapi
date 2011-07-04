@@ -72,12 +72,3 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
 
   return $contexts;
 }
-
-/**
- * Preprocess variables for theme_link.
- *
- * @see theme_link()
- */
-function template_preprocess_link(&$variables) {
-  $variables['options']['attributes']['rel'] = 'nofollow';
-}
