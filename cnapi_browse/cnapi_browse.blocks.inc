@@ -93,7 +93,16 @@ function cnapi_browse_search_form() {
     '#title' => t('When'),
     '#options' => $options,
     '#default_value' => -1,
+    '#attributes' => array('class' => array('has-datepicker')),
   );
+  
+  $form['when_date'] = array(
+    '#type' => 'hidden',
+    '#default_value' => '',
+  );
+  
+  $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
+  $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -141,6 +150,12 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   $when = $form_state['values']['when'];
   if ($when != CNAPI_OPTION_NONE) {
     $request['query']['datetype'] = $when;
+  }
+  
+  // when date
+  $when_date = $form_state['values']['when_date'];
+  if (!empty($when_date)) {
+    $request['query']['date'] = $when_date;
   }
 
   cnapi_ui_goto($request);

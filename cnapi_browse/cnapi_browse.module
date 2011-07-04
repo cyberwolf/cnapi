@@ -53,3 +53,50 @@ function cnapi_browse_theme() {
     ),
   );
 }
+
+/**
+ * Implements hook_library().
+ */
+function cnapi_browse_library() {
+  $path = drupal_get_path('module', 'cnapi_browse');
+  
+  // bgiframe
+  $libraries['jquery.bgiframe'] = array(
+    'title' => 'bgiframe',
+    'website' => 'http://plugins.jquery.com/project/bgiframe',
+    'version' => '2.1.1',
+    'js' => array(
+      $path . '/js/jquery.bgiframe.js' => array(),
+    ),
+  );
+  
+  // date
+  $libraries['date'] = array(
+    'title' => 'Datejs',
+    'website' => 'http://www.datejs.com',
+    'version' => 'alpha1',
+    'js' => array(
+      $path . '/js/date.js' => array(),
+      $path . '/js/date_nl.js' => array(),
+    ),
+  );
+  
+  // jQuery Datepicker
+  $libraries['jquery.datePicker'] = array(
+    'title' => 'Datejs',
+    'website' => 'http://www.kelvinluck.com/assets/jquery/datePicker/',
+    'version' => '2',
+    'js' => array(
+      $path . '/js/jquery.datePicker.js' => array(),
+    ),
+    'css' => array(
+      $path . '/css/datepicker.css' => array(),
+    ),
+    'dependencies' => array(
+      array('cnapi_browse', 'jquery.bgiframe'),
+      array('cnapi_browse', 'date'),
+    ),
+  );
+  
+  return $libraries;
+}
