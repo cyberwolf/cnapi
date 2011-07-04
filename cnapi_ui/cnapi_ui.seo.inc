@@ -94,12 +94,12 @@ function cnapi_ui_seo_redirects() {
 
   if (count(array_intersect(array_keys($request), array('actor', 'event', 'production'))) > 0) {
     $object = cnapi_get(cnapi_url_dp2p($request));
-    
-    if (isset($request['event'])) {
-      $request['title'] = $object['detail']['nl']['title'];
+
+    if (isset($request['actor'])) {
+      $request['title'] = $object['title'];
     }
     else {
-      $request['title'] = $object['title'];
+      $request['title'] = $object['detail']['nl']['title'];
     }
     
     $url = cnapi_url_dp2dua($request);
