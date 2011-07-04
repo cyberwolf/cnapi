@@ -75,7 +75,7 @@ function cnapi_browse_theme() {
  */
 function cnapi_browse_library() {
   $path = drupal_get_path('module', 'cnapi_browse');
-  
+
   // bgiframe
   $libraries['jquery.bgiframe'] = array(
     'title' => 'bgiframe',
@@ -85,7 +85,7 @@ function cnapi_browse_library() {
       $path . '/js/jquery.bgiframe.js' => array(),
     ),
   );
-  
+
   // date
   $libraries['date'] = array(
     'title' => 'Datejs',
@@ -96,7 +96,7 @@ function cnapi_browse_library() {
       $path . '/js/date_nl.js' => array(),
     ),
   );
-  
+
   // jQuery Datepicker
   $libraries['jquery.datePicker'] = array(
     'title' => 'Datejs',
@@ -113,6 +113,6 @@ function cnapi_browse_library() {
       array('cnapi_browse', 'date'),
     ),
   );
-  
+
   return $libraries;
 }
