@@ -167,6 +167,7 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
 
   // $data['shortdescription']
   _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  _cnapi_parse_shortdescription($data, 'shortdescription');
 
   // $data['thumbnail']
   _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
@@ -230,6 +231,7 @@ function _cnapi_parse_production_list_item(&$data, $xml) {
 
   // $data['shortdescription']
   _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  _cnapi_parse_shortdescription($data, 'shortdescription');
 
   // $data['thumbnail']
   _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
@@ -253,6 +255,7 @@ function _cnapi_parse_actor_list_item(&$data, $xml) {
 
   // $data['shortdescription']
   _cnapi_parse_str($data, 'shortdescription', $xml, '@shortdescription');
+  _cnapi_parse_shortdescription($data, 'shortdescription');
 
   // $data['thumbnail']
   _cnapi_parse_str($data, 'thumbnail', $xml, '@thumbnail');
@@ -480,6 +483,7 @@ function _cnapi_parse_event_detail(&$data, $field, $xml) {
 
   // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'shortdescription');
+  _cnapi_parse_shortdescription($detail, 'shortdescription');
 
   // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'longdescription');
@@ -526,6 +530,7 @@ function _cnapi_parse_production_detail(&$data, $field, $xml) {
 
   // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'shortdescription');
+  _cnapi_parse_shortdescription($detail, 'shortdescription');
 
   // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'longdescription');
@@ -566,6 +571,7 @@ function _cnapi_parse_actor_detail(&$data, $field, $xml) {
 
   // $detail['shortdescription']
   _cnapi_parse_str($detail, 'shortdescription', $xml, 'shortdescription');
+  _cnapi_parse_shortdescription($detail, 'shortdescription');
 
   // $detail['longdescription']
   _cnapi_parse_str($detail, 'longdescription', $xml, 'longdescription');
@@ -900,5 +906,18 @@ function _cnapi_parse_price(&$data, $field, $xml) {
   // adding data to requesting object
   if (!empty($price)) {
     $data[$field] = $price;
+  }
+}
+
+function _cnapi_parse_shortdescription(&$data, $field) {
+  $clean = array(
+    'Beschrijving niet beschikbaar',
+    'Beschrijving niet beschikbaar.',
+    'Niet beschikbaar',
+    'NB',
+  );
+  
+  if (isset($data[$field]) && in_array($data[$field], $clean)) {
+    $data[$field] = '';
   }
 }
