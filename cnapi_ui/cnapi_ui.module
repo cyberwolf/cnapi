@@ -51,6 +51,8 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       'path' => 'agenda/film/kinderen'
     ),
   );
+  
+  drupal_alter('cnapi_ui_contexts', $contexts);
 
   if ($key == 'path') {
     $result = array();
