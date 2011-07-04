@@ -55,7 +55,7 @@ function cnapi_browse_advanced_search_form() {
   );
   
   if (cnapi_output_type_has_heading_groups()) {
-    $form['what']['headings']['#theme'] = 'cnapi_browse_categories';
+    $form['what']['headings']['#theme'] = 'cnapi_browse_headings_element';
   }
   
   $form['where'] = array(
