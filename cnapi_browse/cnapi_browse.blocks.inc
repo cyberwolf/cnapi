@@ -132,7 +132,7 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   // initialising the request object with the event context
   $request = array('context' => 'event');
 
-  cnapi_browse_process_form($request, $form_state['values']);
+  cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }
@@ -492,7 +492,7 @@ function cnapi_browse_filter_where_form_submit($form, &$form_state) {
   unset($request['query']['regio']);
   unset($request['query']['location']);
   
-  cnapi_browse_process_form($request, $form_state['values']);
+  cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }
@@ -579,7 +579,7 @@ function cnapi_browse_filter_when_form_submit($form, &$form_state) {
   unset($request['query']['date']);
   unset($request['query']['datetype']);
   
-  cnapi_browse_process_form($request, $form_state['values']);
+  cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);
 }

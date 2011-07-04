@@ -64,7 +64,8 @@ function cnapi_browse_get_event_report($query = array()) {
   return $report;
 }
 
-function cnapi_browse_process_form(&$request, $values) {
+function cnapi_browse_process_form_values(&$request, $values) {
+  print 'test';
   // what
   if (isset($values['query'])) {
     $query = $values['query'];
