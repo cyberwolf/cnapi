@@ -101,6 +101,7 @@ function cnapi_browse_search_form() {
     '#type' => 'textfield',
     '#default_value' => '',
     '#description' => t('Format is yyyy/mm/dd'),
+    '#size' => 10,
   );
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
@@ -590,6 +591,8 @@ function cnapi_browse_filter_when($report) {
 
   // loop over all report options to build the filter
   foreach ($report_time as $report_item) {
+    // resetting custom date
+    unset($report_item['link']['query']['date']);
 
     // initiate the filter option with the link filter, total and active state
     $filter_option = array(
@@ -603,6 +606,7 @@ function cnapi_browse_filter_when($report) {
     // if this option is active in the current request filter, mark it as active and provide the "remove filter" url
     if (isset($request['query']['datetype']) && $request['query']['datetype'] == $report_item['id']) {
       $request_remove = $request;
+      unset($request_remove['query']['date']);
       unset($request_remove['query']['datetype']);
       $filter_option['url_remove'] = $request_remove;
       $filter_option['active'] = TRUE;
@@ -612,5 +616,43 @@ function cnapi_browse_filter_when($report) {
     $filter_options[] = $filter_option;
   }
 
-  return theme('cnapi_browse_filter_options', array('options' => $filter_options));
+  $form = drupal_get_form('cnapi_browse_filter_when_form');
+
+  return theme('cnapi_browse_filter_options', array('options' => $filter_options)) . drupal_render($form);
+}
+
+function cnapi_browse_filter_when_form($form, &$form_state) {
+  $form = array();
+  
+  $form['date'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Date'),
+    '#default_value' => '',
+    '#description' => t('Format is yyyy/mm/dd'),
+    '#size' => 10,
+    '#attributes' => array('class' => array('is-datepicker')),
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  
+  return $form;
+}
+
+function cnapi_browse_filter_when_form_submit($form, &$form_state) {
+  $request = cnapi_ui_get_active_request();
+
+  // resetting all "when" filters
+  unset($request['query']['date']);
+  unset($request['query']['datetype']);
+  
+  // date
+  $date = $form_state['values']['date'];
+  if (!empty($date)) {
+    $request['query']['date'] = $date;
+  }
+
+  cnapi_ui_goto($request);
 }

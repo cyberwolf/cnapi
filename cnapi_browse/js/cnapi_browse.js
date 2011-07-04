@@ -11,7 +11,13 @@
 
   Drupal.behaviors.cnapiBrowseDatePicker = {
     attach: function (context, settings) {
-      // hide the date field
+      // hide the date field for fields and add the datepicker
+      $('.form-item:has(.is-datepicker)').each(function () {
+        $(this).after('<div rel="' + $('input', this).attr('id') + '" class="date-picker date-picker-inline">xxx</div>');
+        $(this).hide();
+      });
+      
+      // hide the date field for "select" datepickers
       $('.has-datepicker').each(function () {
         var sel = '.form-item-' + $(this).attr('id') + '-date';
         sel = sel.replace('form-item-edit', 'form-item');
@@ -40,12 +46,17 @@
 
       // create the datepicker and bind the "dateSelected" event
 	    $('.date-picker')
-	      .datePicker({
-	        createButton: false,
-          displayClose: true,
-          closeOnSelect: false,
-          selectMultiple: true
-        })
+	      .each(function () {
+	        var inline = $(this).hasClass('date-picker-inline');
+	        
+	        $(this).datePicker({
+	          createButton: false,
+            displayClose: true,
+            inline: inline,
+            closeOnSelect: false,
+            selectMultiple: true
+          });
+	      })
 	    	.bind('dateSelected', function (e, selectedDate, $td, state) {
 	    	  // when picking a date, we add or remove it from the date input field
           var selectedDates = $(this).dpGetSelected();
@@ -55,8 +66,14 @@
             result.push(selectedDates[i].asString('yyyy-mm-dd'));
           }
 
-          $('#' + $(this).attr('rel') + '-date').val(result.join(';'));
-        });
-      }
+          var inline = $(this).hasClass('date-picker-inline');
+          if (inline) {
+            $('#' + $(this).attr('rel')).val(result.join(';'));
+          }
+          else {
+            $('#' + $(this).attr('rel') + '-date').val(result.join(';'));
+          }
+        }); 
+    }
   };
 })(jQuery);
