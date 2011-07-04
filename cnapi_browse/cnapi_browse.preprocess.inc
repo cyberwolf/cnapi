@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Process variables for cnapi-browse-navigation-item.tpl.php.
+ * Preprocess variables for cnapi-browse-navigation-item.tpl.php.
  *
  * @see cnapi-browse-navigation-item.tpl.php
  */
@@ -16,7 +16,7 @@ function template_preprocess_cnapi_browse_navigation_item(&$variables) {
 }
 
 /**
- * Process variables for cnapi-browse-filter-option.tpl.php.
+ * Preprocess variables for cnapi-browse-filter-option.tpl.php.
  *
  * @see cnapi-browse-filter-option.tpl.php
  */
