@@ -11,23 +11,15 @@
 
   Drupal.behaviors.cnapiBrowseDatePicker = {
     attach: function (context, settings) {
-      // hide the date field for fields and add the datepicker
-      $('.form-item:has(.is-datepicker)').each(function () {
-        $(this).after('<div rel="' + $('input', this).attr('id') + '" class="date-picker date-picker-inline">xxx</div>');
-        $(this).hide();
-      });
       
-      // hide the date field for "select" datepickers
-      $('.has-datepicker').each(function () {
-        var sel = '.form-item-' + $(this).attr('id') + '-date';
-        sel = sel.replace('form-item-edit', 'form-item');
-        $(sel).hide();
-      });
+      // hide the date field
+      $('.form-item:has(.date-for-datepicker), .form-item:has(.is-datepicker)').hide();
       
       // add the datepicker
-      $('.form-item:has(.has-datepicker)').each(function () {
-        $(this).append('<div rel="' + $('select', this).attr('id') + '" class="date-picker"></div>');
-      });
+      $('.form-item:has(.has-datepicker)').append('<div class="datepicker"></div>');
+      
+      // hide the date field for fields and add the datepicker
+      $('.form-item:has(.is-datepicker)').after('<div class="datepicker datepicker-inline"></div>');
 
       // add extra option to select field to display datepicker
       $('.has-datepicker').append($("<option></option>").val("_datepicker").text(Drupal.t('Pick a date')));
@@ -35,7 +27,7 @@
       // bind onchange event to show the datepicker when the "pick a date" option has been chosen
 	    $('.has-datepicker').bind('change', function () {
         if ($(this).val() == '_datepicker') {
-          $('.date-picker[rel=' + $(this).attr('id') + ']').dpDisplay();
+          $('.datepicker', $(this).parents('form')).dpDisplay();
         
           // we need to reset the selected option so we won't submit invalid options to Drupal
           $(this).val('_none');
@@ -45,9 +37,9 @@
       });
 
       // create the datepicker and bind the "dateSelected" event
-	    $('.date-picker')
+	    $('.datepicker')
 	      .each(function () {
-	        var inline = $(this).hasClass('date-picker-inline');
+	        var inline = $(this).hasClass('datepicker-inline');
 	        
 	        $(this).datePicker({
 	          createButton: false,
@@ -65,14 +57,9 @@
           for (var i in selectedDates) {
             result.push(selectedDates[i].asString('yyyy-mm-dd'));
           }
-
-          var inline = $(this).hasClass('date-picker-inline');
-          if (inline) {
-            $('#' + $(this).attr('rel')).val(result.join(';'));
-          }
-          else {
-            $('#' + $(this).attr('rel') + '-date').val(result.join(';'));
-          }
+          
+          $('.is-datepicker', $(this).parents('form')).val(result.join(';'));
+          $('.date-for-datepicker', $(this).parents('form')).val(result.join(';'));
         });
       
       // highlighting selected dates in datepicker
@@ -81,7 +68,7 @@
           var dates = $(this).val().split(';');
           for (var i in dates) {
             var date = Date.fromString(dates[i], 'yyyy-mm-dd').asString('dd/mm/yyyy');
-            $('.date-picker[rel=' + $(this).attr('id') + ']').dpSetSelected(date);
+            $('.datepicker', $(this).parents('form')).dpSetSelected(date);
           }
         }
       });

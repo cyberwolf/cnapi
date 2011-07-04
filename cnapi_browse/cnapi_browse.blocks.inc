@@ -102,6 +102,7 @@ function cnapi_browse_search_form() {
     '#default_value' => '',
     '#description' => t('Format is yyyy/mm/dd'),
     '#size' => 10,
+    '#attributes' => array('class' => array('date-for-datepicker')),
   );
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
