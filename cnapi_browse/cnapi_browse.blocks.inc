@@ -153,8 +153,6 @@ function cnapi_browse_block_filters() {
     $report = cnapi_get_report('production', $report_query);
   }
 
-  $output = '';
-
   if ($context['type'] == 'event') {
     $render['filter_what']['title'] = array('#markup' => '<h2>' . t('Where') . '</h2>');
     $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
