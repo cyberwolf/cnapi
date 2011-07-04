@@ -7,7 +7,8 @@
  */
 function template_preprocess_link(&$variables) {
   $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
-  if ($request && isset($request['context'])) {
+  
+  if (!empty($request) && isset($request['context'])) {
     if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
@@ -17,6 +18,10 @@ function template_preprocess_link(&$variables) {
 function cnapi_ui_set_canonical_and_noindex() {
   // get active request
   $request = cnapi_ui_get_active_request();
+  
+  if (empty($request)) {
+    return;
+  }
 
   // by default we allow robots to index and set no canonical
   $noindex = FALSE;
@@ -73,6 +78,10 @@ function cnapi_ui_set_canonical_and_noindex() {
 function cnapi_ui_seo_redirects() {
   // get active request
   $request = cnapi_ui_get_active_request();
+  
+  if (empty($request)) {
+    return;
+  }
 
   if (count(array_intersect(array_keys($request), array('actor', 'event', 'production'))) > 0) {
     $object = cnapi_get(cnapi_url_dp2p($request));
