@@ -2,6 +2,7 @@
 
 require_once('cnapi_ui.params.inc');
 require_once('cnapi_ui.helpers.inc');
+require_once('cnapi_ui.seo.inc');
 
 /**
  * Implements hook_menu().
@@ -22,6 +23,14 @@ function cnapi_ui_menu() {
   }
 
   return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function cnapi_ui_init() {
+  cnapi_ui_set_canonical_and_noindex();
+  cnapi_ui_seo_redirects();
 }
 
 function cnapi_ui_contexts($key = 'id', $id = NULL) {

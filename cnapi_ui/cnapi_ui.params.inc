@@ -160,7 +160,9 @@ function cnapi_url_dp2p($request) {
     $request_p = array(
       'action' => 'detail',
       'type' => $type,
-      'cdbid' => $request[$type],
+      'query' => array(
+        'cdbid' => $request[$type],
+      ),
     );
   }
 
