@@ -394,12 +394,18 @@ function cnapi_browse_filter_where($report, $type) {
 
   if (isset($name)) {
     $filter_options = array();
+    
+    $request_dp = cnapi_ui_get_active_request();
+
+    $request_p = cnapi_url_dp2p($request_dp);
+
+    $result = cnapi_get($request_p);
 
     $filter_option = array(
       'id' => NULL,
       'name' => t('In Flanders'),
       'url' => $request_remove,
-      'total' => 0, // @todo get total
+      'total' => $result['total'],
       'active' => FALSE,
     );
 
