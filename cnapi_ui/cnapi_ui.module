@@ -72,3 +72,17 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
 
   return $contexts;
 }
+
+/**
+ * Preprocess variables for theme_link.
+ *
+ * @see theme_link()
+ */
+function template_preprocess_link(&$variables) {
+  $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
+  if ($request && isset($request['context'])) {
+    if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
+      $variables['options']['attributes']['rel'] = 'nofollow';
+    }
+  }
+}
