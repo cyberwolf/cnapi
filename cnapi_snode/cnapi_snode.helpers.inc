@@ -9,25 +9,27 @@ function cnapi_snode_short_type_name($type) {
   return substr($type, 6, strlen($type) - 6); // 8 = strlen('cnapi_')
 }
 
-function cnapi_snode_get_shadow_node_nid($type, $object, $create = TRUE, $update = FALSE) {
+function cnapi_snode_get_shadow_node($object, $create = TRUE, $update = FALSE) {
   // Check if we already have a corresponding node and fetch its nid.
   $type = cnapi_snode_short_type_name($object->type);
-  $nid = db_query("SELECT oxn.nid FROM {cnapi_snode} oxn INNER JOIN {node} n ON n.nid = oxn.nid AND n.vid = oxn.vid WHERE oxn.id = :id AND n.type = :type", array(':id' => $object->id, ':type' => $object->type))->fetchObject();
+  $nid = db_query("SELECT oxn.nid FROM {cnapi_snode} oxn INNER JOIN {node} n ON n.nid = oxn.nid AND n.vid = oxn.vid WHERE oxn.id = :id AND n.type = :type", array(':id' => $object->id, ':type' => $object->type))->fetchField();
 
   // If we couldn't find a matching node an are allow to create it, we create the node.
   if (!$nid && $create) {
-    $nid = cnapi_snode_add_node($object);
+    $node = cnapi_snode_add_node($object);
   }
 
   // If we found a matching node but are requested to update it, we update the node.
   elseif ($nid) {
-    $nid = $nid->nid;
     if ($update) {
-      $nid = cnapi_snode_update_node($nid, $object);
+      $node = cnapi_snode_update_node($nid, $object);
+    }
+    else {
+      $node = node_load($nid);
     }
   }
 
-  return $nid;
+  return $node;
 }
 
 function cnapi_snode_update_node($nid, $object) {
@@ -51,7 +53,7 @@ function cnapi_snode_update_node($nid, $object) {
   node_submit($node);
   node_save($node);
 
-  return $nid;
+  return $node;
 }
 
 function cnapi_snode_add_node($object) {

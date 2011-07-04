@@ -51,17 +51,18 @@ function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
   $data->id = $cdbid;
   $data->title = $object['detail']['nl']['title'];
   $data->data = array();
-  $nid = cnapi_snode_get_shadow_node_nid($data);
 
-  if (!$nid) {
+  $node = cnapi_snode_get_shadow_node($data);
+
+  if (!$node) {
     $map[$path] = FALSE;
     return;
   }
 
-  $path = 'node/' . $nid;
+  $path = 'node/' . $node->nid;
 
   // set our static cache
-  $map[$path] = $nid;
+  $map[$path] = $node->nid;
 }
 
 /**
