@@ -32,6 +32,11 @@ function cnapi_ui_get_active_url() {
 
 function cnapi_ui_get_active_request() {
   $url = cnapi_ui_get_active_url();
+  
+  if (module_exists('cnapi_snode')) {
+    cnapi_snode_url_outbound_alter($url['path'], $url['options'], $url['path']);
+  }
+
   return cnapi_url_dua2dp($url);
 }
 

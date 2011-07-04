@@ -127,7 +127,7 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
 function cnapi_browse_block_filters() {
   $request = cnapi_ui_get_active_request();
 
-  if (!$request) {
+  if (!isset($request['context'])) {
     return;
   }
 

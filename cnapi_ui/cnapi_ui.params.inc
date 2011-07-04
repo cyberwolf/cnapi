@@ -84,7 +84,7 @@ function cnapi_url_dus2dp($url) {
   extract(parse_url($url));
 
   $url = array('path' => $path);
-  if ($query) {
+  if (isset($query)) {
     $url['options'] = array('query' => parse_str($query));
   }
 
@@ -96,20 +96,20 @@ function cnapi_url_dua2dp($url) {
 
   $path = $url['path'];
 
-  if (arg(0, $path) == 'agenda' && in_array(arg(1), array('a', 'e', 'p'))) {
+  if (arg(0, $path) == 'agenda' && in_array(arg(1, $path), array('a', 'e', 'p'))) {
     $types = array(
       'a' => 'actor',
       'e' => 'event',
       'p' => 'production',
     );
-    $type = $types[arg(1)];
-    $request[$type] = arg(3);
+    $type = $types[arg(1, $path)];
+    $request[$type] = arg(3, $path);
   }
 
   else {
     if ($context = cnapi_ui_contexts('path', $path)) {
       $request['context'] = $context['id'];
-      $request['query'] = $url['options']['query'];
+      $request['query'] = isset($url['options']['query']) ? $url['options']['query'] : array();
     }
   }
 
