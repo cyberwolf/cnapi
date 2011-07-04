@@ -122,9 +122,9 @@ function cnapi_browse_library() {
 
 function theme_cnapi_browse_headings_element($element = NULL) {
   $output = '';
-  
+
   $tree = cnapi_get_headings_tree();
-  
+
   foreach ($tree as $heading_group) {
     $output .= '<div id="heading-group">';
     $output .= '<strong>' . $heading_group['name'] . '</strong>';
@@ -135,6 +135,6 @@ function theme_cnapi_browse_headings_element($element = NULL) {
     }
     $output .= '</div>';
   }
-  
+
   return $output;
 }

@@ -83,7 +83,7 @@ function cnapi_browse_process_form_values(&$request, $values) {
 
   // where
   $filter_is_set = FALSE;
-  
+
   $city = isset($values['city']) ? $values['city'] : NULL;
   if (!empty($city)) {
     $city_parsed = cnapi_location_parse($city);

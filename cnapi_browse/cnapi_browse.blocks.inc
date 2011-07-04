@@ -95,7 +95,7 @@ function cnapi_browse_search_form() {
     '#default_value' => -1,
     '#attributes' => array('class' => array('has-datepicker')),
   );
-  
+
   $form['when_date'] = array(
     '#title' => t('Date'),
     '#type' => 'textfield',
@@ -104,7 +104,7 @@ function cnapi_browse_search_form() {
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
-  
+
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
 
@@ -112,7 +112,7 @@ function cnapi_browse_search_form() {
     '#type' => 'submit',
     '#value' => t('Search'),
   );
-  
+
   $form['advanced_search'] = array(
     '#markup' => '<div id="link-advanced-search">' . l(t('Advanced search'), 'agenda/s') . '</div>',
   );
@@ -394,7 +394,7 @@ function cnapi_browse_filter_where($report, $type) {
 
   if (isset($name)) {
     $filter_options = array();
-    
+
     $request_dp = cnapi_ui_get_active_request();
 
     $request_p = cnapi_url_dp2p($request_dp);
@@ -498,7 +498,7 @@ function cnapi_browse_filter_where_form_submit($form, &$form_state) {
   unset($request['query']['zip']);
   unset($request['query']['regio']);
   unset($request['query']['location']);
-  
+
   cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);
@@ -556,9 +556,9 @@ function cnapi_browse_filter_when($report) {
 
 function cnapi_browse_filter_when_form($form, &$form_state) {
   $form = array();
-  
+
   $request = cnapi_ui_get_active_request();
-  
+
   $form['when_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Date'),
@@ -567,15 +567,15 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
-  
+
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
-  
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
-  
+
   return $form;
 }
 
@@ -585,7 +585,7 @@ function cnapi_browse_filter_when_form_submit($form, &$form_state) {
   // resetting all "when" filters
   unset($request['query']['date']);
   unset($request['query']['datetype']);
-  
+
   cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);

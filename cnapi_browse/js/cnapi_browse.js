@@ -22,10 +22,10 @@
 
   Drupal.behaviors.cnapiBrowseDatePicker = {
     attach: function (context, settings) {
-      
+
       // hide the date field
       $('.form-item:has(.date-for-datepicker)').hide();
-      
+
       // hide the date field for fields and add the datepicker
       $('.form-item:has(.date-for-datepicker)').after('<div class="datepicker"></div>');
 
@@ -36,11 +36,11 @@
 	    $('.has-datepicker').bind('change', function () {
         if ($(this).val() == '_datepicker') {
           $('.datepicker', $(this).parents('form')).dpDisplay();
-        
+
           // we need to reset the selected option so we won't submit invalid options to Drupal
           $(this).val('_none');
         }
-        
+
         return false;
       });
 
@@ -48,7 +48,7 @@
 	    $('.datepicker')
 	      .each(function () {
 	        var inline = $(this).parents('form').has('.has-datepicker').length == 0;
-	        
+
 	        $(this).datePicker({
 	          createButton: false,
             displayClose: true,
@@ -65,10 +65,10 @@
           for (var i in selectedDates) {
             result.push(selectedDates[i].asString('yyyy-mm-dd'));
           }
-          
+
           $('.date-for-datepicker', $(this).parents('form')).val(result.join(';'));
         });
-      
+
       // highlighting selected dates in datepicker
       $('.date-for-datepicker').each(function () {
         if ($(this).val() != '') {

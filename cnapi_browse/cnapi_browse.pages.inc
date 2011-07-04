@@ -2,17 +2,17 @@
 
 function cnapi_browse_advanced_search_form() {
   $form = array();
-  
+
   $options = array();
-  
+
   $report = cnapi_browse_get_event_report();
 
   if (isset($report['headings'])) {
     $report_headings = $report['headings'];
-    
+
     if (cnapi_output_type_has_heading_groups()) {
       $report_headings = array();
-    
+
       foreach ($report['headings'] as $report_item) {
         if (isset($report_item['children'])) {
           foreach ($report_item['children'] as $id => $child_report_item) {
@@ -21,14 +21,14 @@ function cnapi_browse_advanced_search_form() {
         }
       }
     }
-    
+
     uasort($report_headings, 'cnapi_report_sort_total');
-    
+
     foreach ($report_headings as $id => $heading) {
       $options[$id] = $heading['name'];
     }
   }
-  
+
   $form['what'] = array(
     '#type' => 'fieldset',
     '#title' => t('What'),
@@ -46,11 +46,11 @@ function cnapi_browse_advanced_search_form() {
     '#title' => t('Category'),
     '#options' => $options,
   );
-  
+
   if (cnapi_output_type_has_heading_groups()) {
     $form['what']['headings']['#theme'] = 'cnapi_browse_headings_element';
   }
-  
+
   $form['where'] = array(
     '#type' => 'fieldset',
     '#title' => t('Where'),
@@ -63,14 +63,14 @@ function cnapi_browse_advanced_search_form() {
     '#autocomplete_path' => 'cnapi/autocomplete/location',
     '#size' => 20,
   );
-  
+
   $form['where']['radius'] = array(
     '#type' => 'textfield',
     '#prefix' => '+',
     '#suffix' => 'km',
     '#size' => 2,
   );
-  
+
   $provinces = cnapi_get_provinces();
   $options = cnapi_get_select_options($provinces, 'lid', 'name', t('Choose a province'));
 
@@ -79,7 +79,7 @@ function cnapi_browse_advanced_search_form() {
     '#title' => t('Province'),
     '#options' => $options,
   );
-  
+
   $regions = cnapi_get_regions_tourist();
   $options = cnapi_get_select_options($regions, 'lid', 'name', t('Choose a region'));
 
@@ -88,13 +88,13 @@ function cnapi_browse_advanced_search_form() {
     '#title' => t('Region'),
     '#options' => $options,
   );
-  
+
   $form['when'] = array(
     '#type' => 'fieldset',
     '#title' => t('When'),
     '#collapsible' => FALSE,
   );
-    
+
   $form['when']['when_date'] = array(
     '#type' => 'textfield',
     '#title' => t('Date'),
@@ -103,7 +103,7 @@ function cnapi_browse_advanced_search_form() {
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
-  
+
   $valid_types = array('today', 'tomorrow', 'thisweek', 'thisweekend', 'nextweekend', 'next30days');
   $datetypes = array_intersect_key(cnapi_get_datetypes(), array_flip($valid_types));
 
@@ -115,16 +115,16 @@ function cnapi_browse_advanced_search_form() {
     '#options' => $options,
     '#default_value' => -1,
   );
-  
+
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
   $form['#attached']['js'][] = drupal_get_path('module', 'cnapi_browse') . '/js/cnapi_browse.js';
-  
+
   $form['extra'] = array(
     '#type' => 'fieldset',
     '#title' => t('Extra'),
     '#collapsible' => FALSE,
   );
-	
+
   $options = array(
     'isfree:true' => t('Free offer'),
     'type:!0.50.6.0.0' => t('Exclude movies'),
@@ -158,7 +158,7 @@ function cnapi_browse_advanced_search_form_submit($form, &$form_state) {
 
   // initialising the request object with the event context
   $request = array('context' => 'event');
-  
+
   cnapi_browse_process_form_values($request, $form_state['values']);
 
   cnapi_ui_goto($request);
