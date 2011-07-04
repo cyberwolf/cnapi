@@ -3,7 +3,7 @@
 function cnapi_browse_block_navigation() {
   $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE);
 
-  if (!isset($report['headings'])) {
+  if (!isset($report['headings']) || empty($report['headings'])) {
     return;
   }
 
@@ -42,7 +42,10 @@ function cnapi_browse_block_navigation() {
   }
 
   $block['subject'] = t('Browse all categories');
-  $block['content'] = theme('cnapi_browse_navigation', array('items' => $items));
+  $block['content'] = array(
+    '#theme' => 'cnapi_browse_navigation', 
+    '#items' => $items
+  );
 
   return $block;
 }
@@ -153,24 +156,24 @@ function cnapi_browse_block_filters() {
   $output = '';
 
   if ($context['type'] == 'event') {
-    $output .= '<h2>Wat</h2>';
-    $output .= cnapi_browse_filter_what_event($report);
+    $render['filter_what']['title'] = array('#markup' => '<h2>' . t('Where') . '</h2>');
+    $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
   }
 
-  $output .= '<h2>Where</h2>';
-  $output .= cnapi_browse_filter_where($report, $context['type']);
+  $render['filter_where']['title'] = array('#markup' => '<h2>' . t('Where') . '</h2>');
+  $render['filter_where']['filter'] = cnapi_browse_filter_where($report, $context['type']);
 
-  $output .= '<h2>Wanneer</h2>';
-  $output .= cnapi_browse_filter_when($report);
+  $render['filter_when']['title'] = array('#markup' => '<h2>' . t('When') . '</h2>');
+  $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
 
   $block['subject'] = t('Filter search results');
-  $block['content'] = $output;
+  $block['content'] = $render;
 
   return $block;
 }
 
 function cnapi_browse_filter_what_event($report) {
-  if (!isset($report['headings'])) {
+  if (!isset($report['headings']) || empty($report['headings'])) {
     return;
   }
 
@@ -279,7 +282,10 @@ function cnapi_browse_filter_what_event($report) {
 
   // @todo add option "all headings"
 
-  return theme('cnapi_browse_filter_options', array('options' => $filter_options));
+  return array(
+    '#theme' => 'cnapi_browse_filter_options',
+    '#options' => $filter_options,
+  );
 }
 
 function cnapi_browse_filter_where($report, $type) {
@@ -402,15 +408,18 @@ function cnapi_browse_filter_where($report, $type) {
     $filter_options[] = $filter_option;
   }
 
-  $form = drupal_get_form('cnapi_browse_filter_where_form', $report, $type);
-
-  $output = '';
+  $render = array();
+  
   if (isset($filter_options)) {
-    $output .= theme('cnapi_browse_filter_options', array('options' => $filter_options));
+    $render['filter_options'] = array(
+      '#theme' => 'cnapi_browse_filter_options',
+      '#options' => $filter_options,
+    );
   }
-  $output .= drupal_render($form);
+  
+  $render['filter_form'] = drupal_get_form('cnapi_browse_filter_where_form', $report, $type);
 
-  return $output;
+  return $render;
 }
 
 function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
@@ -526,9 +535,18 @@ function cnapi_browse_filter_when($report) {
     $filter_options[] = $filter_option;
   }
 
-  $form = drupal_get_form('cnapi_browse_filter_when_form');
+  $render = array();
+  
+  if (isset($filter_options)) {
+    $render['filter_options'] = array(
+      '#theme' => 'cnapi_browse_filter_options',
+      '#options' => $filter_options,
+    );
+  }
+  
+  $render['filter_form'] = drupal_get_form('cnapi_browse_filter_when_form');
 
-  return theme('cnapi_browse_filter_options', array('options' => $filter_options)) . drupal_render($form);
+  return $render;
 }
 
 function cnapi_browse_filter_when_form($form, &$form_state) {
