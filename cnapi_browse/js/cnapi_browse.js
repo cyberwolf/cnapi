@@ -1,11 +1,11 @@
 (function ($) {
   $.dpText = {
-	  TEXT_PREV_YEAR		:	'Vorig jaar',
-	  TEXT_PREV_MONTH		:	'Vorige maand',
-	  TEXT_NEXT_YEAR		:	'Volgend jaar',
-	  TEXT_NEXT_MONTH		:	'Volgende maand',
-	  TEXT_CLOSE			  :	'Sluiten',
-	  TEXT_CHOOSE_DATE	:	'Kies datum',
+	  TEXT_PREV_YEAR		:	Drupal.t('Previous year'),
+	  TEXT_PREV_MONTH		:	Drupal.t('Previous month'),
+	  TEXT_NEXT_YEAR		:	Drupal.t('Next year'),
+	  TEXT_NEXT_MONTH		:	Drupal.t('Next month'),
+	  TEXT_CLOSE			  :	Drupal.t('Close'),
+	  TEXT_CHOOSE_DATE	:	Drupal.t('Choose date'),
 	  HEADER_FORMAT		  :	'mmmm yyyy'
   };
 
