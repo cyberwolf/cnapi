@@ -67,6 +67,9 @@ function cnapi_browse_theme() {
       'variables' => array('option' => NULL),
       'template' => 'cnapi-browse-filter-option',
     ),
+    'cnapi_browse_categories' => array(
+      'render element' => 'element',
+    ),
   );
 }
 
@@ -115,4 +118,21 @@ function cnapi_browse_library() {
   );
 
   return $libraries;
+}
+
+function theme_cnapi_browse_categories($element = NULL) {
+  $output = '';
+  
+  $tree = cnapi_get_headings_tree();
+  
+  foreach ($tree as $heading_group) {
+    $output .= '<h2>' . $heading_group['name'] . '</h2>';
+    foreach ($heading_group['children'] as $id => $heading) {
+      if (isset($element['element'][$id])) {
+        $output .= drupal_render($element['element'][$id]);
+      }
+    }
+  }
+  
+  return $output;
 }

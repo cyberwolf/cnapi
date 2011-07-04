@@ -314,7 +314,7 @@ function _cnapi_get_categories($did) {
   return $categories[$did];
 }
 
-function cnapi_get_headings($tid) {
+function cnapi_get_headings($tid = NULL) {
   $headings = &drupal_static(__FUNCTION__, NULL);
   
   if (!$tid) {
@@ -328,7 +328,7 @@ function cnapi_get_headings($tid) {
   return $headings;
 }
 
-function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
+function cnapi_get_headings_tree($tid = NULL, $tree_type = 'tree') {
   return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_headings', array($tid));
 }
 

@@ -72,10 +72,17 @@ function cnapi_browse_process_form(&$request, $values) {
       $request['query']['query'] = $query;
     }
   }
+  if (isset($values['headings']) && is_array($values['headings'])) {
+    $headings = array_filter($values['headings']);
 
-  $filter_is_set = FALSE;
+    if (!empty($headings)) {
+      $request['query']['heading'] = implode(';', $headings);
+    }
+  }
 
   // where
+  $filter_is_set = FALSE;
+  
   $city = isset($values['city']) ? $values['city'] : NULL;
   if (!empty($city)) {
     $city_parsed = cnapi_location_parse($city);
@@ -87,7 +94,7 @@ function cnapi_browse_process_form(&$request, $values) {
       $request['query'][$type] = $value;
     }
     else {
-      $request['query']['city'] = $where;
+      $request['query']['city'] = $city;
     }
 
     // radius
@@ -130,7 +137,7 @@ function cnapi_browse_process_form(&$request, $values) {
   }
 
   // extra
-  $extra = isset($values['extra']) ? array_filter($values['extra']) : NULL;
+  $extra = isset($values['extra']) && is_array($values['extra']) ? array_filter($values['extra']) : array();
   if (!empty($extra)) {
     foreach ($extra as $option) {
       list($key, $value) = explode(':', $option);
