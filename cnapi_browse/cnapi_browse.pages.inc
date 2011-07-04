@@ -65,7 +65,7 @@ function cnapi_browse_advanced_search_form() {
     '#default_value' => '',
     '#description' => t('Format is yyyy/mm/dd'),
     '#size' => 10,
-    '#attributes' => array('class' => array('is-datepicker')),
+    '#attributes' => array('class' => array('date-for-datepicker')),
   );
   
   $valid_types = array('today', 'tomorrow', 'thisweek', 'thisweekend', 'nextweekend', 'next30days');

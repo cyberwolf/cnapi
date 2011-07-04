@@ -558,7 +558,7 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
     '#default_value' => isset($request['query']['date']) ? $request['query']['date'] : '',
     '#description' => t('Format is yyyy/mm/dd'),
     '#size' => 10,
-    '#attributes' => array('class' => array('is-datepicker')),
+    '#attributes' => array('class' => array('date-for-datepicker')),
   );
   
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');

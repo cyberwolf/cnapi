@@ -13,13 +13,10 @@
     attach: function (context, settings) {
       
       // hide the date field
-      $('.form-item:has(.date-for-datepicker), .form-item:has(.is-datepicker)').hide();
-      
-      // add the datepicker
-      $('.form-item:has(.has-datepicker)').append('<div class="datepicker"></div>');
+      $('.form-item:has(.date-for-datepicker)').hide();
       
       // hide the date field for fields and add the datepicker
-      $('.form-item:has(.is-datepicker)').after('<div class="datepicker datepicker-inline"></div>');
+      $('.form-item:has(.date-for-datepicker)').after('<div class="datepicker"></div>');
 
       // add extra option to select field to display datepicker
       $('.has-datepicker').append($("<option></option>").val("_datepicker").text(Drupal.t('Pick a date')));
@@ -39,7 +36,7 @@
       // create the datepicker and bind the "dateSelected" event
 	    $('.datepicker')
 	      .each(function () {
-	        var inline = $(this).hasClass('datepicker-inline');
+	        var inline = $(this).parents('form').has('.has-datepicker').length == 0;
 	        
 	        $(this).datePicker({
 	          createButton: false,
@@ -58,12 +55,11 @@
             result.push(selectedDates[i].asString('yyyy-mm-dd'));
           }
           
-          $('.is-datepicker', $(this).parents('form')).val(result.join(';'));
           $('.date-for-datepicker', $(this).parents('form')).val(result.join(';'));
         });
       
       // highlighting selected dates in datepicker
-      $('.is-datepicker').each(function () {
+      $('.date-for-datepicker').each(function () {
         if ($(this).val() != '') {
           var dates = $(this).val().split(';');
           for (var i in dates) {
