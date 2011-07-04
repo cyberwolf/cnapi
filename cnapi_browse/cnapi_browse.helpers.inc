@@ -153,6 +153,12 @@ function cnapi_browse_process_form_values(&$request, $values) {
     $filter_is_set = TRUE;
   }
 
+  // region (only if no city or province was chosen)
+  $location = isset($values['location']) ? $values['location'] : NULL;
+  if (!$filter_is_set && !empty($location) && $location != CNAPI_OPTION_NONE) {
+    $request['query']['location'] = $location;
+  }
+
   // province (only if no city or location was chosen)
   $province = isset($values['province']) ? $values['province'] : NULL;
   if (!$filter_is_set && !empty($province) && $province != CNAPI_OPTION_NONE) {
