@@ -5,6 +5,7 @@ version = VERSION
 core = 7.x
 dependencies[] = cnapi
 files[] = cnapi_ui.module
+files[] = cnapi_ui.seo.inc
 files[] = cnapi_ui.helpers.inc
 files[] = cnapi_ui.pages.inc
 files[] = cnapi_ui.params.inc
