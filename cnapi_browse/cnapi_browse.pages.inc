@@ -5,22 +5,10 @@ function cnapi_browse_advanced_search_form() {
 
   $options = array();
 
-  $report = cnapi_browse_get_event_report();
+  $report = cnapi_browse_get_event_report(array(), TRUE);
 
   if (isset($report['headings'])) {
     $report_headings = $report['headings'];
-
-    if (cnapi_output_type_has_heading_groups()) {
-      $report_headings = array();
-
-      foreach ($report['headings'] as $report_item) {
-        if (isset($report_item['children'])) {
-          foreach ($report_item['children'] as $id => $child_report_item) {
-            $report_headings[$id] = $child_report_item;
-          }
-        }
-      }
-    }
 
     uasort($report_headings, 'cnapi_report_sort_total');
 

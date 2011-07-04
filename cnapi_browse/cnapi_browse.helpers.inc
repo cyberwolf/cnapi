@@ -1,6 +1,6 @@
 <?php
 
-function cnapi_browse_get_event_report($query = array()) {
+function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = FALSE) {
   cnapi_ui_apply_context_query($query, 'event');
 
   $report = cnapi_get_report('event', $query);
@@ -59,6 +59,20 @@ function cnapi_browse_get_event_report($query = array()) {
       unset($movies_children_item['link']['query']['heading']);
       $movies_children_item['link']['context'] = 'movie_children';
     }
+  }
+
+  if (cnapi_output_type_has_heading_groups() && isset($report['headings']) && $skip_heading_groups) {
+    $report_headings = array();
+
+    foreach ($report['headings'] as $report_item) {
+      if (isset($report_item['children'])) {
+        foreach ($report_item['children'] as $id => $child_report_item) {
+          $report_headings[$id] = $child_report_item;
+        }
+      }
+    }
+    
+    $report['headings'] = $report_headings;
   }
 
   return $report;

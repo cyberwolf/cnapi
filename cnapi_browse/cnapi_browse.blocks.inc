@@ -157,7 +157,7 @@ function cnapi_browse_block_filters() {
   cnapi_ui_apply_context_query($report_query, $request['context']);
 
   if ($context['type'] == 'event') {
-    $report = cnapi_browse_get_event_report($report_query);
+    $report = cnapi_browse_get_event_report($report_query, TRUE);
   }
   elseif ($context['type'] == 'production') {
     $report = cnapi_get_report('production', $report_query);
@@ -211,18 +211,6 @@ function cnapi_browse_filter_what_event($report) {
   }
 
   $report_headings = $report['headings'];
-
-  if (cnapi_output_type_has_heading_groups()) {
-    $report_headings = array();
-
-    foreach ($report['headings'] as $report_item) {
-      if (isset($report_item['children'])) {
-        foreach ($report_item['children'] as $id => $child_report_item) {
-          $report_headings[$id] = $child_report_item;
-        }
-      }
-    }
-  }
 
   uasort($report_headings, 'cnapi_report_sort_total');
   foreach ($report_headings as $id => $report_item) {
