@@ -10,8 +10,8 @@ function cnapi_browse_get_event_report($query = array()) {
 
   if ($movies_context) {
     $movies_query = $query;
-    cnapi_ui_remove_context_query($query, 'event');
-    unset($query['heading']);
+    cnapi_ui_remove_context_query($movies_query, 'event');
+    unset($movies_query['heading']);
     cnapi_ui_apply_context_query($movies_query, 'movie');
 
     $movies = cnapi_get_productions($movies_query);
@@ -38,8 +38,8 @@ function cnapi_browse_get_event_report($query = array()) {
 
   if ($movies_children_context) {
     $movies_children_query = $query;
-    cnapi_ui_remove_context_query($query, 'event');
-    unset($query['heading']);
+    cnapi_ui_remove_context_query($movies_children_query, 'event');
+    unset($movies_children_query['heading']);
     cnapi_ui_apply_context_query($movies_children_query, 'movie_children');
 
     $movies_children = cnapi_get_productions($movies_children_query);
