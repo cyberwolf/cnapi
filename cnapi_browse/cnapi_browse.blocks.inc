@@ -446,6 +446,7 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
     '#type' => 'select',
     '#title' => t('Province'),
     '#options' => $options,
+    '#attributes' => array('class' => array('autosubmit')),
   );
 
   if ($type == 'event') {

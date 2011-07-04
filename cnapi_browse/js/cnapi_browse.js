@@ -9,6 +9,17 @@
 	  HEADER_FORMAT		  :	'mmmm yyyy'
   };
 
+  Drupal.behaviors.cnapiBrowseAutoSubmitForm = {
+    attach: function (context, settings) {
+      $('.autosubmit').change(function() {
+        if ($(this).val() != '_none') {
+          $(this).parents('form').submit();
+          $(this).attr('disabled', true);
+        }
+      });
+    }
+  };
+
   Drupal.behaviors.cnapiBrowseDatePicker = {
     attach: function (context, settings) {
       
