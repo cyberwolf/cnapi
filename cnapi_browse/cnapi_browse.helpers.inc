@@ -1,6 +1,6 @@
 <?php
 
-function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = FALSE) {
+function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = FALSE, $sort_types = array(), $sort_heading_groups = TRUE) {
   cnapi_ui_apply_context_query($query, 'event');
 
   $report = cnapi_get_report('event', $query);
@@ -74,12 +74,36 @@ function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = 
     
     $report['headings'] = $report_headings;
   }
+  
+  if (!empty($sort_types)) {
+    foreach ($sort_types as $type) {
+      if ($type == 'headings' && cnapi_output_type_has_heading_groups() && !$sort_heading_groups) {
+        foreach ($report['headings'] as $id => $subreport) {
+          if (!empty($subreport['children'])) {
+            cnapi_browse_sort_subreport($report['headings'][$id]['children']);
+          }
+        }
+      }
+      else {
+        cnapi_browse_sort_subreport($report[$type]);
+      }
+    }
+  }
 
   return $report;
 }
 
+function cnapi_browse_sort_subreport(&$report) {
+  uasort($report, 'cnapi_report_sort_total');
+
+  foreach ($report as $id => $subreport) {
+    if (!empty($subreport['children'])) {
+      cnapi_browse_sort_subreport($report[$id]['children']);
+    }
+  }
+}
+
 function cnapi_browse_process_form_values(&$request, $values) {
-  print 'test';
   // what
   if (isset($values['query'])) {
     $query = $values['query'];

@@ -5,14 +5,10 @@ function cnapi_browse_advanced_search_form() {
 
   $options = array();
 
-  $report = cnapi_browse_get_event_report(array(), TRUE);
+  $report = cnapi_browse_get_event_report(array(), TRUE, array('headings'));
 
   if (isset($report['headings'])) {
-    $report_headings = $report['headings'];
-
-    uasort($report_headings, 'cnapi_report_sort_total');
-
-    foreach ($report_headings as $id => $heading) {
+    foreach ($report['headings'] as $id => $heading) {
       $options[$id] = $heading['name'];
     }
   }

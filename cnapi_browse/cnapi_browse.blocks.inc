@@ -1,24 +1,13 @@
 <?php
 
 function cnapi_browse_block_navigation() {
-  $report = cnapi_browse_get_event_report();
+  $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE);
 
   if (!isset($report['headings'])) {
     return;
   }
 
   $report_headings = $report['headings'];
-
-  if (!cnapi_output_type_has_heading_groups()) {
-    uasort($report_headings, 'cnapi_report_sort_total');
-  }
-  else {
-    foreach ($report_headings as $id => $report_item) {
-      if (isset($report_headings[$id]['children'])) {
-        uasort($report_headings[$id]['children'], 'cnapi_report_sort_total');
-      }
-    }
-  }
 
   $items = array();
   foreach ($report_headings as $report_item) {
@@ -157,7 +146,7 @@ function cnapi_browse_block_filters() {
   cnapi_ui_apply_context_query($report_query, $request['context']);
 
   if ($context['type'] == 'event') {
-    $report = cnapi_browse_get_event_report($report_query, TRUE);
+    $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'));
   }
   elseif ($context['type'] == 'production') {
     $report = cnapi_get_report('production', $report_query);
@@ -211,13 +200,6 @@ function cnapi_browse_filter_what_event($report) {
   }
 
   $report_headings = $report['headings'];
-
-  uasort($report_headings, 'cnapi_report_sort_total');
-  foreach ($report_headings as $id => $report_item) {
-    if (isset($report_headings[$id]['children'])) {
-      uasort($report_headings[$id]['children'], 'cnapi_report_sort_total');
-    }
-  }
 
   $filter_options = array();
 
