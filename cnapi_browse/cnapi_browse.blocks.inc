@@ -181,6 +181,8 @@ function cnapi_browse_filter_what_event($report) {
   $request_headings = isset($request['query']['heading']) ? explode(';', $request['query']['heading']) : array();
 
   $active_headings = array();
+  
+  $active_heading_groups = array();
 
   $the_depth = cnapi_output_type_has_heading_groups() ? 2 : 1;
 
@@ -188,8 +190,13 @@ function cnapi_browse_filter_what_event($report) {
     if (!cnapi_output_type_has_heading_groups()) {
       $active_headings[] = $active_heading;
     }
-    elseif ($headings[$active_heading]['depth'] != 0) {
-      $active_headings[] = $active_heading;
+    else {
+      if ($headings[$active_heading]['depth'] != 0) {
+        $active_headings[] = $active_heading;
+      }
+      else {
+        $active_heading_groups[] = $active_heading;
+      }
     }
 
     if ($headings[$active_heading]['depth'] == $the_depth) {
@@ -199,8 +206,12 @@ function cnapi_browse_filter_what_event($report) {
 
   $filter_options = array();
 
-  foreach ($report['headings'] as $report_item) {
+  foreach ($report['headings'] as $id => $report_item) {
     if (cnapi_output_type_has_heading_groups() && !empty($active_headings) && !in_array($report_item['id'], $active_headings)) {
+      continue;
+    }
+    
+    if (!empty($active_heading_groups) && !in_array($headings[$id]['pid'], $active_heading_groups)) {
       continue;
     }
 
