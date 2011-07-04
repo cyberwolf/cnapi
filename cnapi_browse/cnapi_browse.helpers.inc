@@ -128,4 +128,13 @@ function cnapi_browse_process_form(&$request, $values) {
   if (!empty($when) && $when != CNAPI_OPTION_NONE && empty($when_date)) {
     $request['query']['datetype'] = $when;
   }
+  
+  // extra
+  $extra = isset($values['extra']) ? array_filter($values['extra']) : NULL;
+  if (!empty($extra)) {
+    foreach ($extra as $option) {
+      list($key, $value) = explode(':', $option);
+      $request['query'][$key] = $value;
+    }
+  }
 }
