@@ -3,37 +3,30 @@
 function cnapi_browse_advanced_search_form() {
   $form = array();
   
+  $options = array();
+  
   $report = cnapi_browse_get_event_report();
 
-  if (!isset($report['headings'])) {
-    return;
-  }
-
-  $report_headings = $report['headings'];
-
-  if (cnapi_output_type_has_heading_groups()) {
-    $report_headings = array();
-
-    foreach ($report['headings'] as $report_item) {
-      if (isset($report_item['children'])) {
-        foreach ($report_item['children'] as $id => $child_report_item) {
-          $report_headings[$id] = $child_report_item;
+  if (isset($report['headings'])) {
+    $report_headings = $report['headings'];
+    
+    if (cnapi_output_type_has_heading_groups()) {
+      $report_headings = array();
+    
+      foreach ($report['headings'] as $report_item) {
+        if (isset($report_item['children'])) {
+          foreach ($report_item['children'] as $id => $child_report_item) {
+            $report_headings[$id] = $child_report_item;
+          }
         }
       }
     }
-  }
-
-  uasort($report_headings, 'cnapi_report_sort_total');
-  foreach ($report_headings as $id => $report_item) {
-    if (isset($report_headings[$id]['children'])) {
-      uasort($report_headings[$id]['children'], 'cnapi_report_sort_total');
+    
+    uasort($report_headings, 'cnapi_report_sort_total');
+    
+    foreach ($report_headings as $id => $heading) {
+      $options[$id] = $heading['name'];
     }
-  }
-  
-  $options = array();
-  
-  foreach ($report_headings as $id => $heading) {
-    $options[$id] = $heading['name'];
   }
   
   $form['what'] = array(
