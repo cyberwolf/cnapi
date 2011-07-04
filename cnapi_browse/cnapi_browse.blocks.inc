@@ -73,12 +73,14 @@ function cnapi_browse_search_form() {
   $form['what'] = array(
     '#type' => 'textfield',
     '#title' => t('What'),
+    '#size' => 20,
   );
 
   $form['where'] = array(
     '#type' => 'textfield',
     '#title' => t('Where'),
     '#autocomplete_path' => 'cnapi/autocomplete/location',
+    '#size' => 20,
   );
 
   $valid_types = array('today', 'tomorrow', 'thisweek', 'thisweekend', 'nextweekend', 'next30days');
@@ -454,6 +456,7 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
       '#type' => 'textfield',
       '#title' => t('City'),
       '#autocomplete_path' => 'cnapi/autocomplete/location',
+      '#size' => 20,
     );
 
     $form['radius'] = array(
