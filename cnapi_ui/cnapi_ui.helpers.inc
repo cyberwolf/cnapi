@@ -16,9 +16,25 @@ function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) 
 }
 
 function cnapi_ui_get_active_url() {
+  $url = &drupal_static(__FUNCTION__, NULL);
+  
+  if ($url) {
+    return $url;
+  }
+
   $path = $_GET['q'];
   $query = $_GET;
   unset($query['q']);
+  
+  $valid_queries_common = array('key', 'q', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
+  $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
+
+  $valid_queries = array_merge($valid_queries_common, $valid_queries_events_productions);
+  $diff = array_diff(array_keys($query), $valid_queries);
+  
+  foreach ($diff as $key) {
+    unset($query[$key]);
+  }
 
   $url = array(
     'path' => $_GET['q'],
