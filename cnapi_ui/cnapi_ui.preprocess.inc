@@ -55,3 +55,59 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
   $variables['is_vlieg'] = isset($variables['event']['agefrom']) && $variables['event']['agefrom'] < 12;
   // @todo $variables['vlieg_image']
 }
+
+/**
+ * Preprocess variables for cnapi-ui-production.tpl.php.
+ *
+ * @see cnapi-ui-production.tpl.php
+ */
+function template_preprocess_cnapi_ui_production_summary(&$variables) {
+  // cdbid
+  $variables['cdbid'] = $variables['production']['cdbid'];
+
+  // title
+  $variables['title'] = check_plain($variables['production']['title']);
+
+  // object_url
+  $request_detail = array(
+    'production' => $variables['production']['cdbid'],
+    'title' => $variables['production']['title'],
+  );
+
+  $variables['object_url'] = cnapi_url_dp2dus($request_detail);
+
+  // thumbnail
+  $variables['thumbnail'] = isset($variables['production']['thumbnail']) && !empty($variables['production']['thumbnail']) ? $variables['production']['thumbnail'] : url(drupal_get_path('module', 'cnapi_ui') . '/img/no-image.jpg');
+
+  // shortdescription
+  $variables['shortdescription'] = isset($variables['production']['shortdescription']) && !empty($variables['production']['shortdescription']) ? truncate_utf8(strip_tags($variables['production']['shortdescription']), 200, TRUE, TRUE) : NULL;
+
+  // performers
+  $variables['performers'] = NULL;
+
+  if (isset($variables['production']['performers'])) {
+    $performers = array_slice($variables['production']['performers'], 0, 3);
+    $variables['performers'] = implode(', ', $performers);
+
+    if (count($variables['production']['performers']) > 3) {
+      $variables['performers'] .= ',&nbsp;&hellip;';
+    }
+  }
+
+  // where
+  $where = array();
+  if (isset($variables['production']['location']) && !empty($variables['production']['location'])) {
+    $where[] = check_plain($variables['production']['location']);
+  }
+  if (isset($variables['production']['city']) && !empty($variables['production']['city'])) {
+    $where[] = check_plain($variables['production']['city']);
+  }
+  $variables['where'] = !empty($where) ? implode(', ', $where) : NULL;
+
+  // when
+  $variables['when'] = isset($variables['production']['calendarsummary']) ? $variables['production']['calendarsummary'] : NULL;
+  
+  // vlieg
+  $variables['is_vlieg'] = isset($variables['production']['agefrom']) && $variables['production']['agefrom'] < 12;
+  // @todo $variables['vlieg_image']
+}

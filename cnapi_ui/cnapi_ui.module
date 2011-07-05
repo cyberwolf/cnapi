@@ -43,6 +43,10 @@ function cnapi_ui_theme() {
       'variables' => array('event' => NULL),
       'template' => 'cnapi-ui-event-summary',
     ),
+    'cnapi_ui_production_summary' => array(
+      'variables' => array('production' => NULL),
+      'template' => 'cnapi-ui-production-summary',
+    ),
   );
 }
 
