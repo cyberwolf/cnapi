@@ -7,7 +7,7 @@
   <?php print render($title_suffix); ?>
 
 	<?php if ($thumbnail) : ?>
-		<a href="<?php print $object_url ?>"><img src="<?php print $thumbnail ?>" alt="<?php print $title ?>"/></a>
+		<?php print $thumbnail ?>
 	<?php endif; ?>
 
 	<?php if ($shortdescription) : ?>

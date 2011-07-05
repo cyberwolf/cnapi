@@ -5,9 +5,13 @@
     <a href="<?php print $object_url; ?>"><?php print $title; ?></a>
   </h2>
   <?php print render($title_suffix); ?>
+  
+  <?php if ($is_vlieg) : ?>
+    <?php print $vlieg_image ?>
+  <?php endif; ?>
 
 	<?php if ($thumbnail) : ?>
-		<a href="<?php print $object_url ?>"><img src="<?php print $thumbnail ?>" alt="<?php print $title ?>"/></a>
+		<?php print $thumbnail ?>
 	<?php endif; ?>
 
 	<?php if ($shortdescription) : ?>

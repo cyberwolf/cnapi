@@ -21,8 +21,10 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   $variables['object_url'] = cnapi_url_dp2dus($request_detail);
 
   // thumbnail
-  // @todo provide -no-image
-  $variables['thumbnail'] = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : url(drupal_get_path('module', 'cnapi_ui') . '/img/no-image.jpg');
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg');
+  $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
+  $variables['thumbnail'] = l($thumbnail_img, $variables['object_url'], array('html' => TRUE));
 
   // shortdescription
   $variables['shortdescription'] = isset($object['shortdescription']) && !empty($object['shortdescription']) ? truncate_utf8(strip_tags($object['shortdescription']), 200, TRUE, TRUE) : NULL;
@@ -48,6 +50,16 @@ function _template_preprocess_cnapi_ui_object_performers(&$variables, $type) {
 }
 
 /**
+ * Helper for preprocessing performers in cnapi_ui_event_summary, cnapi_ui_project_summary.
+ */
+function _template_preprocess_cnapi_ui_object_vlieg(&$variables, $type) {
+  $vlieg_description = 'Hallo, ik ben Vlieg en ik wijs de weg naar leuke activiteiten voor kinderen. Meer info op www.vliegjemee.be!';
+  
+  $vlieg_image_url = url(drupal_get_path('module', 'cnapi_ui') . '/img/vlieg.jpg');
+  $variables['vlieg_image'] = theme('image', array('path' => $vlieg_image_url, 'alt' => $vlieg_description, 'title' => $vlieg_description));
+}
+
+/**
  * Preprocess variables for cnapi-ui-actor.tpl.php.
  *
  * @see cnapi-ui-actor.tpl.php
@@ -68,6 +80,9 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
 
   // performers
   _template_preprocess_cnapi_ui_object_performers($variables, 'event');
+  
+  // vlieg
+  _template_preprocess_cnapi_ui_object_vlieg($variables, 'event');
 
   // where
   $where = array();
@@ -84,7 +99,6 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
 
   // vlieg
   $variables['is_vlieg'] = isset($event['agefrom']) && $event['agefrom'] < 12;
-  // @todo $variables['vlieg_image']
 }
 
 /**
@@ -99,8 +113,13 @@ function template_preprocess_cnapi_ui_production_summary(&$variables) {
 
   // performers
   _template_preprocess_cnapi_ui_object_performers($variables, 'event');
+  
+  // vlieg
+  _template_preprocess_cnapi_ui_object_vlieg($variables, 'event');
 
   // vlieg
   $variables['is_vlieg'] = isset($production['agefrom']) && $production['agefrom'] < 12;
-  // @todo $variables['vlieg_image']
+  
+  // vlieg image
+  $variables['vlieg_image'] = url(drupal_get_path('module', 'cnapi_ui') . '/img/vlieg.jpg');
 }
