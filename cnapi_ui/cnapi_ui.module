@@ -100,5 +100,5 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
     return isset($contexts[$key][$id]) ? $contexts[$key][$id] : NULL;
   }
 
-  return $contexts;
+  return $contexts[$key];
 }
