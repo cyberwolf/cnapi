@@ -4,7 +4,7 @@
  * Helper for preprocessing variables common between cnapi_ui_actor_summary, cnapi_ui_event_summary, cnapi_ui_project_summary.
  */
 function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
-  $object = $object;
+  $object = $variables[$type];
   
   // cdbid
   $variables['cdbid'] = $object['cdbid'];
