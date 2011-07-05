@@ -25,5 +25,13 @@ function cnapi_ui_page_list() {
     }
   }
 
-  return theme('item_list', array('items' => $items)) . theme('pager');
+  return array(
+    'items' => array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+    ),
+    'pager' => array(
+      '#theme' => 'pager',
+    )
+  );
 }
