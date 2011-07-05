@@ -55,49 +55,49 @@ function cnapi_ui_theme() {
 }
 
 function cnapi_ui_contexts($key = 'id', $id = NULL) {
-  $contexts = array(
-    'event' => array(
-      'id' => 'event',
-      'type' => 'event',
-      'query' => array('locationtype' => '!8.9.1.0.0'),
-      'path' => 'agenda/search',
-    ),
-    'actor' => array(
-      'id' => 'actor',
-      'type' => 'actor',
-      'query' => array(),
-      'path' => 'agenda/ar',
-    ),
-    'movie' => array(
-      'id' => 'movie',
-      'type' => 'production',
-      'query' => array('type' => '0.50.6.0.0'),
-      'path' => 'agenda/film',
-    ),
-    'movie_children' => array(
-      'id' => 'movie_children',
-      'type' => 'production',
-      'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
-      'path' => 'agenda/film/kinderen'
-    ),
-  );
+  $contexts = &drupal_static(__FUNCTION__, NULL);
+  
+  if (!$contexts) {
+    $contexts['id'] = array(
+      'event' => array(
+        'id' => 'event',
+        'type' => 'event',
+        'query' => array('locationtype' => '!8.9.1.0.0'),
+        'path' => 'agenda/search',
+      ),
+      'actor' => array(
+        'id' => 'actor',
+        'type' => 'actor',
+        'query' => array(),
+        'path' => 'agenda/ar',
+      ),
+      'movie' => array(
+        'id' => 'movie',
+        'type' => 'production',
+        'query' => array('type' => '0.50.6.0.0'),
+        'path' => 'agenda/film',
+      ),
+      'movie_children' => array(
+        'id' => 'movie_children',
+        'type' => 'production',
+        'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
+        'path' => 'agenda/film/kinderen'
+      ),
+    );
+    
+    drupal_alter('cnapi_ui_contexts', $contexts);
+    
+    $contexts['path'] = array();
 
-  drupal_alter('cnapi_ui_contexts', $contexts);
-
-  if ($key == 'path') {
-    $result = array();
-
-    foreach ($contexts as $context => $info) {
+    foreach ($contexts['id'] as $context => $info) {
       $path = $info['path'];
 
-      $result[$path] = $info;
+      $contexts['path'][$path] = $info;
     }
-
-    $contexts = $result;
   }
 
   if ($id) {
-    return isset($contexts[$id]) ? $contexts[$id] : NULL;
+    return isset($contexts[$key][$id]) ? $contexts[$key][$id] : NULL;
   }
 
   return $contexts;
