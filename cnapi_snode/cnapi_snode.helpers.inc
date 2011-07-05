@@ -5,11 +5,37 @@
  * Helper functions for the Cultuurnet API shadow node module.
  */
 
+/**
+ * Get the short name (actor, event or production) from the content type name (cnapi_actor, cnapi_event or cnapi_production).
+ *
+ * @param $type
+ *   The node type (cnapi_actor, cnapi_event or cnapi_production).
+ *
+ * @return
+ *   A string representing the short name (actor, event or production).
+ */
 function cnapi_snode_short_type_name($type) {
   return substr($type, 6, strlen($type) - 6); // 8 = strlen('cnapi_')
 }
 
+/**
+ * Get the short name (actor, event or production) from the content type name (cnapi_actor, cnapi_event or cnapi_production).
+ *
+ * @param $object
+ *   The node type (cnapi_actor, cnapi_event or cnapi_production).
+ * @param $create
+ *   Boolean indicating wether a new node should be created if no matching node was found for the object.
+ *   The new node will be created with the data provided in $object.
+ *   If $create is FALSE and no matching node was found, FALSE will be returned.
+ * @param $update
+ *   Boolean indicating wether the matching node should be updated with the data provided in $object.
+ *
+ * @return
+ *   The node matching the type and ID of $object. FALSE in case no matching node was found and $create was FALSE or in case creation failed.
+ */
 function cnapi_snode_get_shadow_node($object, $create = TRUE, $update = FALSE) {
+  $node = FALSE;
+
   // Check if we already have a corresponding node and fetch its nid.
   $type = cnapi_snode_short_type_name($object->type);
   $nid = db_query("SELECT oxn.nid FROM {cnapi_snode} oxn INNER JOIN {node} n ON n.nid = oxn.nid AND n.vid = oxn.vid WHERE oxn.id = :id AND n.type = :type", array(':id' => $object->id, ':type' => $object->type))->fetchField();
@@ -32,6 +58,17 @@ function cnapi_snode_get_shadow_node($object, $create = TRUE, $update = FALSE) {
   return $node;
 }
 
+/**
+ * Update a node with a certain $nid and info.
+ *
+ * @param $nid
+ *   The node id of the node to update.
+ * @param $object
+ *   An object containing the data to update for the node.
+ *
+ * @return
+ *   The node matching the type and ID of $object. FALSE in case no matching node was found and $create was FALSE or in case creation failed.
+ */
 function cnapi_snode_update_node($nid, $object) {
   // Loading the node.
   $node = node_load($nid, NULL, TRUE);
@@ -56,6 +93,15 @@ function cnapi_snode_update_node($nid, $object) {
   return $node;
 }
 
+/**
+ * Create a node with a certain info.
+ *
+ * @param $object
+ *   An object containing the data to for the node to be created.
+ *
+ * @return
+ *   The resulting node object. FALSE in case of failure.
+ */
 function cnapi_snode_add_node($object) {
   // Constructs the node object.
   $types = node_type_get_types();
