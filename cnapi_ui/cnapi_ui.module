@@ -3,6 +3,7 @@
 require_once('cnapi_ui.params.inc');
 require_once('cnapi_ui.helpers.inc');
 require_once('cnapi_ui.seo.inc');
+require_once('cnapi_ui.preprocess.inc');
 
 /**
  * Implements hook_menu().
@@ -31,6 +32,18 @@ function cnapi_ui_menu() {
 function cnapi_ui_init() {
   cnapi_ui_set_canonical_and_noindex();
   cnapi_ui_seo_redirects();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnapi_ui_theme() {
+  return array(
+    'cnapi_ui_event_summary' => array(
+      'variables' => array('event' => NULL),
+      'template' => 'cnapi-ui-event-summary',
+    ),
+  );
 }
 
 function cnapi_ui_contexts($key = 'id', $id = NULL) {

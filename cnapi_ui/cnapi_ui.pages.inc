@@ -20,12 +20,8 @@ function cnapi_ui_page_list() {
   // mockup : showing data
   $items = array();
   if ($data) {
-    foreach ($data as $production) {
-      $request_detail = array(
-        $context['type'] => $production['cdbid'],
-        'title' => $production['title'],
-      );
-      $items[] = cnapi_url_dp2dul($production['title'], $request_detail);
+    foreach ($data as $object) {
+      $items[] = theme('cnapi_ui_' . $context['type'] . '_summary', array($context['type'] => $object));
     }
   }
 
