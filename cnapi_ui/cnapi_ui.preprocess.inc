@@ -1,31 +1,31 @@
 <?php
 
 /**
- * Preprocess variables for cnapi-ui-actor.tpl.php.
- *
- * @see cnapi-ui-actor.tpl.php
+ * Helper for preprocessing variables common between cnapi_ui_actor_summary, cnapi_ui_event_summary, cnapi_ui_project_summary.
  */
 function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
+  $object = $object;
+  
   // cdbid
-  $variables['cdbid'] = $variables[$type]['cdbid'];
+  $variables['cdbid'] = $object['cdbid'];
 
   // title
-  $variables['title'] = check_plain($variables[$type]['title']);
+  $variables['title'] = check_plain($object['title']);
 
   // object_url
   $request_detail = array(
-    $type => $variables[$type]['cdbid'],
-    'title' => $variables[$type]['title'],
+    $type => $object['cdbid'],
+    'title' => $object['title'],
   );
 
   $variables['object_url'] = cnapi_url_dp2dus($request_detail);
 
   // thumbnail
   // @todo provide -no-image
-  $variables['thumbnail'] = isset($variables[$type]['thumbnail']) && !empty($variables[$type]['thumbnail']) ? $variables[$type]['thumbnail'] : url(drupal_get_path('module', 'cnapi_ui') . '/img/no-image.jpg');
+  $variables['thumbnail'] = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : url(drupal_get_path('module', 'cnapi_ui') . '/img/no-image.jpg');
 
   // shortdescription
-  $variables['shortdescription'] = isset($variables[$type]['shortdescription']) && !empty($variables[$type]['shortdescription']) ? truncate_utf8(strip_tags($variables[$type]['shortdescription']), 200, TRUE, TRUE) : NULL;
+  $variables['shortdescription'] = isset($object['shortdescription']) && !empty($object['shortdescription']) ? truncate_utf8(strip_tags($object['shortdescription']), 200, TRUE, TRUE) : NULL;
 }
 
 /**
@@ -44,34 +44,36 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
  */
 function template_preprocess_cnapi_ui_event_summary(&$variables) {
   _template_preprocess_cnapi_ui_object_summary($variables, 'event');
+  
+  $event = $variables['event'];
 
   // performers
   $variables['performers'] = NULL;
 
-  if (isset($variables['event']['performers'])) {
-    $performers = array_slice($variables['event']['performers'], 0, 3);
+  if (isset($event['performers'])) {
+    $performers = array_slice($event['performers'], 0, 3);
     $variables['performers'] = implode(', ', $performers);
 
-    if (count($variables['event']['performers']) > 3) {
+    if (count($event['performers']) > 3) {
       $variables['performers'] .= ',&nbsp;&hellip;';
     }
   }
 
   // where
   $where = array();
-  if (isset($variables['event']['location']) && !empty($variables['event']['location'])) {
-    $where[] = check_plain($variables['event']['location']);
+  if (isset($event['location']) && !empty($event['location'])) {
+    $where[] = check_plain($event['location']);
   }
-  if (isset($variables['event']['city']) && !empty($variables['event']['city'])) {
-    $where[] = check_plain($variables['event']['city']);
+  if (isset($event['city']) && !empty($event['city'])) {
+    $where[] = check_plain($event['city']);
   }
   $variables['where'] = !empty($where) ? implode(', ', $where) : NULL;
 
   // when
-  $variables['when'] = isset($variables['event']['calendarsummary']) ? $variables['event']['calendarsummary'] : NULL;
+  $variables['when'] = isset($event['calendarsummary']) ? $event['calendarsummary'] : NULL;
   
   // vlieg
-  $variables['is_vlieg'] = isset($variables['event']['agefrom']) && $variables['event']['agefrom'] < 12;
+  $variables['is_vlieg'] = isset($event['agefrom']) && $event['agefrom'] < 12;
   // @todo $variables['vlieg_image']
 }
 
@@ -82,20 +84,22 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
  */
 function template_preprocess_cnapi_ui_production_summary(&$variables) {
   _template_preprocess_cnapi_ui_object_summary($variables, 'production');
+  
+  $production = $variables['production'];
 
   // performers
   $variables['performers'] = NULL;
 
-  if (isset($variables['production']['performers'])) {
-    $performers = array_slice($variables['production']['performers'], 0, 3);
+  if (isset($production['performers'])) {
+    $performers = array_slice($production['performers'], 0, 3);
     $variables['performers'] = implode(', ', $performers);
 
-    if (count($variables['production']['performers']) > 3) {
+    if (count($production['performers']) > 3) {
       $variables['performers'] .= ',&nbsp;&hellip;';
     }
   }
   
   // vlieg
-  $variables['is_vlieg'] = isset($variables['production']['agefrom']) && $variables['production']['agefrom'] < 12;
+  $variables['is_vlieg'] = isset($production['agefrom']) && $production['agefrom'] < 12;
   // @todo $variables['vlieg_image']
 }
