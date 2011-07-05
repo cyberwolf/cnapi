@@ -5,7 +5,7 @@
  */
 function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   $object = $variables[$type];
-  
+
   // cdbid
   $variables['cdbid'] = $object['cdbid'];
 
@@ -33,7 +33,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
  */
 function _template_preprocess_cnapi_ui_object_performers(&$variables, $type) {
   $object = $variables[$type];
-  
+
   // performers
   $variables['performers'] = NULL;
 
@@ -63,7 +63,7 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
  */
 function template_preprocess_cnapi_ui_event_summary(&$variables) {
   _template_preprocess_cnapi_ui_object_summary($variables, 'event');
-  
+
   $event = $variables['event'];
 
   // performers
@@ -81,7 +81,7 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
 
   // when
   $variables['when'] = isset($event['calendarsummary']) ? $event['calendarsummary'] : NULL;
-  
+
   // vlieg
   $variables['is_vlieg'] = isset($event['agefrom']) && $event['agefrom'] < 12;
   // @todo $variables['vlieg_image']
@@ -94,12 +94,12 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
  */
 function template_preprocess_cnapi_ui_production_summary(&$variables) {
   _template_preprocess_cnapi_ui_object_summary($variables, 'production');
-  
+
   $production = $variables['production'];
 
   // performers
   _template_preprocess_cnapi_ui_object_performers($variables, 'event');
-  
+
   // vlieg
   $variables['is_vlieg'] = isset($production['agefrom']) && $production['agefrom'] < 12;
   // @todo $variables['vlieg_image']

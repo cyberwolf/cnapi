@@ -71,10 +71,10 @@ function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = 
         }
       }
     }
-    
+
     $report['headings'] = $report_headings;
   }
-  
+
   if (!empty($sort_types)) {
     foreach ($sort_types as $type) {
       if ($type == 'headings' && cnapi_output_type_has_heading_groups() && !$sort_heading_groups && !$skip_heading_groups) {
@@ -191,6 +191,6 @@ function cnapi_browse_process_form_values(&$request, $values) {
       $request['query'][$key] = $value;
     }
   }
-  
+
   module_invoke_all('cnapi_browse_process_form_values', $request, $values);
 }

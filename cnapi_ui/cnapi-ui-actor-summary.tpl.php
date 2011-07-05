@@ -5,15 +5,15 @@
     <a href="<?php print $object_url; ?>"><?php print $title; ?></a>
   </h2>
   <?php print render($title_suffix); ?>
-  
+
 	<?php if ($thumbnail) : ?>
 		<a href="<?php print $object_url ?>"><img src="<?php print $thumbnail ?>" alt="<?php print $title ?>"/></a>
 	<?php endif; ?>
-	
+
 	<?php if ($shortdescription) : ?>
 	  <div class="description">
 	    <?php print $shortdescription ?>
 	  </div>
 	<?php endif; ?>
-  
+
 </div>

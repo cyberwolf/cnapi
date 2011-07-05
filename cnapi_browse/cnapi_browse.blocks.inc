@@ -43,7 +43,7 @@ function cnapi_browse_block_navigation() {
 
   $block['subject'] = t('Browse all categories');
   $block['content'] = array(
-    '#theme' => 'cnapi_browse_navigation', 
+    '#theme' => 'cnapi_browse_navigation',
     '#items' => $items
   );
 
@@ -182,7 +182,7 @@ function cnapi_browse_filter_what_event($report) {
   $request_headings = isset($request['query']['heading']) ? explode(';', $request['query']['heading']) : array();
 
   $active_headings = array();
-  
+
   $active_heading_groups = array();
 
   $the_depth = cnapi_output_type_has_heading_groups() ? 2 : 1;
@@ -211,7 +211,7 @@ function cnapi_browse_filter_what_event($report) {
     if (cnapi_output_type_has_heading_groups() && !empty($active_headings) && !in_array($report_item['id'], $active_headings)) {
       continue;
     }
-    
+
     if (!empty($active_heading_groups) && !in_array($headings[$id]['pid'], $active_heading_groups)) {
       continue;
     }
@@ -407,14 +407,14 @@ function cnapi_browse_filter_where($report, $type) {
   }
 
   $render = array();
-  
+
   if (isset($filter_options)) {
     $render['filter_options'] = array(
       '#theme' => 'cnapi_browse_filter_options',
       '#options' => $filter_options,
     );
   }
-  
+
   $render['filter_form'] = drupal_get_form('cnapi_browse_filter_where_form', $report, $type);
 
   return $render;
@@ -535,14 +535,14 @@ function cnapi_browse_filter_when($report) {
   }
 
   $render = array();
-  
+
   if (isset($filter_options)) {
     $render['filter_options'] = array(
       '#theme' => 'cnapi_browse_filter_options',
       '#options' => $filter_options,
     );
   }
-  
+
   $render['filter_form'] = drupal_get_form('cnapi_browse_filter_when_form');
 
   return $render;

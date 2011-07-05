@@ -17,7 +17,6 @@ function cnapi_ui_page_list() {
 
   $context = cnapi_ui_contexts('id', $request_dp['context']);
 
-  // mockup : showing data
   $items = array();
   if ($data) {
     foreach ($data as $object) {

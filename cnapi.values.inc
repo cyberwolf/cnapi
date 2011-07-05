@@ -42,7 +42,7 @@ function cnapi_location_parse($input = '') {
         }
       }
     }
-  
+
     // only zip is known
     else {
       $locations = db_query("SELECT * FROM {cnapi_location} cl WHERE zip = :zip", array(':zip' => $zip))->fetchAll(PDO::FETCH_ASSOC);
@@ -191,7 +191,7 @@ function cnapi_get_cityid($zip, $name) {
   if (isset($mapping[$zip][$name])) {
     return $mapping[$zip][$name];
   }
-  
+
   return NULL;
 }
 
@@ -316,7 +316,7 @@ function _cnapi_get_categories($did) {
 
 function cnapi_get_headings($tid = NULL) {
   $headings = &drupal_static(__FUNCTION__, NULL);
-  
+
   if (!$tid) {
     $tid = variable_get('cnapi_api_output_type', 1);
   }
