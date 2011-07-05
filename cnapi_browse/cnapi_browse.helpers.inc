@@ -191,4 +191,6 @@ function cnapi_browse_process_form_values(&$request, $values) {
       $request['query'][$key] = $value;
     }
   }
+  
+  module_invoke_all('cnapi_browse_process_form_values', $request, $values);
 }
