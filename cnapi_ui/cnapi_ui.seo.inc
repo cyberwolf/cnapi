@@ -26,7 +26,7 @@ function template_preprocess_link(&$variables) {
 
 function cnapi_ui_set_canonical_and_noindex() {
   // get active request
-  $request = cnapi_ui_get_active_request();
+  $request = cnapi_ui_get_active_request(FALSE);
 
   if (empty($request)) {
     return;

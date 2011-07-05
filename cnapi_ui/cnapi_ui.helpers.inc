@@ -1,5 +1,17 @@
 <?php
 
+function cnapi_ui_clean_invalid_queries(&$query) {
+  $valid_queries_common = array('query', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
+  $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
+  
+  $valid_queries = array_merge($valid_queries_common, $valid_queries_events_productions);
+  $diff = array_diff(array_keys($query), $valid_queries);
+  
+  foreach ($diff as $key) {
+    unset($query[$key]);
+  }
+}
+
 function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) {
   $url = cnapi_url_dp2dua($request);
 
@@ -15,39 +27,33 @@ function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) 
   drupal_goto($path, $url['options'], $http_response_code);
 }
 
-function cnapi_ui_get_active_url() {
-  $url = &drupal_static(__FUNCTION__, NULL);
+function cnapi_ui_get_active_url($clean = TRUE) {
+  $url = &drupal_static(__FUNCTION__, array());
   
-  if ($url) {
-    return $url;
+  if (isset($url[$clean])) {
+    return $url[$clean];
   }
 
   $path = $_GET['q'];
   $query = $_GET;
   unset($query['q']);
   
-  $valid_queries_common = array('key', 'q', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
-  $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
-
-  $valid_queries = array_merge($valid_queries_common, $valid_queries_events_productions);
-  $diff = array_diff(array_keys($query), $valid_queries);
-  
-  foreach ($diff as $key) {
-    unset($query[$key]);
+  if ($clean) {
+    cnapi_ui_clean_invalid_queries($query);
   }
 
-  $url = array(
+  $url[$clean] = array(
     'path' => $_GET['q'],
     'options' => array(
       'query' => $query,
     ),
   );
 
-  return $url;
+  return $url[$clean];
 }
 
-function cnapi_ui_get_active_request() {
-  $url = cnapi_ui_get_active_url();
+function cnapi_ui_get_active_request($clean = TRUE) {
+  $url = cnapi_ui_get_active_url($clean);
 
   if (module_exists('cnapi_snode')) {
     cnapi_snode_url_outbound_alter($url['path'], $url['options'], $url['path']);

@@ -50,8 +50,6 @@ function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
     return;
   }
 
-  // @todo Put this in a helper function (wrapper around cnapi_snode_get_shadow_node_nid (we need both))
-
   // If an object was found, we create a $data object for cnapi_snode_get_shadow_node.
   $data = new stdClass();
   $data->type = 'cnapi_' . $type;

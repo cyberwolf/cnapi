@@ -113,8 +113,6 @@ function cnapi_url_dua2dp($url) {
     }
   }
 
-  // @todo filter unwanted query strings (vb. utm_source, ...)
-
   return $request;
 }
 
