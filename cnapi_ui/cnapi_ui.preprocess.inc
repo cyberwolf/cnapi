@@ -29,6 +29,25 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 }
 
 /**
+ * Helper for preprocessing performers in cnapi_ui_event_summary, cnapi_ui_project_summary.
+ */
+function _template_preprocess_cnapi_ui_object_performers(&$variables, $type) {
+  $object = $variables[$type];
+  
+  // performers
+  $variables['performers'] = NULL;
+
+  if (isset($object['performers'])) {
+    $performers = array_slice($object['performers'], 0, 3);
+    $variables['performers'] = implode(', ', $performers);
+
+    if (count($object['performers']) > 3) {
+      $variables['performers'] .= ',&nbsp;&hellip;';
+    }
+  }
+}
+
+/**
  * Preprocess variables for cnapi-ui-actor.tpl.php.
  *
  * @see cnapi-ui-actor.tpl.php
@@ -48,16 +67,7 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
   $event = $variables['event'];
 
   // performers
-  $variables['performers'] = NULL;
-
-  if (isset($event['performers'])) {
-    $performers = array_slice($event['performers'], 0, 3);
-    $variables['performers'] = implode(', ', $performers);
-
-    if (count($event['performers']) > 3) {
-      $variables['performers'] .= ',&nbsp;&hellip;';
-    }
-  }
+  _template_preprocess_cnapi_ui_object_performers($variables, 'event');
 
   // where
   $where = array();
@@ -88,16 +98,7 @@ function template_preprocess_cnapi_ui_production_summary(&$variables) {
   $production = $variables['production'];
 
   // performers
-  $variables['performers'] = NULL;
-
-  if (isset($production['performers'])) {
-    $performers = array_slice($production['performers'], 0, 3);
-    $variables['performers'] = implode(', ', $performers);
-
-    if (count($production['performers']) > 3) {
-      $variables['performers'] .= ',&nbsp;&hellip;';
-    }
-  }
+  _template_preprocess_cnapi_ui_object_performers($variables, 'event');
   
   // vlieg
   $variables['is_vlieg'] = isset($production['agefrom']) && $production['agefrom'] < 12;
