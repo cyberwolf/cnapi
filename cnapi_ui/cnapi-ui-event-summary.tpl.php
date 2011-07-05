@@ -20,7 +20,7 @@
 	  </div>
 	<?php endif; ?>
 
-	<?php if (/*$performers || $where || $when*/TRUE) : ?>
+	<?php if ($performers || $where || $when) : ?>
 	  <dl>
 
 	    <?php if ($performers) : ?>
