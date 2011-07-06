@@ -149,7 +149,7 @@ function theme_cnapi_ui_page_list_rss($variables) {
         'value' => $object['cdbid'],
       );
       
-      $body = theme('cnapi_ui_' . $type . '_summary', array($context['type'] => $object, 'url_absolute' => TRUE)); // @todo images and urls absolute!!!
+      $body = theme('cnapi_ui_' . $type . '_summary', array($type => $object, 'url_absolute' => TRUE)); // @todo images and urls absolute!!!
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }
