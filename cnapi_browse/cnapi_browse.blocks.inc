@@ -376,9 +376,7 @@ function cnapi_browse_filter_where($report, $type) {
   if (isset($name)) {
     $filter_options = array();
 
-    $request_dp = cnapi_ui_get_active_request();
-
-    $request_p = cnapi_url_dp2p($request_dp);
+    $request_p = cnapi_url_dp2p($request_remove);
 
     $result = cnapi_get($request_p);
 
