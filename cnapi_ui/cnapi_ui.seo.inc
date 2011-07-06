@@ -134,19 +134,10 @@ function cnapi_ui_seo_redirects() {
     // Convert the $request to a Drupal url array. This will result in the one and only correct representation of the url of the current request.
     $url = cnapi_url_dp2dua($request);
 
-    // Get the Drupal url array representation of the current request.
-    if (isset($_REQUEST['q'])) {
-      // In case we don't (for example) use clean urls we look at $_REQUEST. We use $_REQUEST['q'] because $_GET['q'] could have been rewritten at this time.
-      $path = $_REQUEST['q'];
-    }
-    else {
-      // Else we look at request_uri.
-      $uri = request_uri();
-      $path = substr($uri, strlen(base_path()), strlen($uri));
-    }
-
+    module_load_include('inc', 'cnapi_ui', 'cnapi_ui.hacks');
+    
     // Compare the $url path part of the correct representation with the path of the current request.
-    if ($url['path'] != $path) {
+    if ($url['path'] != request_path_raw()) {
       cnapi_ui_goto($request);
     }
   }
