@@ -19,14 +19,16 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   );
   
   $object_url = cnapi_url_dp2dua($request_detail);
+  $object_url['options']['absolute'] = $variables['url_absolute'];
 
   $variables['object_url'] = url($object_url['path'], $object_url['options']);
 
   // thumbnail
-  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg');
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg', array('absolute' => $variables['url_absolute']));
   $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
   $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
-  $variables['thumbnail'] = l($thumbnail_img, $object_url['path'], array('html' => TRUE, 'options' => $object_url['options']));
+  $object_url['options']['html'] = TRUE;
+  $variables['thumbnail'] = l($thumbnail_img, $object_url['path'], $object_url['options']);
 
   // shortdescription
   $variables['shortdescription'] = isset($object['shortdescription']) && !empty($object['shortdescription']) ? truncate_utf8(strip_tags($object['shortdescription']), 200, TRUE, TRUE) : NULL;

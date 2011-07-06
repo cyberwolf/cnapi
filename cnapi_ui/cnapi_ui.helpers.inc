@@ -43,7 +43,7 @@ function cnapi_ui_get_active_url($clean = TRUE) {
   }
 
   $url[$clean] = array(
-    'path' => $_GET['q'],
+    'path' => $path,
     'options' => array(
       'query' => $query,
     ),

@@ -16,6 +16,10 @@ function cnapi_ui_page_list() {
   pager_default_initialize($total, $pagelength);
 
   $context = cnapi_ui_contexts('id', $request_dp['context']);
+  
+  $url = cnapi_url_dp2dua($request_dp);
+  $url['options']['absolute'] = TRUE;
+  drupal_add_feed(url($url['path'], $url['options']), t('Title')); // @todo use correct title
 
   $items = array();
   if ($data) {
@@ -33,4 +37,41 @@ function cnapi_ui_page_list() {
       '#theme' => 'pager',
     )
   );
+}
+
+function cnapi_ui_page_list_rss() {
+  $path = substr($_GET['q'], strlen('rss/'), strlen($_GET['q']));
+  $query = $_GET;
+  unset($query['q']);
+  
+  cnapi_ui_clean_invalid_queries($query);
+  
+  unset($query['sort']);
+  unset($query['pagelength']);
+  unset($query['page']);
+  
+  $query['pagelength'] = variable_get('feed_default_items', 10);
+  $query['sort'] = 'created DESC';
+
+  $url = array(
+    'path' => $path,
+    'options' => array(
+      'query' => $query,
+    ),
+  );
+
+  $request = cnapi_url_dua2p($url);
+  
+  $request_dp = cnapi_url_dua2dp($url);
+
+  $result = cnapi_get($request);
+
+  $total = $result['total'];
+  $data = $result['data'];
+
+  $context = cnapi_ui_contexts('id', $request_dp['context']);
+
+  drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
+  
+  print theme('cnapi_ui_page_list_rss', array('objects' => $data, 'type' => $request_dp['context']));
 }
