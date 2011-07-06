@@ -134,7 +134,7 @@ function cnapi_ui_seo_redirects() {
     // Convert the $request to a Drupal url array. This will result in the one and only correct representation of the url of the current request.
     $url = cnapi_url_dp2dua($request);
 
-    // If the path parts of both urls differ, we redirect to the correct url.
+    // Compare the $url path part of the correct representation with the 'q' part of the current request. We use $_REQUEST['q'] because $_GET['q'] could have been rewritten at this time.
     if ($url['path'] != $_REQUEST['q']) {
       cnapi_ui_goto($request);
     }
