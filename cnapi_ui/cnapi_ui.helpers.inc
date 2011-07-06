@@ -1,5 +1,22 @@
 <?php
 
+function cnapi_ui_rss_feed_url($request = NULL) {
+  if (!$request) {
+    $request = cnapi_ui_get_active_request();
+  }
+  
+  if (!isset($request['context'])) {
+    return FALSE;
+  }
+
+  cnapi_ui_clean_rss_queries($request['query']);
+    
+  $url = cnapi_url_dp2dua($request);
+  $url['options']['absolute'] = TRUE;
+  
+  return url('rss/' . $url['path'], $url['options']);
+}
+
 function cnapi_ui_clean_invalid_queries(&$query) {
   $valid_queries_common = array('query', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
   $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');

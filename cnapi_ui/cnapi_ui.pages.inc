@@ -37,23 +37,6 @@ function cnapi_ui_page_list() {
   );
 }
 
-function cnapi_ui_rss_feed_url($request = NULL) {
-  if (!$request) {
-    $request = cnapi_ui_get_active_request();
-  }
-  
-  if (!isset($request['context'])) {
-    return FALSE;
-  }
-
-  cnapi_ui_clean_rss_queries($request['query']);
-    
-  $url = cnapi_url_dp2dua($request);
-  $url['options']['absolute'] = TRUE;
-  
-  return url('rss/' . $url['path'], $url['options']);
-}
-
 function cnapi_ui_page_list_rss() {
   $path = substr($_GET['q'], strlen('rss/'), strlen($_GET['q']));
   $query = $_GET;
