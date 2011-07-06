@@ -320,7 +320,7 @@ function cnapi_browse_filter_where($report, $type) {
 
       $name = $municipalities[$region]['name'];
       if ($report_geo) {
-        $total = $report_geo[$province]['children'][$pid]['children'][$region_tourist]['total'];
+        $total = $report_geo[$province]['children'][$region_tourist]['children'][$region]['total'];
       }
     }
   }
