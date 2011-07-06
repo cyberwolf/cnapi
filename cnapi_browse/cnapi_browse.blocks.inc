@@ -154,7 +154,7 @@ function cnapi_browse_block_filters() {
   }
 
   if ($context['type'] == 'event') {
-    $render['filter_what']['title'] = array('#markup' => '<h2>' . t('Where') . '</h2>');
+    $render['filter_what']['title'] = array('#markup' => '<h2>' . t('What') . '</h2>');
     $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
   }
 
