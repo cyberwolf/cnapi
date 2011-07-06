@@ -13,11 +13,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   $variables['title'] = check_plain($object['title']);
 
   // object_url
-  $request_detail = array(
-    $type => $object['cdbid'],
-    'title' => $object['title'],
-  );
-
+  $request_detail = array($type => $object['cdbid'], 'title' => $object['title']);
   $object_url = cnapi_url_dp2dua($request_detail);
   $object_url['options']['absolute'] = $variables['url_absolute'];
 
