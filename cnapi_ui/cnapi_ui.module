@@ -96,7 +96,7 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       ),
     );
 
-    drupal_alter('cnapi_ui_contexts', $contexts);
+    drupal_alter('cnapi_ui_contexts', $contexts['id']);
 
     $contexts['path'] = array();
 
