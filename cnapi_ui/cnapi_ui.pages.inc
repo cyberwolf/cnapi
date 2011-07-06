@@ -17,9 +17,7 @@ function cnapi_ui_page_list() {
 
   $context = cnapi_ui_contexts('id', $request_dp['context']);
 
-  $url = cnapi_url_dp2dua($request_dp);
-  $url['options']['absolute'] = TRUE;
-  drupal_add_feed(url($url['path'], $url['options']), t('Title')); // @todo use correct title
+  drupal_add_feed(cnapi_ui_rss_feed_url(), t('Title')); // @todo use correct title
 
   $items = array();
   if ($data) {
@@ -39,16 +37,30 @@ function cnapi_ui_page_list() {
   );
 }
 
+function cnapi_ui_rss_feed_url($request = NULL) {
+  if (!$request) {
+    $request = cnapi_ui_get_active_request();
+  }
+  
+  if (!isset($request['context'])) {
+    return FALSE;
+  }
+
+  cnapi_ui_clean_rss_queries($request['query']);
+    
+  $url = cnapi_url_dp2dua($request);
+  $url['options']['absolute'] = TRUE;
+  
+  return url('rss/' . $url['path'], $url['options']);
+}
+
 function cnapi_ui_page_list_rss() {
   $path = substr($_GET['q'], strlen('rss/'), strlen($_GET['q']));
   $query = $_GET;
   unset($query['q']);
 
   cnapi_ui_clean_invalid_queries($query);
-
-  unset($query['sort']);
-  unset($query['pagelength']);
-  unset($query['page']);
+  cnapi_ui_clean_rss_queries($query);
 
   $query['pagelength'] = variable_get('feed_default_items', 10);
   $query['sort'] = 'created DESC';

@@ -12,6 +12,15 @@ function cnapi_ui_clean_invalid_queries(&$query) {
   }
 }
 
+function cnapi_ui_clean_rss_queries(&$query) {
+  unset($query['sort']);
+  unset($query['pagelength']);
+  unset($query['page']);
+  
+  unset($query['date']);
+  unset($query['datetype']);
+}
+
 function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) {
   $url = cnapi_url_dp2dua($request);
 
