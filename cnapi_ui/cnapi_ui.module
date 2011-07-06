@@ -122,34 +122,19 @@ function theme_cnapi_ui_page_list_rss($variables) {
   if ($objects) {
     foreach ($objects as $object) {
       // object_url
-      $request_detail = array(
-        $type => $object['cdbid'],
-        'title' => $object['title'],
-      );
+      $request_detail = array($type => $object['cdbid'], 'title' => $object['title']);
 
       $object_url = cnapi_url_dp2dua($request_detail);
       $object_url['options']['absolute'] = TRUE;
       $object_url = url($object_url['path'], $object_url['options']);
 
-      $args[] = array(
-        'key' => 'pubDate',
-        'value' => date('r', $object['created']),
+      $args = array(
+        array('key' => 'pubDate', 'value' => date('r', $object['created'])),
+        array('key' => 'guid', 'value' => $object_url, 'attributes' => array('isPermaLink' => 'true')),
+        array('key' => 'postid', 'value' => $object['cdbid']),
       );
 
-      $args[] = array(
-        'key' => 'guid',
-        'value' => $object_url,
-        'attributes' => array(
-          'isPermaLink' => 'true',
-        )
-      );
-
-      $args[] = array(
-        'key' => 'postid',
-        'value' => $object['cdbid'],
-      );
-
-      $body = theme('cnapi_ui_' . $type . '_summary', array($type => $object, 'url_absolute' => TRUE)); // @todo images and urls absolute!!!
+      $body = theme('cnapi_ui_' . $type . '_summary', array($type => $object, 'url_absolute' => TRUE));
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }
