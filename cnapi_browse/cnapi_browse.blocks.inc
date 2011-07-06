@@ -354,12 +354,19 @@ function cnapi_browse_filter_where($report, $type) {
   }
   elseif (isset($request['query']['cityid'])) {
     $cityid = $request['query']['cityid'];
+    
+    // take radius search into account!
+    $parts = explode('!', $cityid);
+    $cityid = $parts[0];
 
     $id = $cityid;
 
-    $cities = cnapi_get_cities($request['query']['cityid']);
+    $cities = cnapi_get_cities($cityid);
     if (isset($cities[$cityid])) {
       $name = $cities[$cityid]['name'];
+      if (isset($parts[1])) {
+        $name .= ' (+ ' . $parts[1] . ')';
+      }
     }
 
     $region_municipality = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $cityid, ':did' => CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY))->fetchField();
