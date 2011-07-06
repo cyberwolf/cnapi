@@ -67,7 +67,7 @@ function cnapi_ui_theme() {
 
 function cnapi_ui_contexts($key = 'id', $id = NULL) {
   $contexts = &drupal_static(__FUNCTION__, NULL);
-  
+
   if (!$contexts) {
     $contexts['id'] = array(
       'event' => array(
@@ -95,9 +95,9 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
         'path' => 'agenda/film/kinderen'
       ),
     );
-    
+
     drupal_alter('cnapi_ui_contexts', $contexts);
-    
+
     $contexts['path'] = array();
 
     foreach ($contexts['id'] as $context => $info) {
@@ -126,7 +126,7 @@ function theme_cnapi_ui_page_list_rss($variables) {
         $type => $object['cdbid'],
         'title' => $object['title'],
       );
-      
+
       $object_url = cnapi_url_dp2dua($request_detail);
       $object_url['options']['absolute'] = TRUE;
       $object_url = url($object_url['path'], $object_url['options']);
@@ -135,7 +135,7 @@ function theme_cnapi_ui_page_list_rss($variables) {
         'key' => 'pubDate',
         'value' => date('r', $object['created']),
       );
-      
+
       $args[] = array(
         'key' => 'guid',
         'value' => $object_url,
@@ -143,12 +143,12 @@ function theme_cnapi_ui_page_list_rss($variables) {
           'isPermaLink' => 'true',
         )
       );
-      
+
       $args[] = array(
         'key' => 'postid',
         'value' => $object['cdbid'],
       );
-      
+
       $body = theme('cnapi_ui_' . $type . '_summary', array($type => $object, 'url_absolute' => TRUE)); // @todo images and urls absolute!!!
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }

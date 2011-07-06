@@ -103,7 +103,7 @@ function cnapi_ui_seo_redirects() {
     }
 
     $url = cnapi_url_dp2dua($request);
-    $uri = $_SERVER['REQUEST_URI'];
+    $uri = request_uri();
     $uri = substr($uri, strlen(base_path()), strlen($uri));
 
     if ($url['path'] != $uri) {

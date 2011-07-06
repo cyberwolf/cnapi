@@ -17,7 +17,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
     $type => $object['cdbid'],
     'title' => $object['title'],
   );
-  
+
   $object_url = cnapi_url_dp2dua($request_detail);
   $object_url['options']['absolute'] = $variables['url_absolute'];
 
@@ -58,10 +58,10 @@ function _template_preprocess_cnapi_ui_object_performers(&$variables, $type) {
  */
 function _template_preprocess_cnapi_ui_object_vlieg(&$variables, $type) {
   $object = $variables[$type];
-  
+
   // vlieg image
   $vlieg_description = 'Hallo, ik ben Vlieg en ik wijs de weg naar leuke activiteiten voor kinderen. Meer info op www.vliegjemee.be!';
-  
+
   $vlieg_image_url = url(drupal_get_path('module', 'cnapi_ui') . '/img/vlieg.jpg');
   $variables['vlieg_image'] = theme('image', array('path' => $vlieg_image_url, 'alt' => $vlieg_description, 'title' => $vlieg_description, 'attributes' => array('class' => 'vlieg-image')));
 
@@ -90,7 +90,7 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
 
   // performers
   _template_preprocess_cnapi_ui_object_performers($variables, 'event');
-  
+
   // vlieg
   _template_preprocess_cnapi_ui_object_vlieg($variables, 'event');
 
@@ -118,7 +118,7 @@ function template_preprocess_cnapi_ui_production_summary(&$variables) {
 
   // performers
   _template_preprocess_cnapi_ui_object_performers($variables, 'production');
-  
+
   // vlieg
   _template_preprocess_cnapi_ui_object_vlieg($variables, 'production');
 }

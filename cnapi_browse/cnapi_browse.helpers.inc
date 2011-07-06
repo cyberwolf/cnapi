@@ -77,7 +77,7 @@ function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = 
 
   if (!empty($sort_types)) {
     foreach ($sort_types as $type) {
-      if ($type == 'headings' && cnapi_output_type_has_heading_groups() && !$sort_heading_groups && !$skip_heading_groups) {
+      if (isset($report['headings']) && $type == 'headings' && cnapi_output_type_has_heading_groups() && !$sort_heading_groups && !$skip_heading_groups) {
         foreach ($report['headings'] as $id => $subreport) {
           if (!empty($subreport['children'])) {
             cnapi_browse_sort_subreport($report['headings'][$id]['children']);
