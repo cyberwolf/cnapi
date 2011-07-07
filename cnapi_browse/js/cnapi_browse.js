@@ -14,7 +14,7 @@
       $('.autosubmit').change(function() {
         if ($(this).val() != '_none') {
           $(this).parents('form').submit();
-          $(this).attr('disabled', true);
+          $(':input', $(this).parents('form')).attr('disabled', true);
         }
       });
     }
