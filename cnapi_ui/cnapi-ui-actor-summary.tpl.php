@@ -15,7 +15,7 @@
 	    <?php print $shortdescription ?>
 	  </div>
 	<?php endif; ?>
-	
+
 	<?php print $more_link ?>
 
 </div>

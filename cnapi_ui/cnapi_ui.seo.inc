@@ -135,7 +135,7 @@ function cnapi_ui_seo_redirects() {
     $url = cnapi_url_dp2dua($request);
 
     module_load_include('inc', 'cnapi_ui', 'cnapi_ui.hacks');
-    
+
     // Compare the $url path part of the correct representation with the path of the current request.
     if ($url['path'] != request_path_raw()) {
       cnapi_ui_goto($request);

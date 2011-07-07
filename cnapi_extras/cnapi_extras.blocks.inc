@@ -6,9 +6,9 @@
  */
 function cnapi_extras_block_wider_radius_search() {
   $request = cnapi_ui_get_active_request();
-  
+
   $context = cnapi_ui_contexts('id', $request['context']);
-  
+
   // We only act upon cnapi requests.
   if (!$request) {
     return;
@@ -19,7 +19,7 @@ function cnapi_extras_block_wider_radius_search() {
 
   // Do the request.
   $objects = cnapi_get($request_p);
-  
+
   // If we didn't receive a 'total' (something went wrong) or we have results, this block is not usefull, so return.
   if (!isset($objects['total']) || $objects['total'] > 0) {
     return;
@@ -28,7 +28,7 @@ function cnapi_extras_block_wider_radius_search() {
   // Check the request for a city or cityid query part.
   $type = NULL;
   $city = NULL;
-  
+
   if (isset($request_p['query']['city'])) {
     $type = 'city';
     $city = $request_p['query']['city'];
@@ -37,12 +37,12 @@ function cnapi_extras_block_wider_radius_search() {
     $type = 'cityid';
     $city = $request_p['query']['cityid'];
   }
-  
+
   // If we're not on a city results page, we can't search within a wider radius, so this block is useless.
   if (!$city) {
     return;
   }
-  
+
   // Parse the city and radius part from the city query part.
   $city_parts = explode('!', $city);
   $city = $city_parts[0];
@@ -63,7 +63,7 @@ function cnapi_extras_block_wider_radius_search() {
     if ($radius > 0 && $radius <= $search_radius) {
       continue;
     }
-    
+
     // Construct the query for the wider radius query...
     $request_p['query'][$type] = $city . '!' . $search_radius . 'km';
 
@@ -81,7 +81,7 @@ function cnapi_extras_block_wider_radius_search() {
       break;
     }
   }
-  
+
   if (!$found_radius) {
     // Construct the query for searching over the whole of flanders.
     unset($request_p['query'][$type]);
@@ -97,7 +97,7 @@ function cnapi_extras_block_wider_radius_search() {
       $found_total = $result['total'];
     }
   }
-  
+
   if ($found_total) {
     $block['subject'] = t('Wider radius search');
     $block['content'] = array(
@@ -111,6 +111,6 @@ function cnapi_extras_block_wider_radius_search() {
       '#total' => $found_total,
     );
   }
-  
+
   return $block;
 }

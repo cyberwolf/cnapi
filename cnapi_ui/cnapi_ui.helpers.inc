@@ -4,16 +4,16 @@ function cnapi_ui_rss_feed_url($request = NULL) {
   if (!$request) {
     $request = cnapi_ui_get_active_request();
   }
-  
+
   if (!isset($request['context'])) {
     return FALSE;
   }
 
   cnapi_ui_clean_rss_queries($request['query']);
-    
+
   $url = cnapi_url_dp2dua($request);
   $url['options']['absolute'] = TRUE;
-  
+
   return url('rss/' . $url['path'], $url['options']);
 }
 
@@ -33,7 +33,7 @@ function cnapi_ui_clean_rss_queries(&$query) {
   unset($query['sort']);
   unset($query['pagelength']);
   unset($query['page']);
-  
+
   unset($query['date']);
   unset($query['datetype']);
 }

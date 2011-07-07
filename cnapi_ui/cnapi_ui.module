@@ -39,9 +39,9 @@ function cnapi_ui_menu() {
  */
 function cnapi_ui_init() {
   cnapi_ui_set_canonical_and_noindex();
-  
+
   cnapi_ui_seo_redirects();
-  
+
   if (module_exists('cnapi_tracking')) {
     module_load_include('inc', 'cnapi_ui', 'cnapi_ui.tracking');
     cnapi_ui_tracking();

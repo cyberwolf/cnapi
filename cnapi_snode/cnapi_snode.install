@@ -11,7 +11,7 @@
 function cnapi_snode_install() {
   // Save the timestamp the module was installed as the last cleanup time. Useless to fetch deletes of object on the API before the module was installed.
   variable_set('cnapi_snode_last_cleanup', REQUEST_TIME);
-  
+
   // Rebuild node types to install our content types.
   node_types_rebuild();
 

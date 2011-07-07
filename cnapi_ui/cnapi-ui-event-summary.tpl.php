@@ -40,7 +40,7 @@
 
 	  </dl>
 	<?php endif; ?>
-	
+
 	<?php print $more_link ?>
 
 </div>

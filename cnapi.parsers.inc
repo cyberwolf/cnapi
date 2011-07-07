@@ -58,7 +58,7 @@ function _cnapi_parse($request, $xml) {
 
     // $data['data']
     $data['data'] = array();
-    
+
     $xpath = sprintf('/cdbxml/%ss/%s', $request['type'], $request['type']);
     if ($xml_objects = $xml->xpath($xpath)) {
       foreach ($xml_objects as $xml_object) {
@@ -69,7 +69,7 @@ function _cnapi_parse($request, $xml) {
         }
       }
     }
-    
+
     // $data['deletes']
     $xpath = '/cdbxml/deletes/delete';
     if ($xml_objects = $xml->xpath($xpath)) {

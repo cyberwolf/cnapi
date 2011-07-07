@@ -144,11 +144,11 @@ function cnapi_browse_block_filters() {
   }
 
   $request_p = cnapi_url_dp2p($request);
-  
+
   $report_query = $request_p['query'];
-  
+
   cnapi_ui_apply_context_query($report_query, $request['context']);
-  
+
   unset($report_query['page']);
 
   if ($context['type'] == 'event') {
@@ -211,11 +211,11 @@ function cnapi_browse_filter_what_event($report) {
   }
 
   $filter_options = array();
-  
+
   if (isset($request['query']['heading'])) {
     $request_remove = $request;
     unset($request_remove['query']['heading']);
-    
+
     $request_p = cnapi_url_dp2p($request_remove);
 
     $result = cnapi_get($request_p);
@@ -227,7 +227,7 @@ function cnapi_browse_filter_what_event($report) {
       'total' => $result['total'],
       'active' => FALSE,
     );
-    
+
   }
 
   foreach ($report['headings'] as $id => $report_item) {
@@ -311,7 +311,7 @@ function cnapi_browse_filter_what_event($report) {
 
 function cnapi_browse_filter_where($report, $type) {
   $request = cnapi_ui_get_active_request();
-  
+
   unset($request['query']['page']);
 
   $report_geo = isset($report['geo']) ? $report['geo'] : NULL;
@@ -322,7 +322,7 @@ function cnapi_browse_filter_where($report, $type) {
   unset($request_remove['query']['city']);
   unset($request_remove['query']['cityid']);
   unset($request_remove['query']['location']);
-  
+
   unset($request_remove['query']['page']);
 
   if (isset($request['query']['regio'])) {
@@ -381,7 +381,7 @@ function cnapi_browse_filter_where($report, $type) {
   }
   elseif (isset($request['query']['cityid'])) {
     $cityid = $request['query']['cityid'];
-    
+
     // take radius search into account!
     $parts = explode('!', $cityid);
     $cityid = $parts[0];
@@ -508,7 +508,7 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
 
 function cnapi_browse_filter_where_form_submit($form, &$form_state) {
   $request = cnapi_ui_get_active_request();
-  
+
   unset($request['query']['page']);
 
   // resetting all "where" filters
@@ -558,12 +558,12 @@ function cnapi_browse_filter_when($report) {
     // if this option is active in the current request filter, mark it as active and provide the "remove filter" url
     if (isset($request['query']['datetype']) && $request['query']['datetype'] == $report_item['id']) {
       $request_remove = $request;
-      
+
       unset($request_remove['query']['page']);
-      
+
       unset($request_remove['query']['date']);
       unset($request_remove['query']['datetype']);
-      
+
       $filter_option['url_remove'] = $request_remove;
       $filter_option['active'] = TRUE;
     }
@@ -613,7 +613,7 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
 
 function cnapi_browse_filter_when_form_submit($form, &$form_state) {
   $request = cnapi_ui_get_active_request();
-  
+
   unset($request['query']['page']);
 
   // resetting all "when" filters

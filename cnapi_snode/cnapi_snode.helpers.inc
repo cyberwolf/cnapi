@@ -153,41 +153,41 @@ function cnapi_snode_add_node($object) {
  */
 function cnapi_snode_cleanup() {
   $last_cleanup = variable_get('cnapi_snode_last_cleanup', 0);
-  
+
   $query = array('deletedsince' => date('Y-m-d', $last_cleanup));
 
   $types = array('actor', 'event', 'production');
-  
+
   foreach ($types as $type) {
     watchdog('cnapi_snode', 'Fetching deleted objects of type !type from API for cleanup.', array('!type' => $type), WATCHDOG_INFO);
-    
+
     $request = array('action' => 'list_detail', 'type' => $type, 'query' => $query);
-    
+
     $result = cnapi_get($request);
-    
+
     if (!$result) {
        watchdog('cnapi_snode', 'Failed cleaning up nodes for type !type. Stopped trying for all types and will retry again on the next run.', array('!type' => $type), WATCHDOG_ERROR);
       return;
     }
-    
+
     if (isset($result['deletes'])) {
       watchdog('cnapi_snode', 'Deleting shadow nodes for deleted objects of type !type from API for cleanup.', array('!type' => $type), WATCHDOG_INFO);
-      
+
       foreach ($result['deletes'] as $cdbid) {
         $data = new stdClass();
         $data->id = $cdbid;
         $data->type = 'cnapi_event';
-        
+
         $node = cnapi_snode_get_shadow_node($data, FALSE, FALSE);
-        
+
         if ($node) {
           node_delete($node->nid);
         }
       }
     }
   }
-  
+
   watchdog('cnapi_snode', 'Finished cleaning up shadow nodes deleted objects from API for cleanup.', array('!type' => $type), WATCHDOG_INFO);
-  
+
   variable_set('cnapi_snode_last_cleanup', REQUEST_TIME);
 }
