@@ -192,5 +192,5 @@ function cnapi_browse_process_form_values(&$request, $values) {
     }
   }
 
-  module_invoke_all('cnapi_browse_process_form_values', $request, $values);
+  drupal_alter('cnapi_browse_process_form_values', $request, $values);
 }
