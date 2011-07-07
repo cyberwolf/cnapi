@@ -19,10 +19,10 @@ function cnapi_snode_short_type_name($type) {
 }
 
 /**
- * Get the short name (actor, event or production) from the content type name (cnapi_actor, cnapi_event or cnapi_production).
+ * Get the Drupal node for a certain API object.
  *
  * @param $object
- *   The node type (cnapi_actor, cnapi_event or cnapi_production).
+ *   A simplified version of the API object (ID, title and extra data) to retrieve the node for.
  * @param $create
  *   Boolean indicating wether a new node should be created if no matching node was found for the object.
  *   The new node will be created with the data provided in $object.
@@ -40,7 +40,7 @@ function cnapi_snode_get_shadow_node($object, $create = TRUE, $update = FALSE) {
   $type = cnapi_snode_short_type_name($object->type);
   $nid = db_query("SELECT oxn.nid FROM {cnapi_snode} oxn INNER JOIN {node} n ON n.nid = oxn.nid AND n.vid = oxn.vid WHERE oxn.id = :id AND n.type = :type", array(':id' => $object->id, ':type' => $object->type))->fetchField();
 
-  // If we couldn't find a matching node an are allow to create it, we create the node.
+  // If we couldn't find a matching node and are allow to create it, we create the node.
   if (!$nid && $create) {
     $node = cnapi_snode_add_node($object);
   }

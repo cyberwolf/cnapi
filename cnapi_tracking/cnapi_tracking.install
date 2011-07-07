@@ -6,6 +6,7 @@
  */
 
 function cnapi_tracking_uninstall() {
+  // Clean up all set variables.
   $variables = array(
     'cnapi_tracking_script_location',
   );

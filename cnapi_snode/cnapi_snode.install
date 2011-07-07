@@ -51,6 +51,7 @@ function cnapi_snode_uninstall() {
     user_delete($uid);
   }
 
+  // Clean up all set variables.
   $variables = array(
     'cnapi_snode_sync_user',
     'cnapi_snode_last_cleanup',
