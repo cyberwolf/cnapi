@@ -206,6 +206,24 @@ function cnapi_browse_filter_what_event($report) {
   }
 
   $filter_options = array();
+  
+  if (isset($request['query']['heading'])) {
+    $request_remove = $request;
+    unset($request_remove['query']['heading']);
+    
+    $request_p = cnapi_url_dp2p($request_remove);
+
+    $result = cnapi_get($request_p);
+
+    $filter_options[] = array(
+      'id' => NULL,
+      'name' => t('All headings'),
+      'url' => $request_remove,
+      'total' => $result['total'],
+      'active' => FALSE,
+    );
+    
+  }
 
   foreach ($report['headings'] as $id => $report_item) {
     if (cnapi_output_type_has_heading_groups() && !empty($active_headings) && !in_array($report_item['id'], $active_headings)) {
