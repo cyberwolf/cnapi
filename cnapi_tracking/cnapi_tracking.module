@@ -39,11 +39,18 @@ function cnapi_tracking_library() {
 }
 
 /**
- * Track an activity
+ * Track an activity with certain parameters.
+ *
+ * @param $activity
+ *   The ID of the activity to track.
+ * @param $params
+ *   More params do describe or specify the activity.
  */
 function cnapi_tracking_track($activity, $params = array()) {
+  // All tracking calls are buffered in a static variable which is later read in hook_page_alter.
   $track = &drupal_static(__FUNCTION__, array());
   
+  // We calculate a hash from the $params to log each call only once per page request.
   $params_copy = $params;
   ksort($params);
   $params_hash = md5(serialize($params));
@@ -57,24 +64,28 @@ function cnapi_tracking_track($activity, $params = array()) {
  * Implements hook_page_alter().
  */
 function cnapi_tracking_page_alter(&$page) {
+  // We read all tracking calls from the static variable in cnapi_tracking_track.
+  $track = &drupal_static('cnapi_tracking_track', array());
+  
+  // Add the current user and API partnerkey as JS setting.
   $settings = array(
     'partnerKey' => variable_get('cnapi_api_key', ''),
     'user' => cnapi_tracking_uuid(),
   );
   drupal_add_js(array('cnapi_tracking' => $settings), 'setting');
   
+  // Add the JS library.
   drupal_add_library('cnapi_tracking', 'cnapi_tracking', TRUE);
   
-  $track = &drupal_static('cnapi_tracking_track', array());
-  
+  // Looping over all tracking calls and generating a JS tracking call for each activity.
   $code = '';
-  
   foreach ($track as $activity => $params_info) {
     foreach ($params_info as $hash => $params) {
       $code .= 'Drupal.cnapi_tracking.track("' . $activity . '", ' . json_encode($params) . ');';
     }
   }
   
+  // If the resulting code is not empty, we add it to our output.
   if (!empty($code)) {
     drupal_add_js($code, array('type' => 'inline', 'scope' => 'footer'));
   }

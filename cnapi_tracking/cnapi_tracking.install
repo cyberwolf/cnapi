@@ -23,7 +23,7 @@ function cnapi_tracking_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'runtime') {
-    // Raise warning if CultuurNet API location has not been set yet.
+    // Raise warning if CultuurNet API tracking script location has not been set yet.
     $requirements['cnapi_tracking_script_location']['title'] = $t('CultuurNet API tracking script location');
     if (trim(variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION)) == '') {
       $requirements['cnapi_tracking_script_location']['description'] = $t('The location of the CultuurNet API tracking script has not been set yet. Please configure its settings from the <a href="@url">CultuurNet API tracking settings page</a>.', array('@url' => url('admin/config/services/cnapi_tracking')));
