@@ -219,6 +219,18 @@ function cnapi_url_p2dp($request, $context = FALSE) {
       $context = cnapi_ui_get_active_context(); // if there's no active context, default context should be determined
     }
 
+    if (isset($request['query']['page'])) {
+      $request['query']['page']--;
+      if ($request['query']['page'] < 0) {
+        unset($request['query']['page']);
+      }
+    }
+
+    if (isset($request['query']['q'])) {
+      $request['query']['query'] = $request['query']['q'];
+      unset($request['query']['q']);
+    }
+
     $request_dp['context'] = $context;
     $request_dp['query'] = $request['query'];
 
