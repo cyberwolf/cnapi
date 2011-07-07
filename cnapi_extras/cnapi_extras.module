@@ -1,0 +1,36 @@
+<?php
+
+require_once('cnapi_extras.preprocess.inc');
+
+/**
+ * Implements hook_block_info().
+ */
+function cnapi_extras_block_info() {
+  $block['wider_radius_search']['info'] = t('CultuurNet API wider radius search');
+  $block['wider_radius_search']['cache'] = DRUPAL_CACHE_PER_PAGE;
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cnapi_extras_block_view($delta = '') {
+  module_load_include('inc', 'cnapi_extras', 'cnapi_extras.blocks');
+
+  if (function_exists('cnapi_extras_block_' . $delta)) {
+    return call_user_func('cnapi_extras_block_' . $delta);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnapi_extras_theme() {
+  return array(
+    'cnapi_extras_block_wider_radius_search' => array(
+      'variables' => array('city' => NULL, 'city_type' => NULL, 'radius' => NULL, 'request' => NULL, 'data' => NULL, 'total' => NULL),
+      'template' => 'cnapi-extras-block-wider-radius-search',
+    ),
+  );
+}
