@@ -58,7 +58,7 @@ function _cnapi_parse($request, $xml) {
 
     // $data['data']
     $data['data'] = array();
-
+    
     $xpath = sprintf('/cdbxml/%ss/%s', $request['type'], $request['type']);
     if ($xml_objects = $xml->xpath($xpath)) {
       foreach ($xml_objects as $xml_object) {
@@ -66,6 +66,17 @@ function _cnapi_parse($request, $xml) {
         call_user_func('_cnapi_parse_' . $request['type'], &$object, NULL, $xml_object);
         if (!empty($object)) {
           $data['data'][] = $object;
+        }
+      }
+    }
+    
+    // $data['deletes']
+    $xpath = '/cdbxml/deletes/delete';
+    if ($xml_objects = $xml->xpath($xpath)) {
+      foreach ($xml_objects as $xml_object) {
+        $cdbid = _cnapi_xpath_str($xml_object, '@cdbid');
+        if (!empty($cdbid)) {
+          $data['deletes'][] = $cdbid;
         }
       }
     }
