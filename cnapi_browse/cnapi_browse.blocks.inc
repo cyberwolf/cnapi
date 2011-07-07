@@ -143,7 +143,10 @@ function cnapi_browse_block_filters() {
     return;
   }
 
-  $report_query = $request['query'];
+  $request_p = cnapi_url_dp2p($request);
+  
+  $report_query = $request_p['query'];
+  
   cnapi_ui_apply_context_query($report_query, $request['context']);
   
   unset($report_query['page']);
