@@ -19,6 +19,9 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 
   $variables['object_url'] = url($object_url['path'], $object_url['options']);
 
+  // more_link
+  $variables['more_link'] = l(t('More info'), $object_url['path'], $object_url['options']);
+
   // thumbnail
   $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg', array('absolute' => $variables['url_absolute']));
   $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
