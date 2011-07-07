@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the CultuurNet API module.
+ */
+
+function cnapi_tracking_uninstall() {
+  $variables = array(
+    'cnapi_tracking_script_location',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function cnapi_tracking_requirements($phase) {
+  $requirements = array();
+
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Raise warning if CultuurNet API location has not been set yet.
+    $requirements['cnapi_tracking_script_location']['title'] = $t('CultuurNet API tracking script location');
+    if (trim(variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION)) == '') {
+      $requirements['cnapi_tracking_script_location']['description'] = $t('The location of the CultuurNet API tracking script has not been set yet. Please configure its settings from the <a href="@url">CultuurNet API tracking settings page</a>.', array('@url' => url('admin/config/services/cnapi_tracking')));
+      $requirements['cnapi_tracking_script_location']['severity'] = REQUIREMENT_ERROR;
+      $requirements['cnapi_tracking_script_location']['value'] = $t('Not configured');
+    }
+    else {
+      $requirements['cnapi_tracking_script_location']['value'] = variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION);
+    }
+  }
+
+  return $requirements;
+}

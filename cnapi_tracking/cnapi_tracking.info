@@ -1,0 +1,9 @@
+name = CultuurNet API Tracking
+description = Creates helper methods for calling the CultuurNet API tracking API
+package = CultuurNet API
+version = VERSION
+core = 7.x
+files[] = cnapi_tracking.module
+files[] = cnapi_tracking.install
+files[] = cnapi_tracking.admin.inc
+configure = admin/config/services/cnapi_tracking
