@@ -110,7 +110,7 @@ function cnapi_extras_block_wider_radius_search() {
       '#data' => $found_data,
       '#total' => $found_total,
     );
-  }
 
-  return $block;
+    return $block;
+  }
 }
