@@ -7,6 +7,8 @@
 function cnapi_extras_block_wider_radius_search() {
   $request = cnapi_ui_get_active_request();
   
+  $context = cnapi_ui_contexts('id', $request['context']);
+  
   // We only act upon cnapi requests.
   if (!$request) {
     return;
@@ -100,6 +102,7 @@ function cnapi_extras_block_wider_radius_search() {
     $block['subject'] = t('Wider radius search');
     $block['content'] = array(
       '#theme' => 'cnapi_extras_block_wider_radius_search',
+      '#request_type' => $context['type'],
       '#city' => $city,
       '#city_type' => $type,
       '#radius' => $found_radius,
