@@ -388,7 +388,7 @@ function cnapi_browse_filter_where($report, $type) {
 
     $id = $cityid;
 
-    $cities = cnapi_get_cities($cityid);
+    $cities = cnapi_get_cities();
     if (isset($cities[$cityid])) {
       $name = $cities[$cityid]['name'];
       if (isset($parts[1])) {
@@ -401,8 +401,8 @@ function cnapi_browse_filter_where($report, $type) {
     $province = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $region_tourist, ':did' => CNAPI_LOCATIONS_DIMENSION_PROVINCE))->fetchField();
 
     // @todo dimension depends on key?
-
-    if ($report_geo) {
+    // We check if the city appears in the report because in case of a radius search, the city might not be in the report.
+    if ($report_geo && isset($report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$cityid]['total'])) {
       $total = $report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$cityid]['total'];
     }
   }
