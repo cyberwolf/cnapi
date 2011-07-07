@@ -477,7 +477,7 @@ function cnapi_request_validate($request) {
   }
 
   // validate $query keys for list, summary and report
-  $valid_queries_common = array('key', 'q', 'k', 'changedsince', 'deletedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
+  $valid_queries_common = array('key', 'q', 'k', 'changedsince', 'deletedsince', 'hasimage', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
   $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
 
   if (in_array($request['action'], array('list_detail', 'list_summary', 'report'))) {
