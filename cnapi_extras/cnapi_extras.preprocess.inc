@@ -20,6 +20,11 @@ function template_preprocess_cnapi_extras_block_wider_radius_search(&$variables)
     '!city' => $city,
   );
   
-  $variables['info'] = t('!total results found !radius km around !city.', $replace);
+  if ($variables['radius'] == -1) {
+    $variables['info'] = t('!total results found in Flanders.', $replace);
+  }
+  else {
+    $variables['info'] = t('!total results found !radius km around !city.', $replace);
+  }
   $variables['link'] = l(t('View all results'), $url['path'], $url['options']);
 }

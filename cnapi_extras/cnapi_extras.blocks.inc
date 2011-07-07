@@ -80,8 +80,23 @@ function cnapi_extras_block_wider_radius_search() {
     }
   }
   
-  // If we have found a radius, pass results to the theming layer.
-  if ($found_radius) {
+  if (!$found_radius) {
+    // Construct the query for searching over the whole of flanders.
+    unset($request_p['query'][$type]);
+
+    // ... and do it.
+    $result = cnapi_get($request_p);
+
+    // If we have found results, save it in the $found... variables.
+    if (isset($result['total']) && isset($result['data']) && $result['total'] > 0) {
+      $found_radius = -1;
+      $found_request = $request_p;
+      $found_data = $result['data'];
+      $found_total = $result['total'];
+    }
+  }
+  
+  if ($found_total) {
     $block['subject'] = t('Wider radius search');
     $block['content'] = array(
       '#theme' => 'cnapi_extras_block_wider_radius_search',
@@ -92,7 +107,7 @@ function cnapi_extras_block_wider_radius_search() {
       '#data' => $found_data,
       '#total' => $found_total,
     );
-
-    return $block;
   }
+  
+  return $block;
 }
