@@ -6,7 +6,7 @@
  */
 
 /**
- * Location of the XML files containg cities, headings, ... on the Cultuurnet API server. The path is relative to the cnapi_api_location configuration variable.
+ * Location of the XML files containg cities, headings, ... on the CultuurNet API server. The path is relative to the cnapi_api_location configuration variable.
  */
 define('CNAPI_XML_OUTPUT_TYPE', 'output_type.xml');
 define('CNAPI_XML_CITY', 'city.xml');
@@ -18,7 +18,7 @@ define('CNAPI_XML_HEADING',  'heading.xml');
 define('CNAPI_XML_HEADING_CATEGORISATION',  'heading_categorisation.xml');
 
 /**
- * Import the cities, headings, ... from the Cultuurnet API XML files to the local database tables.
+ * Import the cities, headings, ... from the CultuurNet API XML files to the local database tables.
  */
 function cnapi_import() {
   // output types
@@ -109,7 +109,7 @@ function cnapi_import() {
 }
 
 /**
- * Import an XML (like the one containing cities, headings, ...) from the the Cultuurnet API server to a local database table.
+ * Import an XML (like the one containing cities, headings, ...) from the the CultuurNet API server to a local database table.
  *
  * @param $xml
  *   The path of the XML files, relative to the cnapi_api_location configuration variable.

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drush integration for the Cultuurnet API module.
+ * Drush integration for the CultuurNet API module.
  */
 
 /**
@@ -11,7 +11,7 @@
 function cnapi_drush_help($section) {
   switch ($section) {
     case 'cnapi:cnapi-import-values':
-      return dt("Import all Cultuurnet API headings, locations, ...");
+      return dt("Import all CultuurNet API headings, locations, ...");
   }
 }
 
@@ -21,9 +21,9 @@ function cnapi_drush_help($section) {
  */
 function cnapi_drush_command() {
   $items['cnapi-import-values'] = array(
-    'description' => 'Import all Cultuurnet API values.',
+    'description' => 'Import all CultuurNet API values.',
     'examples' => array(
-      'drush cnapi-import-values' => '(Re-)import all Cultuurnet API headings, cities, regions, output types, ...',
+      'drush cnapi-import-values' => '(Re-)import all CultuurNet API headings, cities, regions, output types, ...',
     ),
   );
 

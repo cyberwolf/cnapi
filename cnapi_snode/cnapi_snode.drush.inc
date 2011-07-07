@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drush integration for the Cultuurnet API shadow nodes module
+ * Drush integration for the CultuurNet API shadow nodes module
  */
 
 /**

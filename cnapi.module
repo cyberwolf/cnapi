@@ -42,7 +42,7 @@ define('CNAPI_OPTION_NONE', '_none');
  */
 function cnapi_menu() {
   $items['admin/config/services/cnapi'] = array(
-    'title' => 'Cultuurnet API',
+    'title' => 'CultuurNet API',
     'description' => 'Change CultuurNet API setting like API key, location, ...',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cnapi_admin_settings'),
@@ -95,9 +95,9 @@ function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
 
   $form['cnapi_cache'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Cultuurnet API cache'),
+    '#title' => t('CultuurNet API cache'),
     '#weight' => 1,
-    '#description' => t('Enabling the Cultuurnet API cache will cache all parsed results of requests to the Cultuurnet API. This will reduce the number of requests made directly to the API service.'),
+    '#description' => t('Enabling the CultuurNet API cache will cache all parsed results of requests to the CultuurNet API. This will reduce the number of requests made directly to the API service.'),
   );
   $form['cnapi_cache']['cnapi_cache_status'] = array(
     '#type' => 'checkbox',

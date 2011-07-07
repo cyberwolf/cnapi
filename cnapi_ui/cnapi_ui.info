@@ -1,6 +1,6 @@
-name = Cultuurnet API user interface
-description = Creates a default user interface for browsing and filtering objects (events, actors, productions) on the Cultuurnet API.
-package = Cultuurnet API
+name = CultuurNet API user interface
+description = Creates a default user interface for browsing and filtering objects (events, actors, productions) on the CultuurNet API.
+package = CultuurNet API
 version = VERSION
 core = 7.x
 dependencies[] = cnapi

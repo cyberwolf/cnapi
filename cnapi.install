@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Install, update and uninstall functions for the Cultuurnet API module.
+ * Install, update and uninstall functions for the CultuurNet API module.
  */
 
 /**
@@ -19,7 +19,7 @@ function cnapi_schema() {
 
   // output types
   $schema['cnapi_output_type'] = array(
-    'description' => 'Output types for the Cultuurnet API.',
+    'description' => 'Output types for the CultuurNet API.',
     'fields' => array(
       'tid' => array(
         'description' => 'The primary identifier for an output type.',
@@ -46,7 +46,7 @@ function cnapi_schema() {
 
   // locations
   $schema['cnapi_location'] = array(
-    'description' => 'Locations for the Cultuurnet API.',
+    'description' => 'Locations for the CultuurNet API.',
     'fields' => array(
       'lid' => array(
         'description' => 'The primary identifier for a location.',
@@ -93,7 +93,7 @@ function cnapi_schema() {
 
   // locations
   $schema['cnapi_location_hierarchy'] = array(
-    'description' => 'Hierarchy of the locations for the Cultuurnet API.',
+    'description' => 'Hierarchy of the locations for the CultuurNet API.',
     'fields' => array(
       'lid' => array(
         'description' => 'The primary identifier for a location.',
@@ -118,7 +118,7 @@ function cnapi_schema() {
 
   // headings
   $schema['cnapi_heading'] = array(
-    'description' => t('Headings for the Cultuurnet API.'),
+    'description' => t('Headings for the CultuurNet API.'),
     'fields' => array(
       'hid' => array(
         'description' => 'The primary identifier for a heading.',
@@ -163,7 +163,7 @@ function cnapi_schema() {
 
   // dimension
   $schema['cnapi_dimension'] = array(
-    'description' => 'Dimensions of categories for the Cultuurnet API.',
+    'description' => 'Dimensions of categories for the CultuurNet API.',
     'fields' => array(
       'did' => array(
         'description' => 'The primary identifier for a dimension.',
@@ -191,7 +191,7 @@ function cnapi_schema() {
 
   // categories
   $schema['cnapi_category'] = array(
-    'description' => 'Categories for the Cultuurnet API.',
+    'description' => 'Categories for the CultuurNet API.',
     'fields' => array(
       'cid' => array(
         'description' => 'The primary identifier for a category.',
@@ -223,7 +223,7 @@ function cnapi_schema() {
 
   // heading category
   $schema['cnapi_heading_category'] = array(
-    'description' => 'What categories a heading is constructed of for the Cultuurnet API.',
+    'description' => 'What categories a heading is constructed of for the CultuurNet API.',
     'fields' => array(
       'hid' => array(
         'description' => 'The primary identifier for a heading.',
@@ -289,14 +289,14 @@ function cnapi_requirements($phase) {
   );
   if (!$has_curl) {
     $requirements['curl']['severity'] = REQUIREMENT_ERROR;
-    $requirements['curl']['description'] = $t('Cultuurnet API could not be installed because the PHP <a href="@curl_url">cURL</a> library is not available.', array('@curl_url' => 'http://php.net/manual/en/curl.setup.php'));
+    $requirements['curl']['description'] = $t('CultuurNet API could not be installed because the PHP <a href="@curl_url">cURL</a> library is not available.', array('@curl_url' => 'http://php.net/manual/en/curl.setup.php'));
   }
 
   if ($phase == 'runtime') {
-    // Raise warning if Cultuurnet API key has not been set yet.
-    $requirements['cnapi_api_key']['title'] = $t('Cultuurnet API key');
+    // Raise warning if CultuurNet API key has not been set yet.
+    $requirements['cnapi_api_key']['title'] = $t('CultuurNet API key');
     if (trim(variable_get('cnapi_api_key', '')) == '') {
-      $requirements['cnapi_api_key']['description'] = $t('Your Cultuurnet API key has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_api_key']['description'] = $t('Your CultuurNet API key has not been set yet. Please configure its settings from the <a href="@url">CultuurNet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
       $requirements['cnapi_api_key']['severity'] = REQUIREMENT_ERROR;
       $requirements['cnapi_api_key']['value'] = $t('Not configured');
     }
@@ -304,10 +304,10 @@ function cnapi_requirements($phase) {
       $requirements['cnapi_api_key']['value'] = variable_get('cnapi_api_key', '');
     }
 
-    // Raise warning if Cultuurnet API location has not been set yet.
-    $requirements['cnapi_api_location']['title'] = $t('Cultuurnet API location');
+    // Raise warning if CultuurNet API location has not been set yet.
+    $requirements['cnapi_api_location']['title'] = $t('CultuurNet API location');
     if (trim(variable_get('cnapi_api_location', CNAPI_API_LOCATION)) == '') {
-      $requirements['cnapi_api_location']['description'] = $t('The location of the Cultuurnet API has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_api_location']['description'] = $t('The location of the CultuurNet API has not been set yet. Please configure its settings from the <a href="@url">CultuurNet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
       $requirements['cnapi_api_location']['severity'] = REQUIREMENT_ERROR;
       $requirements['cnapi_api_location']['value'] = $t('Not configured');
     }
@@ -315,10 +315,10 @@ function cnapi_requirements($phase) {
       $requirements['cnapi_api_location']['value'] = variable_get('cnapi_api_location', CNAPI_API_LOCATION);
     }
 
-    // Raise warning if Cultuurnet API lib version has not been set yet.
-    $requirements['cnapi_lib_version']['title'] = $t('Cultuurnet API library version');
+    // Raise warning if CultuurNet API lib version has not been set yet.
+    $requirements['cnapi_lib_version']['title'] = $t('CultuurNet API library version');
     if (trim(variable_get('cnapi_lib_version', '')) == '') {
-      $requirements['cnapi_lib_version']['description'] = $t('The Cultuurnet API library version has not been set yet. Please configure its settings from the <a href="@url">Cultuurnet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
+      $requirements['cnapi_lib_version']['description'] = $t('The CultuurNet API library version has not been set yet. Please configure its settings from the <a href="@url">CultuurNet API settings page</a>.', array('@url' => url('admin/config/services/cnapi')));
       $requirements['cnapi_lib_version']['severity'] = REQUIREMENT_ERROR;
       $requirements['cnapi_lib_version']['value'] = $t('Not configured');
     }
@@ -346,7 +346,7 @@ function cnapi_requirements($phase) {
       }
     }
 
-    $requirements['cnapi_import']['title'] = $t('Cultuurnet API import');
+    $requirements['cnapi_import']['title'] = $t('CultuurNet API import');
     if ($has_empty_table) {
       $requirements['cnapi_import']['description'] = $t('Locations, headings, ... have not been imported yet. Use "drush cnapi-import-values to import these.');
       $requirements['cnapi_import']['severity'] = REQUIREMENT_ERROR;

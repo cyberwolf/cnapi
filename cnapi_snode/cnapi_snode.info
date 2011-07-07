@@ -1,6 +1,6 @@
-name = Cultuurnet API shadow nodes
-description = Creates shadow nodes for objects (events, actors, productions) on the Cultuurnet API.
-package = Cultuurnet API
+name = CultuurNet API shadow nodes
+description = Creates shadow nodes for objects (events, actors, productions) on the CultuurNet API.
+package = CultuurNet API
 version = VERSION
 core = 7.x
 dependencies[] = cnapi

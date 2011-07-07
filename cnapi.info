@@ -1,6 +1,6 @@
-name = Cultuurnet API
-description = Provides Drupal integration with Cultuurnet's API: PHP level API implementation, import of headings, locations, ...
-package = Cultuurnet API
+name = CultuurNet API
+description = Provides Drupal integration with CultuurNet's API: PHP level API implementation, import of headings, locations, ...
+package = CultuurNet API
 version = VERSION
 core = 7.x
 files[] = cnapi.module

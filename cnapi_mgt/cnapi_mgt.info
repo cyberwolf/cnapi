@@ -1,6 +1,6 @@
-name = Cultuurnet API Managment
-description = Provides Drupal integration with Cultuurnet's API management functionality: management of userpools, ...
-package = Cultuurnet API
+name = CultuurNet API Managment
+description = Provides Drupal integration with CultuurNet's API management functionality: management of userpools, ...
+package = CultuurNet API
 version = VERSION
 core = 7.x
 dependencies[] = cnapi

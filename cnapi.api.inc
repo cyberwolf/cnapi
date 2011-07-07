@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Make a request to the Cultuurnet API using the defaults added by this module and others. The request will also be cleaned to remove redundant parameters before firing off the request.
+ * Make a request to the CultuurNet API using the defaults added by this module and others. The request will also be cleaned to remove redundant parameters before firing off the request.
  *
  * @param $request
  *   A CNAPI request array (@see _cnapi_get) representing the request.
  *
  * @return
- *   An array representing the answer (@see _cnapi_get) from the Cultuurnet API in case of success. FALSE in case an error occured.
+ *   An array representing the answer (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get($request) {
   cnapi_request_add_defaults($request);
@@ -17,20 +17,20 @@ function cnapi_get($request) {
 }
 
 /**
- * Make a request to the Cultuurnet API.
+ * Make a request to the CultuurNet API.
  *
  * @param $request
  *   A CNAPI request array (@see _cnapi_get) representing the request.
  *
  * @return
- *   An array representing the answer (@see _cnapi_get) from the Cultuurnet API in case of success. FALSE in case an error occured.
+ *   An array representing the answer (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get_raw($request) {
   return _cnapi_get($request);
 }
 
 /**
- * Request an event from the the Cultuurnet API.
+ * Request an event from the the CultuurNet API.
  *
  * @param $cdib
  *   The CDBID of the requested event.
@@ -42,7 +42,7 @@ function cnapi_get_raw($request) {
  *     - CNAPI_LIST_ID : Fetch the CDBIDs of related events.
  *
  * @return
- *   An array representing the event (@see _cnapi_get) from the Cultuurnet API in case of success. FALSE in case an error occured.
+ *   An array representing the event (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $cdbid));
@@ -53,7 +53,7 @@ function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
 }
 
 /**
- * Request a production from the the Cultuurnet API.
+ * Request a production from the the CultuurNet API.
  *
  * @param $cdib
  *   The CDBID of the requested production.
@@ -65,7 +65,7 @@ function cnapi_get_event($cdbid, $related_events = CNAPI_LIST_IGNORE) {
  *     - CNAPI_LIST_ID : Fetch the CDBIDs of related events.
  *
  * @return
- *   An array representing the production (@see _cnapi_get) from the Cultuurnet API in case of success. FALSE in case an error occured.
+ *   An array representing the production (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get_production($cdbid, $related_events = CNAPI_LIST_IGNORE) {
   $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $cdbid));
@@ -77,13 +77,13 @@ function cnapi_get_production($cdbid, $related_events = CNAPI_LIST_IGNORE) {
 }
 
 /**
- * Request an actor from the the Cultuurnet API.
+ * Request an actor from the the CultuurNet API.
  *
  * @param $cdib
  *   The CDBID of the requested actor.
  *
  * @return
- *   An array representing the actor (@see _cnapi_get) from the Cultuurnet API in case of success. FALSE in case an error occured.
+ *   An array representing the actor (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get_actor($cdbid) {
   $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $cdbid));

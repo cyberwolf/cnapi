@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Helper functions for the Cultuurnet API shadow node module.
+ * Helper functions for the CultuurNet API shadow node module.
  */
 
 /**
