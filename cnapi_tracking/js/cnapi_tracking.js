@@ -1,4 +1,4 @@
-(function ($) {
+ (function ($) {
 
 Drupal.cnapi_tracking = Drupal.cnapi_tracking || {};
 

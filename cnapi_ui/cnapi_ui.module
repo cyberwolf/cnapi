@@ -14,6 +14,7 @@ function cnapi_ui_menu() {
     $path = $info['path'];
     $type = $info['type'];
 
+    // Menu path for list pages.
     $items[$path] = array(
       'title' => 'List',
       'page callback' => 'cnapi_ui_page_list',
@@ -22,6 +23,7 @@ function cnapi_ui_menu() {
       'file' => 'cnapi_ui.pages.inc',
     );
 
+    // Menu path for RSS.
     $items['rss/' . $path] = array(
       'title' => 'RSS',
       'page callback' => 'cnapi_ui_page_list_rss',
@@ -38,10 +40,13 @@ function cnapi_ui_menu() {
  * Implements hook_init().
  */
 function cnapi_ui_init() {
+  // Setting SEO canonical and noindex.
   cnapi_ui_set_canonical_and_noindex();
 
+  // SEO redirects for details pages.
   cnapi_ui_seo_redirects();
 
+  // CultuurNet API tracking calls in case tracking is enabled.s
   if (module_exists('cnapi_tracking')) {
     module_load_include('inc', 'cnapi_ui', 'cnapi_ui.tracking');
     cnapi_ui_tracking();
