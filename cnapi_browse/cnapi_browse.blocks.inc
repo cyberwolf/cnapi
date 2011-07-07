@@ -301,8 +301,6 @@ function cnapi_browse_filter_what_event($report) {
     $filter_options[] = $filter_option;
   }
 
-  // @todo add option "all headings"
-
   return array(
     '#theme' => 'cnapi_browse_filter_options',
     '#options' => $filter_options,
