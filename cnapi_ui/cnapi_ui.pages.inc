@@ -1,11 +1,6 @@
 <?php
 
 function cnapi_ui_page_list() {
-  $query = array('deletedsince' => '2011-06-10');
-  print "<pre>".print_r(cnapi_get_events($query, CNAPI_LIST_DETAIL), TRUE)."</pre>";
-  
-  return;
-  
   $request_dp = cnapi_ui_get_active_request();
 
   $request = cnapi_url_dp2p($request_dp);

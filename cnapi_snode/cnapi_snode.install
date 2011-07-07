@@ -9,6 +9,9 @@
  * Implements hook_install().
  */
 function cnapi_snode_install() {
+  // Save the timestamp the module was installed as the last cleanup time. Useless to fetch deletes of object on the API before the module was installed.
+  variable_set('cnapi_snode_last_cleanup', REQUEST_TIME);
+  
   // Rebuild node types to install our content types.
   node_types_rebuild();
 
@@ -50,6 +53,7 @@ function cnapi_snode_uninstall() {
 
   $variables = array(
     'cnapi_snode_sync_user',
+    'cnapi_snode_last_cleanup',
   );
   foreach ($variables as $variable) {
     variable_del($variable);
