@@ -73,7 +73,7 @@ function _cnapi_parse_basic(&$data, $field, $result, $multiple) {
   if ($multiple && is_array($result) && empty($result)) {
     return;
   }
-  elseif (!$multiple && $result == NULL) {
+  elseif (!$multiple && $result === NULL) {
     return;
   }
   else {
