@@ -343,7 +343,7 @@ function cnapi_browse_filter_where($report, $type) {
 
       // @todo dimension depends on key?
 
-      $name = $municipalities[$region]['name'];
+      $name = $municipalities[$region]['name'] . ' (Regio)';
       if ($report_geo) {
         $total = $report_geo[$province]['children'][$region_tourist]['children'][$region]['total'];
       }
