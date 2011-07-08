@@ -10,7 +10,7 @@ function cnapi_extras_block_wider_radius_search() {
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
-  if (!$request) {
+  if (!$request && isset($request['context'])) {
     return;
   }
 
