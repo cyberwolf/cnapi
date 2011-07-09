@@ -1,6 +1,11 @@
 <?php
 
 function cnapi_ui_rss_feed_url($request = NULL) {
+  $url = cnapi_ui_rss_feed_url_raw();
+  return url($url['path'], $url['options']);
+}
+
+function cnapi_ui_rss_feed_url_raw($request = NULL) {
   if (!$request) {
     $request = cnapi_ui_get_active_request();
   }
@@ -12,9 +17,10 @@ function cnapi_ui_rss_feed_url($request = NULL) {
   cnapi_ui_clean_rss_queries($request['query']);
 
   $url = cnapi_url_dp2dua($request);
+  $url['path'] = 'rss/' . $url['path'];
   $url['options']['absolute'] = TRUE;
 
-  return url('rss/' . $url['path'], $url['options']);
+  return $url;
 }
 
 function cnapi_ui_clean_invalid_queries(&$query) {

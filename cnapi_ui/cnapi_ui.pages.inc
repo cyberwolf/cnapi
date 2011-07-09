@@ -8,7 +8,7 @@ function cnapi_ui_page_list() {
   $result = cnapi_get($request);
 
   $total = isset($result['total']) ? $result['total'] : 0;
-  $data = isset($result['data']) ? $result['data'] : 0;
+  $data = isset($result['data']) ? $result['data'] : array();
 
   cnapi_request_add_defaults($request);
   $pagelength = $request['query']['pagelength'];
@@ -18,23 +18,8 @@ function cnapi_ui_page_list() {
   $context = cnapi_ui_contexts('id', $request_dp['context']);
 
   drupal_add_feed(cnapi_ui_rss_feed_url(), t('Title')); // @todo use correct title
-
-  $items = array();
-  if ($data) {
-    foreach ($data as $object) {
-      $items[] = theme('cnapi_ui_' . $context['type'] . '_summary', array($context['type'] => $object));
-    }
-  }
-
-  return array(
-    'items' => array(
-      '#theme' => 'item_list',
-      '#items' => $items,
-    ),
-    'pager' => array(
-      '#theme' => 'pager',
-    )
-  );
+  
+  return theme('cnapi_ui_list', array('type' => $context['type'], 'items' => $data, 'total' => $total, 'request' => $request_dp)); // @todo add hints for type
 }
 
 function cnapi_ui_page_list_rss() {

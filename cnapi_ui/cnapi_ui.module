@@ -58,6 +58,10 @@ function cnapi_ui_init() {
  */
 function cnapi_ui_theme() {
   return array(
+    'cnapi_ui_list' => array(
+      'variables' => array('type' => NULL, 'items' => array(), 'total' => NULL, 'request' => array()),
+      'template' => 'cnapi-ui-list',
+    ),
     'cnapi_ui_actor' => array(
       'variables' => array('actor' => NULL),
       'template' => 'cnapi-ui-actor',

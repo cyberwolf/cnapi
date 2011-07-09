@@ -1,6 +1,42 @@
 <?php
 
 /**
+ * Preprocess variables for cnapi-ui-list.tpl.php.
+ *
+ * @see cnapi-ui-list.tpl.php
+ */
+function template_preprocess_cnapi_ui_list(&$variables) {
+  // objects
+  $variables['objects'] = array();
+  foreach ($variables['items'] as $object) {
+    $variables['objects'][] = theme('cnapi_ui_' . $variables['type'] . '_summary', array($variables['type'] => $object));
+  }
+  
+  // sort links
+  $sort_links = array();
+  
+  $request_sort = $variables['request'];
+
+  $request_sort['query']['sort'] = 'date ASC';
+  $sort_links[] = cnapi_url_dp2dul(t('By date'), $request_sort);
+
+  $request_sort['query']['sort'] = 'location ASC';
+  $sort_links[] = cnapi_url_dp2dul(t('By location'), $request_sort);
+
+  $request_sort['query']['sort'] = 'title ASC';
+  $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
+
+  $variables['sort_links'] = theme('item_list', array('items' => $sort_links));
+
+  // rss
+  $url_rss = cnapi_ui_rss_feed_url_raw();
+  $variables['rss'] = l(t('RSS'), $url_rss['path'], $url_rss['options']);
+  
+  // pager
+  $variables['pager'] = theme('pager');
+}
+
+/**
  * Helper for preprocessing variables common between cnapi_ui_actor_summary, cnapi_ui_event_summary, cnapi_ui_project_summary.
  */
 function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
