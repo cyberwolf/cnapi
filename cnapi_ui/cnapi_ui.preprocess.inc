@@ -9,8 +9,23 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   // no results text
   $variables['no_results'] = t('No results found.');
   
+  if (isset($variables['request']['query']['query'])) {
+    $query = $variables['request']['query']['query'];
+    
+    $request_query_remove = $variables['request'];
+    unset($request_query_remove['query']['query']);
+    $query_remove_link = cnapi_url_dp2dul('x', $request_query_remove);
+    
+    $query = '<strong>' . $query . ' ' . $query_remove_link . '</strong>';
+  }
+  
   // result info
-  $variables['result_info'] = format_plural($variables['total'], '@total result found', '@total results found', array('@total' => $variables['total']));
+  if (isset($query)) {
+    $variables['result_info'] = format_plural($variables['total'], '@total result found for !query', '@total results found for !query', array('@total' => $variables['total'], '!query' => $query));
+  }
+  else {
+    $variables['result_info'] = format_plural($variables['total'], '@total result found', '@total results found', array('@total' => $variables['total']));
+  }
   
   // objects
   $variables['objects'] = array();
