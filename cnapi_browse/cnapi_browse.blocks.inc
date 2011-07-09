@@ -144,6 +144,11 @@ function cnapi_browse_block_filters() {
   }
 
   $request_p = cnapi_url_dp2p($request);
+  
+  $result = cnapi_get($request_p);
+  if (!isset($result['total']) || $result['total'] == 0) {
+    return;
+  }
 
   $report_query = $request_p['query'];
 
