@@ -58,6 +58,18 @@ function cnapi_ui_init() {
  */
 function cnapi_ui_theme() {
   return array(
+    'cnapi_ui_actor' => array(
+      'variables' => array('actor' => NULL),
+      'template' => 'cnapi-ui-actor',
+    ),
+    'cnapi_ui_event' => array(
+      'variables' => array('event' => NULL),
+      'template' => 'cnapi-ui-event',
+    ),
+    'cnapi_ui_production' => array(
+      'variables' => array('production' => NULL),
+      'template' => 'cnapi-ui-production',
+    ),
     'cnapi_ui_actor_summary' => array(
       'variables' => array('actor' => NULL, 'url_absolute' => FALSE),
       'template' => 'cnapi-ui-actor-summary',
