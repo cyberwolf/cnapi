@@ -6,6 +6,12 @@
  * @see cnapi-ui-list.tpl.php
  */
 function template_preprocess_cnapi_ui_list(&$variables) {
+  // no results text
+  $variables['no_results'] = t('No results found.');
+  
+  // result info
+  $variables['result_info'] = format_plural($variables['total'], '@total result found', '@total results found', array('@total' => $variables['total']));
+  
   // objects
   $variables['objects'] = array();
   foreach ($variables['items'] as $object) {
