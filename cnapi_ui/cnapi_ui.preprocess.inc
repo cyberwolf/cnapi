@@ -127,11 +127,11 @@ function _template_preprocess_cnapi_ui_object_vlieg(&$variables, $type) {
   $variables['vlieg_image'] = theme('image', array('path' => $vlieg_image_url, 'alt' => $vlieg_description, 'title' => $vlieg_description, 'attributes' => array('class' => 'vlieg-image')));
 
   // vlieg
-  $variables['is_vlieg'] = FALSE;
+  $variables['for_children'] = FALSE;
   
-  // is_vlieg
+  // for_children
   if (isset($object['agefrom'])) {
-    $variables['is_vlieg'] = $object['agefrom'] < 12;;
+    $variables['for_children'] = $object['agefrom'] < 12;;
   }
 }
 
@@ -206,10 +206,10 @@ function template_preprocess_cnapi_ui_event(&$variables) {
   $variables['title'] = check_plain($detail['title']);
   
   // shortdescription
-  $variables['shortdescription'] = isset($detail['shortdescription']) && !empty($detail['shortdescription']) ? strip_tags($detail['shortdescription']) : NULL;
+  $variables['shortdescription'] = isset($detail['shortdescription']) && !empty($detail['shortdescription']) ? strip_tags($detail['shortdescription']) : '';
 
   // longdescription
-  $variables['longdescription'] = isset($detail['longdescription']) && !empty($detail['longdescription']) ? $detail['longdescription'] : NULL;
+  $variables['longdescription'] = isset($detail['longdescription']) && !empty($detail['longdescription']) ? $detail['longdescription'] : '';
   
   // headings
   $variables['headings'] = array();
@@ -261,17 +261,10 @@ function template_preprocess_cnapi_ui_event(&$variables) {
   }
   
   // price
+  $variables['price'] = '';
   if (isset($detail['price']['value'])) {
-    if ($detail['price']['value'] == '0') {
-      $variables['price'] = 'Gratis';
-    }
-    else {
-      $variables['price'] = '&euro; '. $detail['price']['value'];
-    }
-
-    if ($detail['price']['description']) {
-      $variables['price'] .= ' ('. $detail['price']['description'] .')';
-    }
+    $variables['price'] = $detail['price']['value'] == '0' ? 'Gratis' : '&euro; '. $detail['price']['value'];
+    $variables['price'] .= isset($detail['price']['description']) ? ' (' . $detail['price']['description'] . ')' : '';
   }
   elseif (isset($detail['price']['description'])) {
     $variables['price'] = $detail['price']['description'];
@@ -279,132 +272,113 @@ function template_preprocess_cnapi_ui_event(&$variables) {
 
   // vlieg
   _template_preprocess_cnapi_ui_object_vlieg($variables, 'event');
-}
 
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi_mobile.module
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi-mobile-event.tpl.php
+  // when
+  $variables['when'] = isset($detail['calendarsummary']) ? $detail['calendarsummary'] : '';
 
-/*
-function cnapi_ui_preprocess_cnapi_event(&$vars) {
-
- 
   // performers
-  $performers = array();
-  if ($vars['event']['performers']) {
-    foreach ($vars['event']['performers'] as $performer) {
-      $performers[] = $performer['performer_title'];
+  $variables['performers'] = '';
+  if (isset($detail['performers'])) {
+    $performers = array();
+    foreach ($detail['performers'] as $performer) {
+      $role = isset($performer['role']) ? ' (' . $performer['role'] . ')' : '';
+      $performers[] = $performer['name'] . $role;
     }
+    $variables['performers'] = implode(', ', $performers);
   }
-  $vars['event']['performers_flat'] = implode(', ', $performers);
-
-  // address
-  _cnapi_ui_merge_address($vars['event'], 'where');
-
-  // where
-  $where = $vars['event']['where_title'];
-  if ($vars['event']['where_id']  && !$vars['event']['where_dummy'] && $vars['event']['where_asset'] == TRUE) {
-    $where = cnapi_url_p2l($vars['event']['where_title'], array('action' => 'actor', 'query' => array('cdbid' => $vars['event']['where_id'], 'title' => $vars['event']['where_title'])), array('attributes' => array('class' => 'tooltip-enabled')));
-  }
-  $vars['event']['where'] = $where;
-
-  // organiser
-  if ($vars['event']['organiser_title'] != $vars['event']['where_title']) {
-    $organiser = $vars['event']['organiser_title'];
-    if ($vars['event']['organiser_id'] && !$vars['event']['organiser_dummy'] && $vars['event']['organiser_asset'] == TRUE) {
-      $organiser = cnapi_url_p2l($vars['event']['organiser_title'], array('action' => 'actor', 'query' => array('cdbid' => $vars['event']['organiser_id'], 'title' => $vars['event']['organiser_title'])));
-    }
-    $vars['event']['organiser'] = $organiser;
-  }
-
-  // categories
-  _cnapi_ui_categories($vars['event']);
-
-  // links
-  $links = array();
-  if ($vars['event']['contact_url']) {
-    foreach ($vars['event']['contact_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['where_url']) {
-    foreach ($vars['event']['where_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['organiser_url']) {
-    foreach ($vars['event']['organiser_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['performers']) {
-    foreach ($vars['event']['performers'] as $performer) {
-      if (isset($performer['performer_url'])) {
-        foreach ($performer['performer_url'] as $url) {
-          $links[] = $url;
-        }
+  
+  // location
+  if (isset($event['location'])) {
+    $location = $event['location'];
+    
+    // location address
+    if (isset($location['address'])) {
+      $address = $address_street = $address_city = array();
+      
+      if (isset($location['address']['street'])) $address_street[] =  $location['address']['street'];
+      if (isset($location['address']['housenr'])) $address_street[] = $location['address']['housenr'];
+      
+      if (isset($location['address']['zipcode'])) $address_city[] = $location['address']['zipcode'];
+      if (isset($location['address']['city'])) $address_city[] = $location['address']['city'];
+      
+      if (!empty($address_street)) $address[] = trim(implode(' ', $address_street));
+      if (!empty($address_city))$address[] = trim(implode(' ', $address_city));
+      
+      if (!empty($address)) {
+        $variables['location']['address'] = implode(', ', $address);
       }
     }
-  }
-
-  $vars['event']['links'] = array_unique($links);
-
-  $links = array();
-  foreach ($vars['event']['links'] as $link) {
-    if (!isset($vars['event']['reservation_url']) || (isset($vars['event']['reservation_url']) && !in_array($link, $vars['event']['reservation_url']))) {
-      $links[] = l($link, $link, array('attributes' => array('target' => '_blank')));
+    
+    // location title
+    if (isset($location['actor']['detail']['nl']['title'])) {
+      $variables['location']['title'] = $location['actor']['detail']['nl']['title'];
+    }
+    
+    // location link
+    if (isset($location['actor']['asset']) && $location['actor']['asset']) {
+      $request_actor = array('actor' => $location['actor']['cdbid'], 'title' => $variables['location']['title']);
+      $variables['location']['link'] = cnapi_url_dp2dul($variables['location']['title'], $request_actor);
     }
   }
-  $vars['event']['links'] = $links;
-
-  // order link
-  if (isset($vars['event']['order_link'])) {
-	  $vars['event']['order_link'] = l('Bestel tickets', $vars['event']['order_link'], array('attributes' => array('target' => '_blank', 'class' => 'event-order-link button')));
+  
+  // organiser
+  if (isset($vevent['organiser'])) {
+    $organiser = $event['organiser'];
+    
+    // organiser title
+    if (isset($organiser['actor']['detail']['nl']['title'])) {
+      $variables['organiser']['title'] = $organiser['actor']['detail']['nl']['title'];
+    }
+    
+    // organiser link
+    if (isset($organiser['actor']['asset']) && $organiser['actor']['asset']) {
+      $request_actor = array('actor' => $organiser['actor']['cdbid'], 'title' => $variables['organiser']['title']);
+      $variables['organiser']['link'] = cnapi_url_dp2dul($variables['organiser']['title'], $request_actor);
+    }
+  }
+  
+  // contact
+  if (isset($event['contactinfo']['main']) || isset($event['contactinfo']['other'])) {
+    if (isset($event['contactinfo']['main'])) {
+      $contact = $event['contactinfo']['main'];
+    }
+    elseif (isset($event['contactinfo']['other'])) {
+      $contact = $event['contactinfo']['other'];
+    }
+    
+    // mail
+    if (isset($contact['mail'])) {
+      $variables['contact']['mail'] = l($contact['mail'], 'mailto:' . $contact['mail']);
+    }
+    
+    // phone
+    if (isset($contact['phone'])) {
+      $variables['contact']['phone'] = $contact['phone'];
+    }
+    
+    // fax
+    if (isset($contact['fax'])) {
+      $variables['contact']['fax'] = $contact['fax'];
+    }
+  }
+  
+  // reservation
+  if (isset($event['contactinfo']['reservation'])) {
+    $reservation = $event['contactinfo']['reservation'];
+    
+    // mail
+    if (isset($reservation['mail'])) {
+      $variables['reservation']['mail'] = l($reservation['mail'], 'mailto:' . $reservation['mail']);
+    }
+    
+    // phone
+    if (isset($reservation['phone'])) {
+      $variables['reservation']['phone'] = $reservation['phone'];
+    }
+    
+    // fax
+    if (isset($reservation['fax'])) {
+      $variables['reservation']['fax'] = $reservation['fax'];
+    }
   }
 }
-
-function _cnapi_ui_merge_address(&$object, $prefix = 'address') {
-  $parts = array();
-  if ($object[$prefix .'_street']) $parts[] = $object[$prefix .'_street'];
-  if ($object[$prefix .'_housenr']) $parts[] = $object[$prefix .'_housenr'];
-  $street_nr = implode(' ', $parts);
-
-  $parts = array();
-  if ($object[$prefix .'_zipcode']) $parts[] = $object[$prefix .'_zipcode'];
-  if ($object[$prefix .'_city']) $parts[] = $object[$prefix .'_city'];
-  $zip_city = implode(' ', $parts);
-
-  $parts = array();
-  if ($street_nr) $parts[] = $street_nr;
-  if ($zip_city) $parts[] = $zip_city;
-  if ($object[$prefix .'_country'] && $object[$prefix .'_country'] != 'BE') $parts[] = $object[$prefix .'_country'];
-  $object['address'] = implode(', ', $parts);
-}
-
-function _cnapi_ui_categories(&$object) {
-  // tags
-  if (count($object['keywords']) > 0 ) {
-    foreach ($object['keywords'] as $keyword) {
-      $object['tags'][] = cnapi_url_p2l($keyword, array('action' => 'events/search', 'query' => array('k' => str_replace(" ","_",$keyword))));
-    }
-  }
-
-  // facilities
-  if (count($object['facilities']) > 0) {
-    $facilities = array();
-    foreach ($object['facilities'] as $id => $facility) {
-      $facilities[] = cnapi_url_p2l($facility, array('action' => 'events/search', 'query' => array('facility' => $id)));
-    }
-    $object['facilities'] = $facilities;
-  }
-
-  // targetaudiences
-  if (count($object['targetaudiences']) > 0) {
-    $targetaudiences = array();
-    foreach ($object['targetaudiences'] as $id => $audience) {
-      $targetaudiences[] = cnapi_url_p2l($audience, array('action' => 'events/search', 'query' => array('targetaudience' => $id)));
-    }
-    $object['targetaudiences'] = $targetaudiences;
-  }
-}
-
-*/

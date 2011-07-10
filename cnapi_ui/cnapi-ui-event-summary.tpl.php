@@ -6,7 +6,7 @@
   </h2>
   <?php print render($title_suffix); ?>
 
-  <?php if ($is_vlieg) : ?>
+  <?php if ($for_children) : ?>
     <?php print $vlieg_image ?>
   <?php endif; ?>
 
