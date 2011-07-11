@@ -198,7 +198,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   $variables['shortdescription'] = isset($detail['shortdescription']) && !empty($detail['shortdescription']) ? strip_tags($detail['shortdescription']) : '';
 
   // longdescription
-  $variables['longdescription'] = isset($detail['longdescription']) && !empty($detail['longdescription']) ? strip_tags($detail['longdescription']) : '';
+  $variables['longdescription'] = isset($detail['longdescription']) && !empty($detail['longdescription']) ? $detail['longdescription'] : '';
 
   // images
   $variables['images'] = array();
@@ -238,7 +238,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
   // headings
   if ($type == 'event') {
-    $variables['headings'] = array();
+    $variables['headings'] = '';
 
     $headings = cnapi_get_headings();
     if (isset($object['headings'])) {
@@ -247,6 +247,9 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
         if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading_info['pid'] != 0)) {
           $variables['headings'][] = $heading_info['name'];
         }
+      }
+      if (!empty($variables['headings'])) {
+        $variables['headings'] = implode(', ', $variables['headings']);
       }
     }
   }
@@ -468,6 +471,18 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
+  
+  // tickets
+  if ($type == 'event') {
+    $variables['tickets'] = array();
+    if (isset($detail['media']['other'])) {
+      foreach ($detail['media']['other'] as $link) {
+        if (isset($link['mediatype']) && $link['mediatype'] == 'reservations') {
+          $variables['tickets'][] = l($link['title'], $link['hlink']);
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -589,16 +604,6 @@ function _template_preprocess_cnapi_ui_address($address) {
   </div>
   <?php endif; ?>
 
-  // ticketing links redone (18/04/2011)
-  $vars['tickets'] = '';
-  if (isset($vars['event']['detail']['nl']['media']['other'])) {
-    $tickets = array();
-    foreach($vars['event']['detail']['nl']['media']['other'] as $link) {
-      if(isset($link['mediatype']) && $link['mediatype'] == 'reservations') $tickets[] = "<a href='".$link['hlink']."'>".$link['title']."</a>";
-    }
-    // $vars['tickets'] = implode('<br />', $tickets); //Change request -> only show 1 link
-    $vars['tickets'] = $tickets;
-  }
 */
 
 /*

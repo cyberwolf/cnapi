@@ -81,8 +81,10 @@
   <dd><?php print $performers ?></dd>
 <?php endif; ?>
 
-<dt>Headings</dt>
-<dd><?php print implode(', ', $headings) ?></dd>
+<?php if ($headings) : ?>
+  <dt>Headings</dt>
+  <dd><?php print $headings ?></dd>
+<?php endif; ?>
 
 <?php if ($is_only_french) : ?>
   <dt>Taal</dt>
@@ -95,6 +97,15 @@
     <?php foreach ($images as $image) : ?>
       <?php print $image['image'] ?>
       <div>Copyright: <?php if ($image['copyright']) : ?><?php print $image['copyright'] ?><?php endif; ?></div>
+    <?php endforeach; ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($tickets) : ?>
+  <dt>Tickets</dt>
+  <dd>
+    <?php foreach ($tickets as $ticket) : ?>
+      <?php print $ticket ?>
     <?php endforeach; ?>
   </dd>
 <?php endif; ?>
