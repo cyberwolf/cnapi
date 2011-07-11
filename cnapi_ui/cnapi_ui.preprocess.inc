@@ -327,13 +327,13 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     $organiser = $object['organiser'];
 
     // organiser title
-    if (isset($organiser['actor']['detail']['nl']['title'])) {
-      $variables['organiser']['title'] = $organiser['actor']['detail']['nl']['title'];
+    if (isset($organiser['detail']['nl']['title'])) {
+      $variables['organiser']['title'] = $organiser['detail']['nl']['title'];
     }
 
     // organiser link
-    if (isset($organiser['actor']['asset']) && $organiser['actor']['asset']) {
-      $request_actor = array('actor' => $organiser['actor']['cdbid'], 'title' => $variables['organiser']['title']);
+    if (isset($organiser['asset']) && $organiser['asset']) {
+      $request_actor = array('actor' => $organiser['cdbid'], 'title' => $variables['organiser']['title']);
       $variables['organiser']['link'] = cnapi_url_dp2dul($variables['organiser']['title'], $request_actor);
     }
   }
@@ -515,8 +515,8 @@ function _template_preprocess_cnapi_ui_address($address) {
   return '';
 }
 
-// actor address
 // tickets
+// links
 // production : director / actor
 
 // also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi_mobile.module
