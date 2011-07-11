@@ -480,6 +480,68 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
+  
+  // links
+  if ($type == 'event') {
+    $variables['links'] = array();
+    
+    $links = array();
+    
+    // event links
+    if (isset($object['contactinfo']['main']['url'])) {
+      $links[] = $object['contactinfo']['main']['url'];
+    }
+    
+    if (isset($object['contactinfo']['other']['url'])) {
+      foreach ($object['contactinfo']['other']['url'] as $url) {
+        $links[] = $url;
+      }
+    }
+    
+    // location links
+    if (isset($object['location']['actor']['contactinfo']['main']['url'])) {
+      $links[] = $object['location']['actor']['contactinfo']['main']['url'];
+    }
+    
+    if (isset($object['location']['actor']['contactinfo']['other']['url'])) {
+      foreach ($object['location']['actor']['contactinfo']['other']['url'] as $url) {
+        $links[] = $url;
+      }
+    }
+
+    // organiser links
+    if (isset($object['organiser']['contactinfo']['main']['url'])) {
+      $links[] = $object['organiser']['contactinfo']['main']['url'];
+    }
+    
+    if (isset($object['organiser']['contactinfo']['other']['url'])) {
+      foreach ($object['organiser']['contactinfo']['other']['url'] as $url) {
+        $links[] = $url;
+      }
+    }
+    
+    // performer links
+    if (isset($detail['performers']['actor']['contactinfo']['main']['url'])) {
+      $links[] = $detail['performers']['actor']['contactinfo']['main']['url'];
+    }
+    
+    if (isset($detail['performers']['actor']['contactinfo']['other']['url'])) {
+      foreach ($detail['performers']['actor']['contactinfo']['other']['url'] as $url) {
+        $links[] = $url;
+      }
+    }
+    
+    // cleaning up links
+    foreach ($links as $i => $link) {
+      $links[$i] = rtrim($link, '/');
+    }
+    
+    $links = array_unique($links);
+
+    foreach ($links as $link) {
+      $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link);
+    }
+  }
 }
 
 /**
