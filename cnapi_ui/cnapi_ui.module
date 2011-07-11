@@ -34,11 +34,29 @@ function cnapi_ui_menu() {
   }
 
   // Menu path for detail pages.
-  $items['agenda/%/%/%'] = array(
+  $items['agenda/a/%/%cnapi_ui_actor'] = array(
     'title callback' => 'cnapi_ui_page_detail_title',
-    'title arguments' => array(1, 3),
+    'title arguments' => array(3),
     'page callback' => 'cnapi_ui_page_detail',
-    'page arguments' => array(1, 3),
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
+  $items['agenda/e/%/%cnapi_ui_event'] = array(
+    'title callback' => 'cnapi_ui_page_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'cnapi_ui_page_detail',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
+  $items['agenda/p/%/%cnapi_ui_production'] = array(
+    'title callback' => 'cnapi_ui_page_detail_title',
+    'title arguments' => array(3),
+    'page callback' => 'cnapi_ui_page_detail',
+    'page arguments' => array(3),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'cnapi_ui.pages.inc',
@@ -190,31 +208,26 @@ function theme_cnapi_ui_page_list_rss($variables) {
   return $output;
 }
 
+function cnapi_ui_actor_load($cdbid) {
+  return cnapi_get_actor($cdbid);
+}
+
+function cnapi_ui_event_load($cdbid) {
+  return cnapi_get_event($cdbid);
+}
+
+function cnapi_ui_production_load($cdbid) {
+  return cnapi_get_production($cdbid);
+}
+
 /**
  * Callback for generating page title of object.
  */
-function cnapi_ui_page_detail_title($short_type, $cdbid) {  
-  $type = '';
-  
-  switch ($short_type) {
-    case 'a':
-      $type = 'actor';
-      break;
-    case 'e':
-      $type = 'event';
-      break;
-    case 'p':
-      $type = 'production';
-      break;
-  }
-
-  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
-  $object = cnapi_get($request);
-  
+function cnapi_ui_page_detail_title($object) {
   if (isset($object['detail']['nl']['title'])) {
     return $object['detail']['nl']['title'];
   }
-  else {
+  elseif (isset($object['title'])) {
     return $object['title'];
   }
   

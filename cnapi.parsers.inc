@@ -300,6 +300,9 @@ function _cnapi_parse_actor_list_item(&$data, $xml) {
 
 function _cnapi_parse_event(&$data, $field = NULL, $xml) {
   $event = array();
+  
+  // $event['type']
+  $event['type'] = 'event';
 
   // $event['cdbid']
   _cnapi_parse_str($event, 'cdbid', $xml, '@cdbid');
@@ -368,6 +371,9 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
 
 function _cnapi_parse_production(&$data, $field = NULL, $xml) {
   $production = array();
+  
+  // $production['type']
+  $production['type'] = 'production';
 
   // $production['cdbid']
   _cnapi_parse_str($production, 'cdbid', $xml, '@cdbid');
@@ -406,6 +412,9 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) {
 
 function _cnapi_parse_actor(&$data, $field = NULL, $xml) {
   $actor = array();
+  
+  // $actor['type']
+  $actor['type'] = 'actor';
 
   // $actor['cdbid']
   _cnapi_parse_str($actor, 'cdbid', $xml, '@cdbid');
