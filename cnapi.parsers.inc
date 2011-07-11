@@ -336,6 +336,9 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
     _cnapi_parse_actor($event, 'organiser', reset($xml_organiser));
   }
 
+  // $event['languages'][...]
+  _cnapi_parse_languages($event, 'languages', $xml);
+
   // $event['related_events'][...]
   _cnapi_parse_related_events($event, 'related_events', $xml);
 
@@ -667,6 +670,27 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
 
 function _cnapi_parse_calendar(&$data, $field, $xml) {
   // @todo implement this
+}
+
+function _cnapi_parse_languages(&$data, $field, $xml) {
+  $languages = array();
+
+  // related events as list_summary
+  if ($items = $xml->xpath('languages/language')) {
+    foreach ($items as $item) {
+      $language = array();
+      _cnapi_parse_str($language, 'name', $item, '.');
+      _cnapi_parse_str($language, 'type', $item, '@type');
+      if (!empty($language['name'])) {
+        $languages[] = $language;
+      }
+    }
+  }
+
+  // adding data to requesting object
+  if (!empty($languages)) {
+    $data[$field] = $languages;
+  }
 }
 
 function _cnapi_parse_contactinfo(&$data, $field, $xml) {
