@@ -10,37 +10,37 @@
     <?php print $vlieg_image ?>
   <?php endif; ?>
 
-	<?php if ($thumbnail) : ?>
-		<?php print $thumbnail ?>
-	<?php endif; ?>
+  <?php if ($thumbnail) : ?>
+    <?php print $thumbnail ?>
+  <?php endif; ?>
 
-	<?php if ($shortdescription) : ?>
-	  <div class="description">
-	    <?php print $shortdescription ?>
-	  </div>
-	<?php endif; ?>
+  <?php if ($shortdescription) : ?>
+    <div class="description">
+      <?php print $shortdescription ?>
+    </div>
+  <?php endif; ?>
 
-	<?php if ($performers || $where || $when) : ?>
-	  <dl>
+  <?php if ($performers || $where || $when) : ?>
+    <dl>
 
-	    <?php if ($performers) : ?>
-	      <dt>Wie</dt>
-	      <dd><?php print $performers ?></dd>
-	    <?php endif; ?>
+      <?php if ($performers) : ?>
+        <dt>Wie</dt>
+        <dd><?php print $performers ?></dd>
+      <?php endif; ?>
 
-	    <?php if ($where) : ?>
-	      <dt>Waar</dt>
-	      <dd><?php print $where ?></dd>
-	    <?php endif; ?>
+      <?php if ($where) : ?>
+        <dt>Waar</dt>
+        <dd><?php print $where ?></dd>
+      <?php endif; ?>
 
-	    <?php if ($when) : ?>
-	      <dt>Wanneer</dt>
-	      <dd><?php print $when ?></dd>
-	    <?php endif; ?>
+      <?php if ($when) : ?>
+        <dt>Wanneer</dt>
+        <dd><?php print $when ?></dd>
+      <?php endif; ?>
 
-	  </dl>
-	<?php endif; ?>
+    </dl>
+  <?php endif; ?>
 
-	<?php print $more_link ?>
+  <?php print $more_link ?>
 
 </div>

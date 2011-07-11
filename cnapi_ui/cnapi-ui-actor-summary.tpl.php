@@ -6,16 +6,16 @@
   </h2>
   <?php print render($title_suffix); ?>
 
-	<?php if ($thumbnail) : ?>
-		<?php print $thumbnail ?>
-	<?php endif; ?>
+  <?php if ($thumbnail) : ?>
+    <?php print $thumbnail ?>
+  <?php endif; ?>
 
-	<?php if ($shortdescription) : ?>
-	  <div class="description">
-	    <?php print $shortdescription ?>
-	  </div>
-	<?php endif; ?>
+  <?php if ($shortdescription) : ?>
+    <div class="description">
+      <?php print $shortdescription ?>
+    </div>
+  <?php endif; ?>
 
-	<?php print $more_link ?>
+  <?php print $more_link ?>
 
 </div>
