@@ -33,6 +33,17 @@ function cnapi_ui_menu() {
     );
   }
 
+  // Menu path for detail pages.
+  $items['agenda/%/%/%'] = array(
+    'title callback' => 'cnapi_ui_page_detail_title',
+    'title arguments' => array(1, 3),
+    'page callback' => 'cnapi_ui_page_detail',
+    'page arguments' => array(1, 3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_ui.pages.inc',
+  );
+
   return $items;
 }
 
@@ -177,4 +188,35 @@ function theme_cnapi_ui_page_list_rss($variables) {
   $output .= "</rss>\n";
 
   return $output;
+}
+
+/**
+ * Callback for generating page title of object.
+ */
+function cnapi_ui_page_detail_title($short_type, $cdbid) {  
+  $type = '';
+  
+  switch ($short_type) {
+    case 'a':
+      $type = 'actor';
+      break;
+    case 'e':
+      $type = 'event';
+      break;
+    case 'p':
+      $type = 'production';
+      break;
+  }
+
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $object = cnapi_get($request);
+  
+  if (isset($object['detail']['nl']['title'])) {
+    return $object['detail']['nl']['title'];
+  }
+  else {
+    return $object['title'];
+  }
+  
+  return FALSE;
 }

@@ -302,7 +302,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
         // directors
         elseif ($role && in_array(strtolower($role), array('director', 'regisseur'))) {
-          $variables['actors'][] = $performer['name'];
+          $variables['directors'][] = $performer['name'];
         }
 
         // other performers

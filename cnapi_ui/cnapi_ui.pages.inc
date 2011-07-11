@@ -1,5 +1,29 @@
 <?php
 
+function cnapi_ui_page_detail($short_type, $cdbid) {
+  $type = '';
+  
+  switch ($short_type) {
+    case 'a':
+      $type = 'actor';
+      break;
+    case 'e':
+      $type = 'event';
+      break;
+    case 'p':
+      $type = 'production';
+      break;
+  }
+
+  $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
+  $result = cnapi_get($request);
+  
+  return array(
+    '#theme' => 'cnapi_ui_' . $type,
+    '#' . $type => $result,
+  );
+}
+
 function cnapi_ui_page_list() {
   $request_dp = cnapi_ui_get_active_request();
 
