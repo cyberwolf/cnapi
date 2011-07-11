@@ -269,7 +269,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   }
 
   // when
-  if ($type == 'event') {
+  if ($type == 'actor' || $type == 'event') {
     $variables['when'] = isset($detail['calendarsummary']) ? $detail['calendarsummary'] : '';
   }
 

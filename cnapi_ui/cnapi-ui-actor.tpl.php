@@ -53,6 +53,11 @@
   </dd>
 <?php endif; ?>
 
+<?php if ($when) : ?>
+  <dt>When</dt>
+  <dd><?php print $when ?></dd>
+<?php endif; ?>
+
 <?php if ($images) : ?>
   <dt>Images</dt>
   <dd>

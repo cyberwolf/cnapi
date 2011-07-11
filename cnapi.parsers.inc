@@ -600,6 +600,9 @@ function _cnapi_parse_actor_detail(&$data, $field, $xml) {
   // $detail['media'][...]
   _cnapi_parse_media($detail, 'media', $xml);
 
+  // $detail['calendarsummary']
+  _cnapi_parse_str($detail, 'calendarsummary', $xml, 'calendarsummary');
+
   // adding data to requesting object
   if (!empty($detail)) {
     $data[$field] = $detail;
