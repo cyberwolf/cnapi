@@ -115,26 +115,26 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 
   // shortdescription
   $variables['shortdescription'] = isset($object['shortdescription']) && !empty($object['shortdescription']) ? truncate_utf8(strip_tags($object['shortdescription']), 200, TRUE, TRUE) : '';
-  
+
   // performers
   if ($type == 'event' || $type == 'production') {
     $variables['performers'] = '';
-    
+
     if (isset($object['performers'])) {
       $performers = array_slice($object['performers'], 0, 3);
       $variables['performers'] = implode(', ', $performers);
-    
+
       if (count($object['performers']) > 3) {
         $variables['performers'] .= ',&nbsp;&hellip;';
       }
     }
   }
-  
+
   // vlieg
   if ($type == 'event' || $type == 'production') {
     _template_preprocess_cnapi_ui_object_vlieg($variables, $type);
   }
-  
+
   // where
   if ($type == 'event') {
     $where = array();
@@ -284,12 +284,12 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
-  
-  if ($type == 'production') {
+
+  if ($type == 'production') { // @todo this should only be done on movie productions
     $variables['performers'] = array();
     $variables['directors'] = array();
     $variables['actors'] = array();
-    
+
     if (isset($detail['performers'])) {
       $performers = array();
       foreach ($detail['performers'] as $performer) {
@@ -304,7 +304,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
         elseif ($role && in_array(strtolower($role), array('director', 'regisseur'))) {
           $variables['actors'][] = $performer['name'];
         }
-        
+
         // other performers
         else {
           $role = $role ? ' (' . $role . ')' : '';
@@ -338,10 +338,10 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
-  
+
   if ($type == 'actor') {
     $variables['address'] = '';
-    
+
     // address
     if (isset($object['contactinfo']['address'])) {
       $variables['address'] = _template_preprocess_cnapi_ui_address($object['contactinfo']['address']);
@@ -497,7 +497,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
-  
+
   // tickets
   if ($type == 'event') {
     $variables['tickets'] = array();
@@ -509,29 +509,29 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
-  
+
   // links
   if ($type == 'event') {
     $variables['links'] = array();
-    
+
     $links = array();
-    
+
     // event links
     if (isset($object['contactinfo']['main']['url'])) {
       $links[] = $object['contactinfo']['main']['url'];
     }
-    
+
     if (isset($object['contactinfo']['other']['url'])) {
       foreach ($object['contactinfo']['other']['url'] as $url) {
         $links[] = $url;
       }
     }
-    
+
     // location links
     if (isset($object['location']['actor']['contactinfo']['main']['url'])) {
       $links[] = $object['location']['actor']['contactinfo']['main']['url'];
     }
-    
+
     if (isset($object['location']['actor']['contactinfo']['other']['url'])) {
       foreach ($object['location']['actor']['contactinfo']['other']['url'] as $url) {
         $links[] = $url;
@@ -542,29 +542,29 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     if (isset($object['organiser']['contactinfo']['main']['url'])) {
       $links[] = $object['organiser']['contactinfo']['main']['url'];
     }
-    
+
     if (isset($object['organiser']['contactinfo']['other']['url'])) {
       foreach ($object['organiser']['contactinfo']['other']['url'] as $url) {
         $links[] = $url;
       }
     }
-    
+
     // performer links
     if (isset($detail['performers']['actor']['contactinfo']['main']['url'])) {
       $links[] = $detail['performers']['actor']['contactinfo']['main']['url'];
     }
-    
+
     if (isset($detail['performers']['actor']['contactinfo']['other']['url'])) {
       foreach ($detail['performers']['actor']['contactinfo']['other']['url'] as $url) {
         $links[] = $url;
       }
     }
-    
+
     // cleaning up links
     foreach ($links as $i => $link) {
       $links[$i] = rtrim($link, '/');
     }
-    
+
     $links = array_unique($links);
 
     foreach ($links as $link) {
@@ -599,77 +599,24 @@ function _template_preprocess_cnapi_ui_object_vlieg(&$variables, $type) {
   }
 }
 
+/**
+ * Helper for generating an address string from the address parts in an address object.
+ */
 function _template_preprocess_cnapi_ui_address($address) {
   $parts = $address_street = $address_city = array();
-  
+
   if (isset($address['street'])) $address_street[] =  $address['street'];
   if (isset($address['housenr'])) $address_street[] = $address['housenr'];
 
   if (isset($address['zipcode'])) $address_city[] = $address['zipcode'];
   if (isset($address['city'])) $address_city[] = $address['city'];
-  
+
   if (!empty($address_street)) $parts[] = trim(implode(' ', $address_street));
   if (!empty($address_city)) $parts[] = trim(implode(' ', $address_city));
-  
+
   if (!empty($parts)) {
     return implode(', ', $parts);
   }
-  
+
   return '';
 }
-
-// links
-// production : director / actor
-
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi_mobile.module
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi-mobile-event.tpl.php
-
-/*
-
- // performers
-  $vars['directors'] = '';
-  $vars['actors'] = '';
-  $vars['performers'] = '';
-  if (isset($vars['production']['detail']['nl']['performers'])) {
-    $directors = array();
-    $actors = array();
-    $performers = array();
-    foreach($vars['production']['detail']['nl']['performers'] as $performer) {
-      if(isset($performer['role'])) {
-        if(($performer['role'] == 'acteur') or ($performer['role'] == 'actrice') or ($performer['role'] == 'Acteur') or ($performer['role'] == 'Actrice')) $actors[] = $performer['name'];
-        if(($performer['role'] == 'regisseur') or ($performer['role'] == 'director') or ($performer['role'] == 'Regisseur')) $directors[] = $performer['name'];
-      }
-      else $performers[] = $performer['name'];
-    }
-    $vars['directors'] = implode(', ',$directors);
-    $vars['actors'] = implode(', ',$actors);
-    $vars['performers'] = implode(', ',$performers);
-  }
-
-
-
-  <?php if ($directors) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Regie') ?></div>
-    <div class="info"><?php print $directors; ?></div>
-  </div>
-  <?php endif; ?>
-
-  <?php if ($actors) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Acteurs') ?></div>
-    <div class="info"><?php print $actors; ?></div>
-  </div>
-  <?php endif; ?>
-
-  <?php if ($performers) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Uitvoerders') ?></div>
-    <div class="info"><?php print $performers; ?></div>
-  </div>
-  <?php endif; ?>
-
-
-
-
-*/

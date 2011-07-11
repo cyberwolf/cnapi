@@ -18,7 +18,7 @@ function cnapi_ui_page_list() {
   $context = cnapi_ui_contexts('id', $request_dp['context']);
 
   drupal_add_feed(cnapi_ui_rss_feed_url(), t('Title')); // @todo use correct title
-  
+
   return theme('cnapi_ui_list', array('type' => $context['type'], 'items' => $data, 'total' => $total, 'request' => $request_dp)); // @todo add hints for type
 }
 
