@@ -248,9 +248,6 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
           $variables['headings'][] = $heading_info['name'];
         }
       }
-      if (!empty($variables['headings'])) {
-        $variables['headings'] = implode(', ', $variables['headings']);
-      }
     }
   }
 
@@ -278,14 +275,13 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
   // performers
   if ($type == 'event') {
-    $variables['performers'] = '';
+    $variables['performers'] = array();
     if (isset($detail['performers'])) {
       $performers = array();
       foreach ($detail['performers'] as $performer) {
         $role = isset($performer['role']) ? ' (' . $performer['role'] . ')' : '';
-        $performers[] = $performer['name'] . $role;
+        $variables['performers'][] = $performer['name'] . $role;
       }
-      $variables['performers'] = implode(', ', $performers);
     }
   }
 
@@ -436,9 +432,10 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   if ($type == 'event' || $type == 'production') {
     $variables['keywords'] = array();
 
-    if (isset($object['categories']['keywords'])) {
-      foreach ($keywords as $keyword) {
+    if (isset($object['keywords'])) {
+      foreach ($object['keywords'] as $keyword) {
         $request_keyword = array('context' => $type, 'query' => array('k' => str_replace(' ', '_', $keyword)));
+
         $variables['keywords'][] = cnapi_url_dp2dul($keyword, $request_keyword);
       }
     }
@@ -529,131 +526,3 @@ function _template_preprocess_cnapi_ui_address($address) {
   
   return '';
 }
-
-// tickets
-// links
-// production : director / actor
-
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi_mobile.module
-// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi-mobile-event.tpl.php
-
-/*
-
- // performers
-  $vars['directors'] = '';
-  $vars['actors'] = '';
-  $vars['performers'] = '';
-  if (isset($vars['production']['detail']['nl']['performers'])) {
-    $directors = array();
-    $actors = array();
-    $performers = array();
-    foreach($vars['production']['detail']['nl']['performers'] as $performer) {
-      if(isset($performer['role'])) {
-        if(($performer['role'] == 'acteur') or ($performer['role'] == 'actrice') or ($performer['role'] == 'Acteur') or ($performer['role'] == 'Actrice')) $actors[] = $performer['name'];
-        if(($performer['role'] == 'regisseur') or ($performer['role'] == 'director') or ($performer['role'] == 'Regisseur')) $directors[] = $performer['name'];
-      }
-      else $performers[] = $performer['name'];
-    }
-    $vars['directors'] = implode(', ',$directors);
-    $vars['actors'] = implode(', ',$actors);
-    $vars['performers'] = implode(', ',$performers);
-  }
-
-
-
-  <?php if ($directors) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Regie') ?></div>
-    <div class="info"><?php print $directors; ?></div>
-  </div>
-  <?php endif; ?>
-
-  <?php if ($actors) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Acteurs') ?></div>
-    <div class="info"><?php print $actors; ?></div>
-  </div>
-  <?php endif; ?>
-
-  <?php if ($performers) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Uitvoerders') ?></div>
-    <div class="info"><?php print $performers; ?></div>
-  </div>
-  <?php endif; ?>
-
-
-
-
-
-
-
-
-
-  // links remade
-  $vars['links'] = '';
-  if (isset($vars['event']['contactinfo']['main']['url'])) {
-    $vars['links'] = $vars['event']['contactinfo']['main']['url'];
-  }
-
-   <?php if ($links) : ?>
-  <div class="lainwrap">
-    <div class="label"><?php print t('Links') ?></div>
-    <?php $linkstitel = (strlen($links) > 30) ? substr(($links),0,30) . "…" : $links; ?>
-    <div class="info"><?php print "<a href='".$links."'>".$linkstitel."</a>"; ?></div>
-  </div>
-  <?php endif; ?>
-
-*/
-
-/*
-
-  // links
-  $links = array();
-  if ($vars['event']['contact_url']) {
-    foreach ($vars['event']['contact_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['where_url']) {
-    foreach ($vars['event']['where_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['organiser_url']) {
-    foreach ($vars['event']['organiser_url'] as $url) {
-      $links[] = $url;
-    }
-  }
-  if ($vars['event']['performers']) {
-    foreach ($vars['event']['performers'] as $performer) {
-      if (isset($performer['performer_url'])) {
-        foreach ($performer['performer_url'] as $url) {
-          $links[] = $url;
-        }
-      }
-    }
-  }
-
-  $vars['event']['links'] = array_unique($links);
-
-  $links = array();
-  foreach ($vars['event']['links'] as $link) {
-    if (!isset($vars['event']['reservation_url']) || (isset($vars['event']['reservation_url']) && !in_array($link, $vars['event']['reservation_url']))) {
-      $links[] = l($link, $link, array('attributes' => array('target' => '_blank')));
-    }
-  }
-  $vars['event']['links'] = $links;
-
-
-
-
-
-
-  // order link
-  if (isset($vars['event']['order_link'])) {
-	  $vars['event']['order_link'] = l('Bestel tickets', $vars['event']['order_link'], array('attributes' => array('target' => '_blank', 'class' => 'event-order-link button')));
-  }
-}
-
-*/

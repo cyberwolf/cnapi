@@ -78,12 +78,20 @@
 
 <?php if ($performers) : ?>
   <dt>Performers</dt>
-  <dd><?php print $performers ?></dd>
+  <dd>
+    <?php foreach ($performers as $performer) : ?>
+      <?php print $performer ?>,
+    <?php endforeach; ?>
+  </dd>
 <?php endif; ?>
 
 <?php if ($headings) : ?>
   <dt>Headings</dt>
-  <dd><?php print $headings ?></dd>
+  <dd>
+    <?php foreach ($headings as $heading) : ?>
+      <?php print $heading ?>,
+    <?php endforeach; ?>
+  </dd>
 <?php endif; ?>
 
 <?php if ($is_only_french) : ?>
@@ -124,7 +132,7 @@
   <dt>Target audiences</dt>
   <dd>
     <?php foreach ($targetaudiences as $targetaudience) : ?>
-      <?php print $targetaudience ?>
+      <?php print $targetaudience ?>,
     <?php endforeach; ?>
   </dd>
 <?php endif; ?>
@@ -133,7 +141,7 @@
   <dt>Facilities</dt>
   <dd>
     <?php foreach ($facilities as $facility) : ?>
-      <?php print $facility ?>
+      <?php print $facility ?>,
     <?php endforeach; ?>
   </dd>
 <?php endif; ?>
@@ -142,7 +150,7 @@
   <dt>Tags</dt>
   <dd>
     <?php foreach ($keywords as $keyword) : ?>
-      <?php print $keyword ?>
+      <?php print $keyword ?>,
     <?php endforeach; ?>
   </dd>
 <?php endif; ?>
