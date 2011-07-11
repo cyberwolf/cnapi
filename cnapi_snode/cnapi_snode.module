@@ -122,14 +122,15 @@ function cnapi_snode_view($node, $view_mode) {
   $content = array();
   
   if ($view_mode == 'full' && node_is_page($node)) {
+
     $type = cnapi_snode_short_type_name($node->type);
     $cdbid = $node->id;
-    
+
     $request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $cdbid));
     $result = cnapi_get($request);
 
     $node->content['cnapi_ui_' . $type]  = array(
-      '#theme' => 'cnapi_ui_event',
+      '#theme' => 'cnapi_ui_' . $type,
       '#' . $type => $result,
     );
   }

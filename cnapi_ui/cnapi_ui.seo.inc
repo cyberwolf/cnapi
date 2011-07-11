@@ -124,11 +124,11 @@ function cnapi_ui_seo_redirects() {
     $object = cnapi_get(cnapi_url_dp2p($request));
 
     // Add the title to the current $request.
-    if (isset($request['actor'])) {
-      $request['title'] = $object['title'];
+    if (isset($object['detail']['nl']['title'])) {
+      $request['title'] = $object['detail']['nl']['title'];
     }
     else {
-      $request['title'] = $object['detail']['nl']['title'];
+      $request['title'] = $object['title'];
     }
 
     // Convert the $request to a Drupal url array. This will result in the one and only correct representation of the url of the current request.

@@ -1,43 +1,47 @@
 <?php //if (!$is_node) : /* show title */; endif; ?>
 
 <dl>
-  
+
 <dt>CDBID</dt>
 <dd><?php print $cdbid ?></dd>
 
 <dt>Title</dt>
 <dd><?php print $title ?></dd>
 
-<dt>Short description</dt>
-<dd><?php print $shortdescription ?></dd>
-
-<dt>Long description</dt>
-<dd><?php print $longdescription ?></dd>
-
-<?php if (isset($location)) : ?>
-<dt>Where</dt>
-<dd>
-  <?php if (isset($location['link'])) : ?>
-    <?php print $location['link'] ?>
-  <?php else : ?>
-    <?php print $location['title'] ?>
-  <?php endif; ?><br />
-  <?php print $location['address'] ?>
-</dd>
+<?php if ($shortdescription) : ?>
+  <dt>Short description</dt>
+  <dd><?php print $shortdescription ?></dd>
 <?php endif; ?>
 
-<?php if (isset($organiser)) : ?>
-<dt>Organiser</dt>
-<dd>
-  <?php if (isset($organiser['link'])) : ?>
-    <?php print $organiser['link'] ?>
-  <?php else : ?>
-    <?php print $organiser['title'] ?>
-  <?php endif; ?>
-</dd>
+<?php if ($longdescription) : ?>
+  <dt>Long description</dt>
+  <dd><?php print $longdescription ?></dd>
 <?php endif; ?>
 
-<?php if (isset($reservation)) : ?>
+<?php if ($location) : ?>
+  <dt>Where</dt>
+  <dd>
+    <?php if (isset($location['link'])) : ?>
+      <?php print $location['link'] ?>
+    <?php else : ?>
+      <?php print $location['title'] ?>
+    <?php endif; ?><br />
+    <?php print $location['address'] ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($organiser) : ?>
+  <dt>Organiser</dt>
+  <dd>
+    <?php if (isset($organiser['link'])) : ?>
+      <?php print $organiser['link'] ?>
+    <?php else : ?>
+      <?php print $organiser['title'] ?>
+    <?php endif; ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($reservation) : ?>
   <dt>Reservation</dt>
   <dd>
   <?php if (isset($reservation['mail'])) : ?>
@@ -52,7 +56,7 @@
   </dd>
 <?php endif; ?>
 
-<?php if (isset($contact)) : ?>
+<?php if ($contact) : ?>
   <dt>Contact</dt>
   <dd>
   <?php if (isset($contact['mail'])) : ?>
@@ -80,24 +84,63 @@
 <dt>Headings</dt>
 <dd><?php print implode(', ', $headings) ?></dd>
 
+<?php if ($is_only_french) : ?>
+  <dt>Taal</dt>
+  <dd>Frans</dd>
+<?php endif; ?>
+
 <?php if ($images) : ?>
-<dt>Images</dt>
-<dd>
-  <?php foreach ($images as $image) : ?>
-    <?php print $image['image'] ?>
-    <div>Copyright: <?php if ($image['copyright']) : ?><?php print $image['copyright'] ?><?php endif; ?></div>
-  <?php endforeach; ?>
-</dd>
+  <dt>Images</dt>
+  <dd>
+    <?php foreach ($images as $image) : ?>
+      <?php print $image['image'] ?>
+      <div>Copyright: <?php if ($image['copyright']) : ?><?php print $image['copyright'] ?><?php endif; ?></div>
+    <?php endforeach; ?>
+  </dd>
 <?php endif; ?>
 
 <?php if ($price) : ?>
-<dt>Price</dt>
-<dd><?php print $price ?></dd>
+  <dt>Price</dt>
+  <dd><?php print $price ?></dd>
 <?php endif; ?>
 
 <?php if ($for_children) : ?>
-<dt>Vlieg</dt>
-  <?php print $vlieg_image ?>
+  <dt>Vlieg</dt>
+  <dd><?php print $vlieg_image ?></dd>
+<?php endif; ?>
+
+<?php if ($targetaudiences) : ?>
+  <dt>Target audiences</dt>
+  <dd>
+    <?php foreach ($targetaudiences as $targetaudience) : ?>
+      <?php print $targetaudience ?>
+    <?php endforeach; ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($facilities) : ?>
+  <dt>Facilities</dt>
+  <dd>
+    <?php foreach ($facilities as $facility) : ?>
+      <?php print $facility ?>
+    <?php endforeach; ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($keywords) : ?>
+  <dt>Tags</dt>
+  <dd>
+    <?php foreach ($keywords as $keyword) : ?>
+      <?php print $keyword ?>
+    <?php endforeach; ?>
+  </dd>
+<?php endif; ?>
+
+<?php if ($coords) : ?>
+  <dt>GPS</dt>
+  <dd>
+    <?php print $coords['lat'] ?>, <?php print $coords['lng'] ?>
+  </dd>
 <?php endif; ?>
 
 </dl>
