@@ -284,6 +284,35 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       }
     }
   }
+  
+  if ($type == 'production') {
+    $variables['performers'] = array();
+    $variables['directors'] = array();
+    $variables['actors'] = array();
+    
+    if (isset($detail['performers'])) {
+      $performers = array();
+      foreach ($detail['performers'] as $performer) {
+        $role = isset($performer['role']) ? $performer['role'] : '';
+
+        // actors
+        if ($role && in_array(strtolower($role), array('actor', 'acteur', 'actrice'))) {
+          $variables['actors'][] = $performer['name'];
+        }
+
+        // directors
+        elseif ($role && in_array(strtolower($role), array('director', 'regisseur'))) {
+          $variables['actors'][] = $performer['name'];
+        }
+        
+        // other performers
+        else {
+          $role = $role ? ' (' . $role . ')' : '';
+          $variables['performers'][] = $performer['name'] . $role;
+        }
+      }
+    }
+  }
 
   // location
   if ($type == 'event') {
@@ -588,3 +617,59 @@ function _template_preprocess_cnapi_ui_address($address) {
   
   return '';
 }
+
+// links
+// production : director / actor
+
+// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi_mobile.module
+// also look at https://cultuurnet.beanstalkapp.com/m-uitinvlaanderen-be/browse/trunk/sites/all/modules/custom/cnapi_mobile/cnapi-mobile-event.tpl.php
+
+/*
+
+ // performers
+  $vars['directors'] = '';
+  $vars['actors'] = '';
+  $vars['performers'] = '';
+  if (isset($vars['production']['detail']['nl']['performers'])) {
+    $directors = array();
+    $actors = array();
+    $performers = array();
+    foreach($vars['production']['detail']['nl']['performers'] as $performer) {
+      if(isset($performer['role'])) {
+        if(($performer['role'] == 'acteur') or ($performer['role'] == 'actrice') or ($performer['role'] == 'Acteur') or ($performer['role'] == 'Actrice')) $actors[] = $performer['name'];
+        if(($performer['role'] == 'regisseur') or ($performer['role'] == 'director') or ($performer['role'] == 'Regisseur')) $directors[] = $performer['name'];
+      }
+      else $performers[] = $performer['name'];
+    }
+    $vars['directors'] = implode(', ',$directors);
+    $vars['actors'] = implode(', ',$actors);
+    $vars['performers'] = implode(', ',$performers);
+  }
+
+
+
+  <?php if ($directors) : ?>
+  <div class="lainwrap">
+    <div class="label"><?php print t('Regie') ?></div>
+    <div class="info"><?php print $directors; ?></div>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($actors) : ?>
+  <div class="lainwrap">
+    <div class="label"><?php print t('Acteurs') ?></div>
+    <div class="info"><?php print $actors; ?></div>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($performers) : ?>
+  <div class="lainwrap">
+    <div class="label"><?php print t('Uitvoerders') ?></div>
+    <div class="info"><?php print $performers; ?></div>
+  </div>
+  <?php endif; ?>
+
+
+
+
+*/
