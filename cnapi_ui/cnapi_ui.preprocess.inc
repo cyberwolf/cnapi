@@ -8,15 +8,11 @@
 function template_preprocess_cnapi_ui_list(&$variables) {
   // no results text
   $variables['no_results'] = t('No results found.');
-
-  if (isset($variables['request']['query']['query'])) {
-    $query = $variables['request']['query']['query'];
-
-    $request_query_remove = $variables['request'];
-    unset($request_query_remove['query']['query']);
-    $query_remove_link = cnapi_url_dp2dul('x', $request_query_remove);
-
-    $query = '<strong>' . $query . ' ' . $query_remove_link . '</strong>';
+  
+  $filters = cnapi_ui_get_active_request_filters();
+  
+  if (isset($filters['query'])) {
+    $query = '<strong>' . $filters['query'][0]['description'] . ' ' . cnapi_url_dp2dul('x', $filters['query'][0]['remove']) . '</strong>';
   }
 
   // result info

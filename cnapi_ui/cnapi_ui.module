@@ -16,7 +16,7 @@ function cnapi_ui_menu() {
 
     // Menu path for list pages.
     $items[$path] = array(
-      'title' => 'List',
+      'title callback' => 'cnapi_ui_page_list_title',
       'page callback' => 'cnapi_ui_page_list',
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
@@ -131,24 +131,28 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
         'type' => 'event',
         'query' => array('locationtype' => '!8.9.1.0.0'),
         'path' => 'agenda/search',
+        'title' => 'Evenementen',
       ),
       'actor' => array(
         'id' => 'actor',
         'type' => 'actor',
         'query' => array(),
         'path' => 'agenda/ar',
+        'title' => 'Locaties, organisators, ...'
       ),
       'movie' => array(
         'id' => 'movie',
         'type' => 'production',
         'query' => array('type' => '0.50.6.0.0'),
         'path' => 'agenda/film',
+        'title' => 'Films',
       ),
       'movie_children' => array(
         'id' => 'movie_children',
         'type' => 'production',
         'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
-        'path' => 'agenda/film/kinderen'
+        'path' => 'agenda/film/kinderen',
+        'title' => 'Films voor kinderen',
       ),
     );
 
@@ -232,4 +236,165 @@ function cnapi_ui_page_detail_title($object) {
   }
   
   return FALSE;
+}
+
+function cnapi_ui_page_list_title() {
+  $request = cnapi_ui_get_active_request();
+  
+  $context = cnapi_ui_contexts('id', $request['context']);
+  
+  $filters = cnapi_ui_get_active_request_filters();
+  
+  $parts = array();
+  
+  foreach ($filters as $key => $key_filters) {
+    foreach ($key_filters as $filter) {
+      $parts[] = $filter['description'];
+    }
+  }
+  
+  $parts[] = $context['title'];
+  
+  if (isset($requets['query']['page']) && is_numeric($requets['query']['page']) && $requets['query']['page'] > 0) {
+    $parts[] = $requets['query']['page'] + 1;
+  }
+  
+  return truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
+}
+
+function cnapi_ui_get_active_request_filters() {
+  $filters = array();
+
+  $request = cnapi_ui_get_active_request();
+  
+  if (!isset($request['context'])) {
+    return;
+  }
+  
+  $query = $request['query'];
+  
+  $valid_keys = array('query', 'datetype', 'location', 'regio', 'heading', 'targetaudience', 'thema', 'type', 'facility', 'publicscope', 'k', 'isfree', 'permanent', 'temporary', 'age');
+  
+  foreach ($query as $key => $value) {
+    $filter = array();
+    
+    if (!in_array($key, $valid_keys)) {
+      continue;
+    }
+    
+    $split = ';';
+    if ($key == 'k') {
+      $split = ',';
+    }
+    
+    $values = array($query[$key]);
+    if ($key != 'query') {
+      $values = explode($split, $query[$key]);
+    }
+    
+    foreach ($values as $value) {
+      $tmp = array();
+      $tmp['remove'] = $request;
+      $new = array_diff($values, array($value));
+      if (!empty($new)) {
+        $tmp['remove']['query'][$key] = implode($split, $new);
+      }
+      else {
+        unset($tmp['remove']['query'][$key]);
+      }
+      $tmp['value'] = $value;
+      $tmp['description'] = $tmp['value'];
+      
+      switch ($key) {
+        
+        case 'datetype':
+          $datetypes = cnapi_get_datetypes();
+          $tmp['description'] = $datetypes[$value];
+          break;
+          
+        case 'location':
+          $actor = cnapi_get_actor($value);
+          $tmp['description'] = '';
+          if (isset($actor['detail']['title']['nl'])) {
+            $tmp['description'] = $actor['detail']['title']['nl'];
+          }
+          elseif (isset($actor['title'])) {
+            $tmp['description'] = $actor['title'];
+          }
+          break;
+          
+        case 'regio':
+          $municipalities = cnapi_get_municipalities();
+          $regions = cnapi_get_provinces() + cnapi_get_regions_administrative() + cnapi_get_regions_tourist() + $municipalities;
+          $tmp['description'] = isset($regions[$value]['name']) ? $regions[$value]['name'] : '';
+          if ($tmp['description'] && isset($municipalities[$value])) {
+            $tmp['description'] .= ' (Regio)';
+          }
+          break;
+          
+        case 'heading':
+          $headings = cnapi_get_headings();
+          $tmp['description'] = isset($headings[$value]['name']) ? $headings[$value]['name'] : '';
+          break;
+          
+        case 'targetaudience':
+          $targetaudiences = cnapi_get_age_types() + cnapi_get_targetaudiences();
+          $tmp['description'] = isset($targetaudiences[$value]['name']) ? $targetaudiences[$value]['name'] : '';
+          break;
+          
+        case 'thema':
+          $themes = cnapi_get_themes();
+          $tmp['description'] = isset($themes[$value]['name']) ? $themes[$value]['name'] : '';
+          break;
+          
+        case 'type':
+          $types = cnapi_get_event_types();
+          $tmp['description'] = isset($types[$value]['name']) ? $types[$value]['name'] : '';
+          break;
+          
+        case 'facility':
+          $facilities = cnapi_get_facilities();
+          $tmp['description'] = isset($facilities[$value]['name']) ? $facilities[$value]['name'] : '';
+          break;
+          
+        case 'publicscope':
+          $publicscopes = cnapi_get_publicscopes();
+          $tmp['description'] = isset($publicscopes[$value]['name']) ? $publicscopes[$value]['name'] : '';
+          break;
+          
+        case 'isfree':
+          $tmp['description'] = $value == 'true' ? 'Enkel gratis aanbod' : 'Enkel betalend aanbod';
+          break;
+          
+        case 'permanent':
+          $tmp['description'] = $value == 'true' ? 'Enkel doorlopend aanbod' : 'Enkel tijdelijk aanbod';
+          break;
+          
+        case 'temporary':
+          $tmp['description'] = $value == 'true' ? 'Enkel tijdelijk aanbod' : 'Enkel doorlopend aanbod';
+          break;
+          
+        case 'age':
+          $tmp['description'] = '';
+          $parts = explode('..', $value);
+          if (count($parts) == 2) {
+            $tmp['description'] = sprintf('Vanaf %d tot %d jaar', $parts[0], $parts[1]);
+          }
+          elseif (count($parts) == 1) {
+            $tmp['description'] = sprintf('Vanaf %d jaar', $parts[0]);
+          }
+          break;
+      }
+      
+      if ($tmp['description']) {
+        $filter[] = $tmp;
+      }
+    }
+    
+    if (!empty($filter)) {
+      $filters[$key] = $filter;
+    }
+  }
+  
+  return $filters;
 }
