@@ -400,49 +400,53 @@ function cnapi_browse_filter_where($report, $type) {
       $total = $report['location'][$location]['total'];
     }
   }
-  elseif (isset($request['query']['zip'])) {
-    $name = $request['query']['zip'];
-
-    $id = $request['query']['zip'];
-
-    if ($report_geo) {
-      $total = NULL;
-    }
-  }
-  elseif (isset($request['query']['city'])) {
-    $name = $request['query']['city'];
-
-    $id = $request['query']['city'];
-
-    if ($report_geo) {
-      $total = NULL;
-    }
-  }
-  elseif (isset($request['query']['cityid'])) {
-    $cityid = $request['query']['cityid'];
-
-    // take radius search into account!
-    $parts = explode('!', $cityid);
-    $cityid = $parts[0];
-
-    $id = $cityid;
-
-    $cities = cnapi_get_cities();
-    if (isset($cities[$cityid])) {
-      $name = $cities[$cityid]['name'];
-      if (isset($parts[1])) {
-        $name .= ' (+ ' . $parts[1] . ')';
+  elseif (isset($request['query']['zip']) || isset($request['query']['city']) || isset($request['query']['cityid'])) {
+    $parts = array();
+    
+    if (isset($request['query']['zip'])) {
+      $parts = explode('!', $request['query']['zip']);
+    
+      $id = $parts[0];
+      $name = $parts[0];
+    
+      if ($report_geo) {
+        $total = NULL;
       }
     }
-
-    $region_municipality = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $cityid, ':did' => CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY))->fetchField();
-    $region_tourist = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $cityid, ':did' => CNAPI_LOCATIONS_DIMENSION_TOURIST))->fetchField();
-    $province = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $region_tourist, ':did' => CNAPI_LOCATIONS_DIMENSION_PROVINCE))->fetchField();
-
-    // @todo dimension depends on key?
-    // We check if the city appears in the report because in case of a radius search, the city might not be in the report.
-    if ($report_geo && isset($report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$cityid]['total'])) {
-      $total = $report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$cityid]['total'];
+    elseif (isset($request['query']['city'])) {
+      $parts = explode('!', $request['query']['city']);
+    
+      $id = $parts[0];
+      $name = $parts[0];
+    
+      if ($report_geo) {
+        $total = NULL;
+      }
+    }
+    elseif (isset($request['query']['cityid'])) {
+      // take radius search into account!
+      $parts = explode('!', $request['query']['cityid']);
+    
+      $id = $parts[0];
+    
+      $cities = cnapi_get_cities();
+      if (isset($cities[$id])) {
+        $name = $cities[$id]['name'];
+      }
+    
+      $region_municipality = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $id, ':did' => CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY))->fetchField();
+      $region_tourist = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $id, ':did' => CNAPI_LOCATIONS_DIMENSION_TOURIST))->fetchField();
+      $province = db_query("SELECT pid FROM {cnapi_location_hierarchy} WHERE lid = :lid AND pid IN (SELECT lid FROM {cnapi_location} WHERE did = :did)", array(':lid' => $region_tourist, ':did' => CNAPI_LOCATIONS_DIMENSION_PROVINCE))->fetchField();
+    
+      // @todo dimension depends on key?
+      // We check if the city appears in the report because in case of a radius search, the city might not be in the report.
+      if ($report_geo && isset($report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$id]['total'])) {
+        $total = $report_geo[$province]['children'][$region_tourist]['children'][$region_municipality]['children'][$id]['total'];
+      }
+    }
+    
+    if (isset($parts[1])) {
+      $name .= ' (+ ' . $parts[1] . ')';
     }
   }
 
