@@ -296,14 +296,14 @@ function cnapi_ui_get_active_request_filters() {
     
     foreach ($values as $value) {
       $tmp = array();
-      $tmp['remove'] = $request;
-      unset($tmp['remove']['query']['page']);
+      $tmp['url_remove'] = $request;
+      unset($tmp['url_remove']['query']['page']);
       $new = array_diff($values, array($value));
       if (!empty($new)) {
-        $tmp['remove']['query'][$key] = implode($split, $new);
+        $tmp['url_remove']['query'][$key] = implode($split, $new);
       }
       else {
-        unset($tmp['remove']['query'][$key]);
+        unset($tmp['url_remove']['query'][$key]);
       }
       $tmp['value'] = $value;
       $tmp['description'] = $tmp['value'];

@@ -14,7 +14,7 @@ function cnapi_browse_block_active_filters() {
         'name' => $filter['description'],
         'url' => $request,
         'active' => TRUE,
-        'url_remove' => $filter['remove'],
+        'url_remove' => $filter['url_remove'],
       );
     }
   }
