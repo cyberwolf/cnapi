@@ -1,11 +1,19 @@
 <?php
 
 function cnapi_browse_block_active_filters() {
+  $request = cnapi_ui_get_active_request();
+  
+  if (!isset($request['context'])) {
+    return;
+  }
+  
   $filter_options = array();
   
   $filters = cnapi_ui_get_active_request_filters();
-  
-  $request = cnapi_ui_get_active_request();
+
+  if (!$filters) {
+    return;
+  }
   
   foreach ($filters as $key => $key_filters) {
     foreach ($key_filters as $filter) {
@@ -395,7 +403,7 @@ function cnapi_browse_filter_where($report, $type) {
   elseif (isset($request['query']['zip'])) {
     $name = $request['query']['zip'];
 
-    $id = $zip;
+    $id = $request['query']['zip'];
 
     if ($report_geo) {
       $total = NULL;
