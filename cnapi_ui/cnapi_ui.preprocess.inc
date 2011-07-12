@@ -1,5 +1,17 @@
 <?php
 
+function cnapi_ui_preprocess_page(&$variables) {
+  $request = cnapi_ui_get_active_request();
+  
+  if (!isset($request['context'])) {
+    return;
+  }
+  
+  $context = cnapi_ui_contexts('id', $request['context']);
+  
+  $variables['title'] = $context['title'];
+}
+
 /**
  * Preprocess variables for cnapi-ui-list.tpl.php.
  *

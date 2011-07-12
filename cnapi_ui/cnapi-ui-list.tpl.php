@@ -13,3 +13,5 @@
   <?php endforeach; ?>
   </ul>
 <?php endif; ?>
+
+<?php print $pager ?>

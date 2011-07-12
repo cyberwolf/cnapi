@@ -152,7 +152,7 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
         'type' => 'production',
         'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
         'path' => 'agenda/film/kinderen',
-        'title' => 'Films voor kinderen',
+        'title' => 'Film met kinderen',
       ),
     );
 
@@ -255,8 +255,8 @@ function cnapi_ui_page_list_title() {
   
   $parts[] = $context['title'];
   
-  if (isset($requets['query']['page']) && is_numeric($requets['query']['page']) && $requets['query']['page'] > 0) {
-    $parts[] = $requets['query']['page'] + 1;
+  if (isset($request['query']['page']) && is_numeric($request['query']['page']) && $request['query']['page'] > 0) {
+    $parts[] = 'pagina ' . ($request['query']['page'] + 1);
   }
   
   return truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
@@ -335,6 +335,19 @@ function cnapi_ui_get_active_request_filters() {
         case 'heading':
           $headings = cnapi_get_headings();
           $tmp['description'] = isset($headings[$value]['name']) ? $headings[$value]['name'] : '';
+          
+          $replace = array(
+            67 => 'Muziekfestivals',
+            68 => 'Theaterfestivals',
+            69 => 'Dansfestivals',
+            70 => 'Filmfestivals',
+            71 => 'Literatuurfestivals',
+          );
+          
+          if (isset($replace[$value])) {
+            $tmp['description'] = $replace[$value];
+          }
+          
           break;
           
         case 'targetaudience':
