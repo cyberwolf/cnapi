@@ -255,11 +255,13 @@ function cnapi_ui_page_list_title() {
   
   $parts[] = $context['title'];
   
+  $title = truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
+  
   if (isset($request['query']['page']) && is_numeric($request['query']['page']) && $request['query']['page'] > 0) {
-    $parts[] = 'pagina ' . ($request['query']['page'] + 1);
+    $title .= ', pagina ' . ($request['query']['page'] + 1);
   }
   
-  return truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
+  return $title;
 }
 
 function cnapi_ui_get_active_request_filters() {
