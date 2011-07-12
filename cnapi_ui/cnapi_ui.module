@@ -297,6 +297,7 @@ function cnapi_ui_get_active_request_filters() {
     foreach ($values as $value) {
       $tmp = array();
       $tmp['remove'] = $request;
+      unset($tmp['remove']['query']['page']);
       $new = array_diff($values, array($value));
       if (!empty($new)) {
         $tmp['remove']['query'][$key] = implode($split, $new);
@@ -410,6 +411,8 @@ function cnapi_ui_get_active_request_filters() {
       $filters[$key] = $filter;
     }
   }
+  
+  drupal_alter('cnapi_ui_active_request_filters', $filters);
   
   return $filters;
 }

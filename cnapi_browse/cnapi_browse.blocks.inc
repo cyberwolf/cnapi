@@ -1,5 +1,33 @@
 <?php
 
+function cnapi_browse_block_active_filters() {
+  $filter_options = array();
+  
+  $filters = cnapi_ui_get_active_request_filters();
+  
+  $request = cnapi_ui_get_active_request();
+  
+  foreach ($filters as $key => $key_filters) {
+    foreach ($key_filters as $filter) {
+      $filter_options[] = array(
+        'id' => $filter['value'],
+        'name' => $filter['description'],
+        'url' => $request,
+        'active' => TRUE,
+        'url_remove' => $filter['remove'],
+      );
+    }
+  }
+
+  $block['subject'] = t('Active filters');
+  $block['content'] = array(
+    '#theme' => 'cnapi_browse_filter_options',
+    '#options' => $filter_options
+  );
+  
+  return $block;
+}
+
 function cnapi_browse_block_navigation() {
   $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE);
 
