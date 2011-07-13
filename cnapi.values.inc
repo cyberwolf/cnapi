@@ -385,7 +385,6 @@ function cnapi_get_datetypes() {
       'thisweek'     => t('This week'),
       'thisweekend'  => t('This weekend'),
       'nextweekend'  => t('Next weekend'),
-      'thismonth'    => t('This month'),
       'next30days'   => t('Next @days days', array('@days' => 30)),
       'next3months'  => t('Next @months months', array('@months' => 3)),
       'next6months'  => t('Next @months months', array('@months' => 6)),
