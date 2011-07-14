@@ -128,6 +128,11 @@
   <dd><?php print $vlieg_image ?></dd>
 <?php endif; ?>
 
+<?php if ($agefrom) : ?>
+  <dt>Age from</dt>
+  <dd><?php print $agefrom ?></dd>
+<?php endif; ?>
+
 <?php if ($targetaudiences) : ?>
   <dt>Target audiences</dt>
   <dd>

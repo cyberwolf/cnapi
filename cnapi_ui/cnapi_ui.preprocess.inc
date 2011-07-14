@@ -143,6 +143,11 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
     _template_preprocess_cnapi_ui_object_vlieg($variables, $type);
   }
 
+  // agefrom
+  if ($type == 'event' || $type == 'production') {
+    $variables['agefrom'] = isset($object['agefrom']) ? $object['agefrom'] : '';
+  }
+
   // where
   if ($type == 'event') {
     $where = array();
@@ -274,6 +279,11 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   // vlieg
   if ($type == 'event' || $type == 'production') {
     _template_preprocess_cnapi_ui_object_vlieg($variables, $type);
+  }
+
+  // agefrom
+  if ($type == 'event' || $type == 'production') {
+    $variables['agefrom'] = isset($object['agefrom']) ? $object['agefrom'] . '+' : '';
   }
 
   // when
