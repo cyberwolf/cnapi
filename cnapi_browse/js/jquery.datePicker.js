@@ -822,7 +822,7 @@
 					this._checkMouse = _checkMouse;
 					
 					c._closeCalendar(true);
-					$(document).bind(
+					$('body').bind(
 						'keydown.datepicker', 
 						function(event)
 						{
@@ -923,7 +923,7 @@
 						$pop.css('left', eleOffset.left + $ele.width() - $pop.width() + c.horizontalOffset);
 					}
 //					$('.selectee', this.context).focus();
-					$(document).bind('mousedown.datepicker', this._checkMouse);
+					$('body').bind('mousedown.datepicker', this._checkMouse);
 				}
 				
 			},
@@ -1128,8 +1128,8 @@
 			{
 				if (!ele || ele == this.ele)
 				{
-					$(document).unbind('mousedown.datepicker');
-					$(document).unbind('keydown.datepicker');
+					$('body').unbind('mousedown.datepicker');
+					$('body').unbind('keydown.datepicker');
 					this._clearCalendar();
 					$('#dp-popup a').unbind();
 					$('#dp-popup').empty().remove();
