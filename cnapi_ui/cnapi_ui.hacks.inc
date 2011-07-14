@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Some mirror functions for Drupal core functions with small modifications.
+ */
+
+/**
  * This is a copy of Drupal core's request_path function but instead of $_GET['q'] we use $_REQUEST['q'] to get the path before it is normalized.
  */
 function request_path_raw() {

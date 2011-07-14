@@ -1,14 +1,30 @@
 <?php
 
+/**
+ * @file
+ * Preprocessing.
+ */
+
+/**
+ * Preprocess variables for page.tpl.php.
+ *
+ * We want to override the page title ($title) on list (context) pages to use the context title as the page title.
+ *
+ * @see page.tpl.php
+ */
 function cnapi_ui_preprocess_page(&$variables) {
+  // Get the current request.
   $request = cnapi_ui_get_active_request();
   
+  // We only act upon list pages.
   if (!isset($request['context'])) {
     return;
   }
   
+  // Fetch the full context object to determine the title.
   $context = cnapi_ui_contexts('id', $request['context']);
   
+  // Set the $title variable to the context title.
   $variables['title'] = $context['title'];
 }
 
@@ -18,16 +34,17 @@ function cnapi_ui_preprocess_page(&$variables) {
  * @see cnapi-ui-list.tpl.php
  */
 function template_preprocess_cnapi_ui_list(&$variables) {
-  // no results text
+  // Text for "no results".
   $variables['no_results'] = t('No results found.');
   
+  // If we have a free text search "filter", we add it together with the "remove filter url" to the result info.
   $filters = cnapi_ui_get_active_request_filters();
   
   if (isset($filters['query'])) {
     $query = '<strong>' . $filters['query'][0]['description'] . ' ' . cnapi_url_dp2dul('x', $filters['query'][0]['url_remove']) . '</strong>';
   }
 
-  // result info
+  // Text for result info (number of results, ...)
   if (isset($query)) {
     $variables['result_info'] = format_plural($variables['total'], '@total result found for !query', '@total results found for !query', array('@total' => $variables['total'], '!query' => $query));
   }
@@ -35,13 +52,13 @@ function template_preprocess_cnapi_ui_list(&$variables) {
     $variables['result_info'] = format_plural($variables['total'], '@total result found', '@total results found', array('@total' => $variables['total']));
   }
 
-  // objects
+  // Set the $objects variable as an array of themed object summaries.
   $variables['objects'] = array();
   foreach ($variables['items'] as $object) {
     $variables['objects'][] = theme('cnapi_ui_' . $variables['type'] . '_summary', array($variables['type'] => $object));
   }
 
-  // sort links
+  // Gather the sort links and add them as an array to $sort_links.
   $sort_links = array();
 
   $request_sort = $variables['request'];
@@ -57,11 +74,11 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   $variables['sort_links'] = theme('item_list', array('items' => $sort_links));
 
-  // rss
+  // Add a link to the RSS feed in $rss.
   $url_rss = cnapi_ui_rss_feed_url_raw();
   $variables['rss'] = l(t('RSS'), $url_rss['path'], $url_rss['options']);
 
-  // pager
+  // Add the pager in $pager.
   $variables['pager'] = theme('pager');
 }
 
@@ -77,6 +94,8 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
 /**
  * Preprocess variables for cnapi-ui-event.tpl.php.
  *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object_summary.
+ *
  * @see cnapi-ui-event.tpl.php
  */
 function template_preprocess_cnapi_ui_event_summary(&$variables) {
@@ -85,6 +104,8 @@ function template_preprocess_cnapi_ui_event_summary(&$variables) {
 
 /**
  * Preprocess variables for cnapi-ui-production.tpl.php.
+ *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object_summary.
  *
  * @see cnapi-ui-production.tpl.php
  */
@@ -169,6 +190,8 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 /**
  * Preprocess variables for cnapi-ui-actor.tpl.php.
  *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object.
+ *
  * @see cnapi-ui-event.tpl.php
  */
 function template_preprocess_cnapi_ui_actor(&$variables) {
@@ -178,6 +201,8 @@ function template_preprocess_cnapi_ui_actor(&$variables) {
 /**
  * Preprocess variables for cnapi-ui-event.tpl.php.
  *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object.
+ *
  * @see cnapi-ui-event.tpl.php
  */
 function template_preprocess_cnapi_ui_event(&$variables) {
@@ -186,6 +211,8 @@ function template_preprocess_cnapi_ui_event(&$variables) {
 
 /**
  * Preprocess variables for cnapi-ui-production.tpl.php.
+ *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object.
  *
  * @see cnapi-ui-production.tpl.php
  */
@@ -357,10 +384,10 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     }
   }
 
+  // address
   if ($type == 'actor') {
     $variables['address'] = '';
 
-    // address
     if (isset($object['contactinfo']['address'])) {
       $variables['address'] = _template_preprocess_cnapi_ui_address($object['contactinfo']['address']);
     }
@@ -390,6 +417,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   if (isset($object['contactinfo']['main']) || isset($object['contactinfo']['other'])) {
     $contact = array();
 
+    // url, mail, phone, fax will be taken from contacinfo/main. If it wasn't found there, we also look at contactinfo/other.
     if (isset($object['contactinfo']['main'])) {
       $contact = $object['contactinfo']['main'];
     }
@@ -618,7 +646,7 @@ function _template_preprocess_cnapi_ui_object_vlieg(&$variables, $type) {
 }
 
 /**
- * Helper for generating an address string from the address parts in an address object.
+ * Helper for generating an address string ([treet] [nr], [zip] [city]) from the address parts in an address object.
  */
 function _template_preprocess_cnapi_ui_address($address) {
   $parts = $address_street = $address_city = array();

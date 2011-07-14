@@ -1,43 +1,64 @@
 <?php
 
+/**
+ * @file
+ * Handles tracking on the Cultuurnet Tracking API for lists (contexts) and detail pages.
+ */
+
+/**
+ * Helper to add tracking calls on the lists and detail pages. Should be called from a place like hook_init.
+ */
 function cnapi_ui_tracking() {
+  // Get the current request.
   $request = cnapi_ui_get_active_request();
 
-  if ($request) {
-    if (isset($request['context'])) {
-      $context = cnapi_ui_contexts('id', $request['context']);
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
 
-      $activity = 'list';
-      $params = array();
+  // Tracking lists (context pages).
+  if (isset($request['context'])) {
+    $context = cnapi_ui_contexts('id', $request['context']);
 
-      if ($context) {
-        $params = $request['query'];
-        $params['context'] = $request['context'];
-        $params['type'] = $context['type'];
-      }
+    // Activity : list
+    $activity = 'list';
+
+    // Params : context (event, movie, ...), type (actor, event, production) and query (the filters).
+    $params = array();
+    if ($context) {
+      $params = $request['query'];
+      $params['context'] = $request['context'];
+      $params['type'] = $context['type'];
     }
-    else {
-      $activity = 'detail';
-      $params = array();
+  }
 
-      if (isset($request['actor'])) {
-        $type = 'actor';
-      }
-      elseif (isset($request['event'])) {
-        $type = 'event';
-      }
-      elseif (isset($request['production'])) {
-        $type = 'production';
-      }
-
-      if (isset($type)) {
-        $params['type'] = $type;
-        $params['cdbid'] = $request[$type];
-      }
+  // Tracking detail pages.
+  else {
+    // Determining the type
+    $params = array();
+    if (isset($request['actor'])) {
+      $type = 'actor';
+    }
+    elseif (isset($request['event'])) {
+      $type = 'event';
+    }
+    elseif (isset($request['production'])) {
+      $type = 'production';
     }
 
-    if (!empty($params)) {
-      cnapi_tracking_track($activity, $params);
+    // Activity : detail
+    $activity = 'detail';
+
+    // Params : type (actor, event, production)
+    if (isset($type)) {
+      $params['type'] = $type;
+      $params['cdbid'] = $request[$type];
     }
+  }
+
+  // If we could successfully determine some tracking parameters, invoke the actual tracking call.
+  if (!empty($params)) {
+    cnapi_tracking_track($activity, $params);
   }
 }

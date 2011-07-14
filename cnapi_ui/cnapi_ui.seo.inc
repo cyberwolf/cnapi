@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Handles some SEO optimisations for lists (contexts) and detail pages.
+ */
+
+/**
  * Preprocess variables for theme_link.
  *
  * @see theme_link()

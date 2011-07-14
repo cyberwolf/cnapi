@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Preprocessing.
+ */
+
+/**
  * Preprocess variables for cnapi-extras-block-wider-radius-search.tpl.php.
  *
  * @see cnapi-extras-block-wider-radius-search.tpl.php

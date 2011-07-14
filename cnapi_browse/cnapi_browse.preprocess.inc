@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Preprocessing.
+ */
+ 
+/**
  * Preprocess variables for cnapi-browse-navigation-item.tpl.php.
  *
  * @see cnapi-browse-navigation-item.tpl.php
