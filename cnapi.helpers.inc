@@ -1,5 +1,110 @@
 <?php
 
+function cnapi_http_request($url, $method = 'GET', $data = array()) {
+  $reponse = FALSE;
+
+  _cnapi_timer('start', $url);
+
+  $ch = curl_init($url);
+
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_TIMEOUT, CNAPI_HTTP_REQUEST_TIMEOUT);
+  curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+
+  // support for proxy servers
+  if (variable_get('cnapi_proxy_enabled', FALSE)) {
+    curl_setopt($ch, CURLOPT_PROXY, trim(variable_get('cnapi_proxy_server', '')));
+    curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cnapi_proxy_port', ''));
+    curl_setopt($ch, CURLOPT_PROXYUSERPWD, sprintf('%s:%s', variable_get('cnapi_proxy_username', ''), variable_get('cnapi_proxy_password', '')));
+  }
+
+  // support for POST method
+  if ($method == 'POST') {
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    if (!empty($data)) {
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    }
+  }
+
+  $response = curl_exec($ch);
+  $curl_info = curl_getinfo($ch);
+
+  curl_close($ch);
+
+  _cnapi_timer('stop', $url);
+
+  if ($curl_info['http_code'] != 200 || !$response) {
+    if ($response) {
+      if ($error = _cnapi_parse_error($response)) {
+        _cnapi_set_last_request_error($error);
+      }
+      else {
+        _cnapi_set_last_request_error(FALSE);
+      }
+    }
+    else {
+      _cnapi_set_last_request_error(FALSE);
+    }
+    watchdog('cnapi', 'Error doing request !request in cnapi_request_api_xml : Return code was !error', array('!request' => $url, '!error' => $curl_info['http_code']), WATCHDOG_ERROR);
+    return FALSE;
+  }
+  else {
+    _cnapi_set_last_request_error(FALSE);
+    return $response;
+  }
+}
+
+/**
+ * Get detailed information on the error status of the last request made using cnapi_http_request.
+ *
+ * @param $request
+ *   A CNAPI request array (@see _cnapi_get) representing the request.
+ *
+ * @return
+ *   An associative array containing detailed information on the last error in case of an error (that was returned with a detailed error description) .
+ *   FALSE in case the last request was successfull or in case no detailed error message was returned.
+ *
+ *   Error format is:
+ *     $error = array(
+ *       'code' => 'AuthenticationFailed',
+ *       'level' => 'ERROR',
+ *       'message' => 'Authentication failed for test@test.net',
+ *       'resource' => '/userpool/new',
+ *     );
+ */
+function cnapi_get_last_request_error() {
+  return _cnapi_set_last_request_error();
+}
+
+function _cnapi_set_last_request_error($error = NULL) {
+  $last_error = &drupal_static(__FUNCTION__, NULL);
+
+  if ($error !== NULL) {
+    $last_error = $error;
+  }
+
+  return $last_error;
+}
+
+function _cnapi_timer($action, $url = NULL) {
+  $_cnapi_timers = &drupal_static(__FUNCTION__, array());
+
+  $timer_key = 'cnapi_http_request_' . $url;
+  if ($action == 'start') {
+    timer_start($timer_key);
+  }
+  if ($action == 'stop') {
+    $time = timer_stop($timer_key);
+    $_cnapi_timers[$url] = $time['time'];
+  }
+  if ($action == 'read' && $url) {
+    return $_cnapi_timers[$url];
+  }
+  if ($action == 'read' && $url == NULL) {
+    return $_cnapi_timers;
+  }
+}
+
 function cnapi_report_sort_total($a, $b) {
   return $a['total'] == $b['total'] ? 0 : ($a['total'] < $b['total'] ? 1 : -1);
 }

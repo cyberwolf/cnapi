@@ -2,6 +2,8 @@
 
 require_once 'cnapi.helpers.inc';
 require_once 'cnapi.parsers.inc';
+require_once 'cnapi.request.inc';
+require_once 'cnapi.cache.inc';
 require_once 'cnapi.api.inc';
 require_once 'cnapi.values.inc';
 
