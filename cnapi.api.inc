@@ -13,7 +13,7 @@ function cnapi_get($request) {
   cnapi_request_add_defaults($request);
   cnapi_request_clean($request);
 
-  return _cnapi_get($request);
+  return cnapi_api_request_cached($request);
 }
 
 /**
@@ -26,7 +26,7 @@ function cnapi_get($request) {
  *   An array representing the answer (@see _cnapi_get) from the CultuurNet API in case of success. FALSE in case an error occured.
  */
 function cnapi_get_raw($request) {
-  return _cnapi_get($request);
+  return cnapi_api_request_cached($request);
 }
 
 /**
@@ -112,7 +112,7 @@ function cnapi_get_report($type, $query = array()) {
   return cnapi_get($request);
 }
 
-function _cnapi_get($request) {
+function cnapi_api_request_cached($request) {
   if (!cnapi_request_validate($request)) {
     watchdog('cnapi', 'Invalid API request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
     return FALSE;
