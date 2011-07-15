@@ -1,21 +1,46 @@
 <?php
 
+/**
+ * Get the RSS feed url for a request.
+ *
+ * @param $request
+ *   A Drupal CNapi request array representing the request. If not specified, the current request is taken (if applicable).
+ *
+ * @return
+ *   A string representing the RSS feed URL.
+ */
 function cnapi_ui_rss_feed_url($request = NULL) {
+  // Get a raw Drupal url array representation of the RSS feed.
   $url = cnapi_ui_rss_feed_url_raw();
+
+  // Convert it to a string.
   return url($url['path'], $url['options']);
 }
 
+/**
+ * Get the RSS feed url (as an array with path and options) for a request.
+ *
+ * @param $request
+ *   A Drupal CNapi request array representing the request. If not specified, the current request is taken (if applicable).
+ *
+ * @return
+ *   An array containing the path and 'options' part for a Drupal url.
+ */
 function cnapi_ui_rss_feed_url_raw($request = NULL) {
+  // If no request was specified, fetch the current request.
   if (!$request) {
     $request = cnapi_ui_get_active_request();
   }
 
+  // RSS feeds exist only for list (context) pages.
   if (!isset($request['context'])) {
     return FALSE;
   }
 
+  // Clean invalid RSS query parameters (sorting, paging, date information).
   cnapi_ui_clean_rss_queries($request['query']);
 
+  // Convert to a Drupal url array.
   $url = cnapi_url_dp2dua($request);
   $url['path'] = 'rss/' . $url['path'];
   $url['options']['absolute'] = TRUE;
@@ -23,20 +48,40 @@ function cnapi_ui_rss_feed_url_raw($request = NULL) {
   return $url;
 }
 
+/**
+ * Remove invalid query parameters from a query array. The query is for a Drupal request (not API), so 'query' for queries and page counting starting from 0.
+ *
+ * @param $query
+ *   An associative array representing the query. Keys are the query parameters, value are the values for the query parameters. The $query is passed by reference.
+ */
 function cnapi_ui_clean_invalid_queries(&$query) {
+  // Valid query parameters for actor, event and production lists.
   $valid_queries_common = array('query', 'k', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
+
+  // Valid query parameters for productions.
   $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
 
+  // Merge the previous two.
   $valid_queries = array_merge($valid_queries_common, $valid_queries_events_productions);
+
+  // Determine what parameters are invalid in the passed query.
   $diff = array_diff(array_keys($query), $valid_queries);
 
+  // Unset all those parameters.
   foreach ($diff as $key) {
     unset($query[$key]);
   }
 }
 
+/**
+ * Remove query parameters from a query array that are invalid for RSS feeds like paging, sorting and date information. The query is for a Drupal request (not API), so 'query' for queries and page counting starting from 0.
+ *
+ * @param $query
+ *   An associative array representing the query. Keys are the query parameters, value are the values for the query parameters. The $query is passed by reference.
+ */
 function cnapi_ui_clean_rss_queries(&$query) {
   unset($query['sort']);
+
   unset($query['pagelength']);
   unset($query['page']);
 
@@ -44,36 +89,65 @@ function cnapi_ui_clean_rss_queries(&$query) {
   unset($query['datetype']);
 }
 
+/**
+ * Redirect the user to a different page. This is a wrapper around drupal_goto (@see drupal_goto) but takes a Drupal cnapi request instead of a path.
+ *
+ * @param $request
+ *   The Drupal cnapi request to redirect to
+ * @param $options
+ *   @see drupal_goto
+ * @param $http_response_code
+ *   @see drupal_goto
+ */
 function cnapi_ui_goto($request, $options = array(), $http_response_code = 302) {
+  // Get a Drupal url array representation for the request.
   $url = cnapi_url_dp2dua($request);
 
+  // Fetch path and options.
   $path = $url['path'];
   $options = $url['options'];
 
+  // If extra options were passed, add to (or override) those already in the url of the request.
   if (!empty($options)) {
     foreach ($options as $key => $value) {
       $options[$key] = $value;
     }
   }
 
+  // Redirect to the new page.
   drupal_goto($path, $url['options'], $http_response_code);
 }
 
+/**
+ * Get the Drupal url array representation (path and options) for the active request.
+ *
+ * @param $clean
+ *   Boolean indicating wether the request should be cleaned for invalid query parameters.
+ *
+ * @return
+ *   An array containing the path and 'options' part for a Drupal url representing the current request.
+ */
 function cnapi_ui_get_active_url($clean = TRUE) {
   $url = &drupal_static(__FUNCTION__, array());
 
+  // Check our static cache and return the result in case of a hit.
   if (isset($url[$clean])) {
     return $url[$clean];
   }
 
+  // We find the path part in $_GET['q']...
   $path = $_GET['q'];
+
+  // ... and the query part in all $_GET parameters that are not 'q'
   $query = $_GET;
   unset($query['q']);
 
+  // If we need to clean invalid query paramters, do it.
   if ($clean) {
     cnapi_ui_clean_invalid_queries($query);
   }
 
+  // Construct the resulting array.
   $url[$clean] = array(
     'path' => $path,
     'options' => array(
@@ -84,19 +158,39 @@ function cnapi_ui_get_active_url($clean = TRUE) {
   return $url[$clean];
 }
 
+/**
+ * Get the Drupal cnapi request for the for the active request.
+ *
+ * @param $clean
+ *   Boolean indicating wether the request should be cleaned for invalid query parameters.
+ *
+ * @return
+ *   The Drupal cnapi request.
+ */
 function cnapi_ui_get_active_request($clean = TRUE) {
+  // Get the Drupal url array representation of the current request.
   $url = cnapi_ui_get_active_url($clean);
 
+  // In case the CultuurNet API shadow node module has been enabled, we need to rewrite the url.
   if (module_exists('cnapi_snode')) {
     cnapi_snode_url_outbound_alter($url['path'], $url['options'], $url['path']);
   }
 
+  // Convert the Drupal url array to a Drupal cnapi request represenation and return.
   return cnapi_url_dua2dp($url);
 }
 
+/**
+ * Get the context ID for the active request.
+ *
+ * @return
+ *   A string representing the context ID for the active request.
+ */
 function cnapi_ui_get_active_context() {
+  // Get the current request...
   $request = cnapi_ui_get_active_request();
 
+  // ... and return the context part of it.
   return $request['context'];
 }
 
