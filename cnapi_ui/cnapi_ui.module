@@ -4,6 +4,7 @@ require_once('cnapi_ui.params.inc');
 require_once('cnapi_ui.helpers.inc');
 require_once('cnapi_ui.seo.inc');
 require_once('cnapi_ui.preprocess.inc');
+require_once('cnapi_ui.theme.inc');
 
 /**
  * Implements hook_menu().
@@ -121,10 +122,97 @@ function cnapi_ui_theme() {
   );
 }
 
+/**
+ * Load function for an actor. Return an actor object as it is returned and parsed from the API.
+ */
+function cnapi_ui_actor_load($cdbid) {
+  return cnapi_get_actor($cdbid);
+}
+
+/**
+ * Load function for an event. Return an event object as it is returned and parsed from the API.
+ */
+function cnapi_ui_event_load($cdbid) {
+  return cnapi_get_event($cdbid);
+}
+
+/**
+ * Load function for a production. Return a production object as it is returned and parsed from the API.
+ */
+function cnapi_ui_production_load($cdbid) {
+  return cnapi_get_production($cdbid);
+}
+
+/**
+ * Callback for generating page title of object.
+ */
+function cnapi_ui_page_detail_title($object) {
+  // The title of an object is either in 'detail/nl/title'...
+  if (isset($object['detail']['nl']['title'])) {
+    return $object['detail']['nl']['title'];
+  }
+  // ... or in 'title'.
+  elseif (isset($object['title'])) {
+    return $object['title'];
+  }
+
+  // Return FALSE if we couldn't find the title.
+  return FALSE;
+}
+
+function cnapi_ui_page_list_title() {
+  $request = cnapi_ui_get_active_request();
+
+  $context = cnapi_ui_contexts('id', $request['context']);
+
+  $filters = cnapi_ui_get_active_request_filters();
+
+  $parts = array();
+
+  foreach ($filters as $key => $key_filters) {
+    foreach ($key_filters as $filter) {
+      $parts[] = $filter['description'];
+    }
+  }
+
+  $parts[] = $context['title'];
+
+  $title = truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
+
+  if (isset($request['query']['page']) && is_numeric($request['query']['page']) && $request['query']['page'] > 0) {
+    $title .= ', pagina ' . ($request['query']['page'] + 1);
+  }
+
+  return $title;
+}
+
+/**
+ * Get a list of defined UI contexts. A UI context is a themed overview page of a certain type (actor, event, production), sitting on a certain Drupal path (like ?q=agenda/search).
+ * The power of UI contexts are the predefined queries. You can create an overview page of events, filtered by a certain heading or city (or whatever other parameter). That query parameter won't be visually transparent in the URL (or anywhere else). Another example: if you filter the list with another paramter, that one is combined with the context query parameters.
+ *
+ * This module defines a few predefined contexts that are often used, but provides other modules the possibility to alter this list (add or remove) using hook_cnapi_ui_contexts_alter.
+ *
+ * A context is defined by:
+ * - an ID (for internal usage)
+ * - a type (actor, event, production)
+ * - the query (for the API request)
+ * - a Drupal path (think of this as in hook_menu)
+ * -  page title
+ *
+ * @param $key
+ *   The index field for the associative array of contexts that is returned. This can be 'id' or 'path'.
+ *   In case of a context lookup (if the second parameter $id is defined), this defines the type of that second parameter.
+ * @param $id
+ *   This identifier (id or path depending on $key) of the context to lookup. If $id is NULL, all contexts are returned, indexed by the field defined in $key.
+ *
+ * @return
+ *   The associative array of contexts indexed by the field defined in $key.
+ */
 function cnapi_ui_contexts($key = 'id', $id = NULL) {
   $contexts = &drupal_static(__FUNCTION__, NULL);
 
   if (!$contexts) {
+    // Initiate with our default contexts.
     $contexts['id'] = array(
       'event' => array(
         'id' => 'event',
@@ -156,8 +244,10 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       ),
     );
 
+    // Allow other modules to alter the list of contexts.
     drupal_alter('cnapi_ui_contexts', $contexts['id']);
 
+    // Our initialized list of contexts is keyed by the context ID. in $contexts['path'] we convert this to one indexed by context path.
     $contexts['path'] = array();
 
     foreach ($contexts['id'] as $context => $info) {
@@ -167,101 +257,13 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
     }
   }
 
+  // If a $id was defined, look it up.
   if ($id) {
     return isset($contexts[$key][$id]) ? $contexts[$key][$id] : NULL;
   }
 
+  // Return the result.
   return $contexts[$key];
-}
-
-function theme_cnapi_ui_page_list_rss($variables) {
-  $objects = $variables['objects'];
-  $type = $variables['type'];
-
-  $items = array();
-  if ($objects) {
-    foreach ($objects as $object) {
-      // object_url
-      $request_detail = array($type => $object['cdbid'], 'title' => $object['title']);
-
-      $object_url = cnapi_url_dp2dua($request_detail);
-      $object_url['options']['absolute'] = TRUE;
-      $object_url = url($object_url['path'], $object_url['options']);
-
-      $args = array(
-        array('key' => 'pubDate', 'value' => date('r', $object['created'])),
-        array('key' => 'guid', 'value' => $object_url, 'attributes' => array('isPermaLink' => 'true')),
-        array('key' => 'postid', 'value' => $object['cdbid']),
-      );
-
-      $body = theme('cnapi_ui_' . $type . '_summary', array($type => $object, 'url_absolute' => TRUE));
-      $items .= format_rss_item($object['title'], $object_url, $body, $args);
-    }
-  }
-
-  $site_name = variable_get('site_name', 'Drupal');
-  $url['options']['absolute'] = TRUE;
-  $url = url($url['path'], $url['options']);
-  $description = '';
-
-  $output  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-  $output .= "<rss version=\"2.0\">\n";
-  $output .= format_rss_channel(t('@site_name', array('@site_name' => $site_name)), $url, $description, $items);
-  $output .= "</rss>\n";
-
-  return $output;
-}
-
-function cnapi_ui_actor_load($cdbid) {
-  return cnapi_get_actor($cdbid);
-}
-
-function cnapi_ui_event_load($cdbid) {
-  return cnapi_get_event($cdbid);
-}
-
-function cnapi_ui_production_load($cdbid) {
-  return cnapi_get_production($cdbid);
-}
-
-/**
- * Callback for generating page title of object.
- */
-function cnapi_ui_page_detail_title($object) {
-  if (isset($object['detail']['nl']['title'])) {
-    return $object['detail']['nl']['title'];
-  }
-  elseif (isset($object['title'])) {
-    return $object['title'];
-  }
-
-  return FALSE;
-}
-
-function cnapi_ui_page_list_title() {
-  $request = cnapi_ui_get_active_request();
-
-  $context = cnapi_ui_contexts('id', $request['context']);
-
-  $filters = cnapi_ui_get_active_request_filters();
-
-  $parts = array();
-
-  foreach ($filters as $key => $key_filters) {
-    foreach ($key_filters as $filter) {
-      $parts[] = $filter['description'];
-    }
-  }
-
-  $parts[] = $context['title'];
-
-  $title = truncate_utf8(implode(', ', $parts), 80, TRUE, TRUE);
-
-  if (isset($request['query']['page']) && is_numeric($request['query']['page']) && $request['query']['page'] > 0) {
-    $title .= ', pagina ' . ($request['query']['page'] + 1);
-  }
-
-  return $title;
 }
 
 function cnapi_ui_get_active_request_filters() {

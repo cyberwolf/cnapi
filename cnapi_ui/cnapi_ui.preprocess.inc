@@ -15,15 +15,15 @@
 function cnapi_ui_preprocess_page(&$variables) {
   // Get the current request.
   $request = cnapi_ui_get_active_request();
-  
+
   // We only act upon list pages.
   if (!isset($request['context'])) {
     return;
   }
-  
+
   // Fetch the full context object to determine the title.
   $context = cnapi_ui_contexts('id', $request['context']);
-  
+
   // Set the $title variable to the context title.
   $variables['title'] = $context['title'];
 }
@@ -36,10 +36,10 @@ function cnapi_ui_preprocess_page(&$variables) {
 function template_preprocess_cnapi_ui_list(&$variables) {
   // Text for "no results".
   $variables['no_results'] = t('No results found.');
-  
+
   // If we have a free text search "filter", we add it together with the "remove filter url" to the result info.
   $filters = cnapi_ui_get_active_request_filters();
-  
+
   if (isset($filters['query'])) {
     $query = '<strong>' . $filters['query'][0]['description'] . ' ' . cnapi_url_dp2dul('x', $filters['query'][0]['url_remove']) . '</strong>';
   }
