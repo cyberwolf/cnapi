@@ -84,7 +84,7 @@ function cnapi_snode_update_node($nid, $object) {
     $node->uid = variable_get('cnapi_snode_sync_user', 0);
   }
   $account = user_load($node->uid);
-  $node->uid = $account->name;
+  $node->name = $account->name;
 
   // Saving the modified node.
   node_submit($node);
@@ -107,9 +107,14 @@ function cnapi_snode_add_node($object) {
   $types = node_type_get_types();
 
   $uid = isset($object->uid) ? $object->uid : variable_get('cnapi_snode_sync_user', 0);
-  $node = (object) array('uid' => $uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $object->type, 'language' => LANGUAGE_NONE);
+  
+  $account = user_load($uid);
+  $node = (object) array('uid' => $uid, 'name' => (isset($account->name) ? $account->name : ''), 'type' => $object->type, 'language' => LANGUAGE_NONE);
 
   node_object_prepare($node);
+  
+  $node->uid = $uid;
+  $node->name = (isset($account->name) ? $account->name : '');
 
   $node->type = $object->type;
 
