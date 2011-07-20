@@ -375,6 +375,10 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       if (isset($location['actor']['detail']['nl']['title'])) {
         $variables['location']['title'] = $location['actor']['detail']['nl']['title'];
       }
+      
+      elseif (isset($location['location'])) {
+        $variables['location']['title'] = $location['location'];
+      }
 
       // location link
       if (isset($location['actor']['asset']) && $location['actor']['asset']) {
