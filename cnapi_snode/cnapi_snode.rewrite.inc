@@ -95,7 +95,7 @@ function cnapi_snode_url_outbound_alter(&$path, &$options, $original_path) {
   }
 
   // Only rewrite node detail urls.
-  if (arg(0, $path) == 'node' && is_numeric(arg(1, $path)) && !arg(2)) {
+  if (arg(0, $path) == 'node' && is_numeric(arg(1, $path)) && !arg(2, $path)) {
     $nid = arg(1, $path);
 
     // Fetch the shadow node title and ID.
