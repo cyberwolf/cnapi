@@ -2,7 +2,7 @@ De CultuurNet API modules suite in een set van Drupal modules die het voor Drupa
 
 De CultuurNet API is een REST API die de data over events, producties en locaties open stelt voor andere ontwikkelaars.
 
-Meer informatie over de CultuurNet API vind je op [website van CultuurNet](http://www.cultuurnet.be/)
+Meer informatie over de CultuurNet API vind je op [tools.uitdatabank.be/docs/out](http://tools.uitdatabank.be/docs/out)
 
 ## Hoe ga je verder?
 
