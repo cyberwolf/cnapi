@@ -805,8 +805,8 @@ function _cnapi_parse_address(&$data, $field, $xml) {
 
   // $address['gis'][...]
   $gis = array();
-  _cnapi_parse_str($gis, 'lat', $xml, 'address/physical/gis/xcoordinate');
-  _cnapi_parse_str($gis, 'lng', $xml, 'address/physical/gis/ycoordinate');
+  _cnapi_parse_str($gis, 'lat', $xml, 'address/physical/gis/ycoordinate');
+  _cnapi_parse_str($gis, 'lng', $xml, 'address/physical/gis/xcoordinate');
   if (!empty($gis)) {
     $address['gis'] = $gis;
   }
