@@ -238,6 +238,9 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   if (isset($data['created'])) {
     $data['created'] = cnapi_timestamp($data['created']);
   }
+  
+  // $data['reservation']
+  _cnapi_parse_str($data, 'reservation', $xml, '@reservation');
 }
 
 function _cnapi_parse_production_list_item(&$data, $xml) {
