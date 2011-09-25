@@ -100,7 +100,7 @@ function cnapi_ui_set_canonical_and_noindex() {
       ),
     );
 
-    drupal_add_html_head($element);
+    drupal_add_html_head($element, 'nofollow');
   }
 
   // Add the rel="canonical" tag if needed.
