@@ -15,19 +15,19 @@ function cnapi_browse_advanced_search_form() {
 
   $form['what'] = array(
     '#type' => 'fieldset',
-    '#title' => t('What'),
+    '#title' => 'Wat',
     '#collapsible' => FALSE,
   );
 
   $form['what']['query'] = array(
     '#type' => 'textfield',
-    '#title' => t('Keywords'),
+    '#title' => 'Zoektermen',
     '#size' => 20,
   );
 
   $form['what']['headings'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Category'),
+    '#title' => 'Rubrieken',
     '#options' => $options,
   );
 
@@ -37,13 +37,13 @@ function cnapi_browse_advanced_search_form() {
 
   $form['where'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Where'),
+    '#title' => 'Waar',
     '#collapsible' => FALSE,
   );
 
   $form['where']['city'] = array(
     '#type' => 'textfield',
-    '#title' => t('City'),
+    '#title' => 'Stad of gemeente',
     '#autocomplete_path' => 'cnapi/autocomplete/location',
     '#size' => 20,
   );
@@ -56,34 +56,34 @@ function cnapi_browse_advanced_search_form() {
   );
 
   $provinces = cnapi_get_provinces();
-  $options = cnapi_get_select_options($provinces, 'lid', 'name', t('Choose a province'));
+  $options = cnapi_get_select_options($provinces, 'lid', 'name', 'Kies een provincie');
 
   $form['where']['province'] = array(
     '#type' => 'select',
-    '#title' => t('Province'),
+    '#title' => 'Provincie',
     '#options' => $options,
   );
 
   $regions = cnapi_get_regions_tourist();
-  $options = cnapi_get_select_options($regions, 'lid', 'name', t('Choose a region'));
+  $options = cnapi_get_select_options($regions, 'lid', 'name', 'Kies een  regio');
 
   $form['where']['region'] = array(
     '#type' => 'select',
-    '#title' => t('Region'),
+    '#title' => 'Regio',
     '#options' => $options,
   );
 
   $form['when'] = array(
     '#type' => 'fieldset',
-    '#title' => t('When'),
+    '#title' => 'Wanneer',
     '#collapsible' => FALSE,
   );
 
   $form['when']['when_date'] = array(
     '#type' => 'textfield',
-    '#title' => t('Date'),
+    '#title' => 'Datum',
     '#default_value' => '',
-    '#description' => t('Format is yyyy/mm/dd'),
+    '#description' => 'Formaat yyyy/mm/dd',
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
@@ -91,11 +91,11 @@ function cnapi_browse_advanced_search_form() {
   $valid_types = array('today', 'tomorrow', 'thisweek', 'thisweekend', 'nextweekend', 'next30days');
   $datetypes = array_intersect_key(cnapi_get_datetypes(), array_flip($valid_types));
 
-  $options = array(CNAPI_OPTION_NONE => t('Select a date from this list')) + $datetypes;
+  $options = array(CNAPI_OPTION_NONE => 'Selecteer een datum') + $datetypes;
 
   $form['when']['when'] = array(
     '#type' => 'select',
-    '#title' => t('Period'),
+    '#title' => 'Periode',
     '#options' => $options,
     '#default_value' => -1,
   );
@@ -105,16 +105,16 @@ function cnapi_browse_advanced_search_form() {
 
   $form['extra'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Extra'),
+    '#title' => 'Extra',
     '#collapsible' => FALSE,
   );
 
   $options = array(
-    'isfree:true' => t('Free offer'),
-    'type:!0.50.6.0.0' => t('Exclude movies'),
-    'age:12' => t('Exclude events for children'),
-    'type:!0.3.1.0.0' => t('Exclude courses/workshops'),
-    'permanent:false' => t('Exclude permanent offer'),
+    'isfree:true' => 'Gratis',
+    'type:!0.50.6.0.0' => 'Geen films',
+    'age:12' => 'Geen aanbod voor kinderen',
+    'type:!0.3.1.0.0' => 'Geen cursussen en workshops',
+    'permanent:false' => 'Geen permanent aanbod',
   );
 
   $form['extra']['extra'] = array(
@@ -125,7 +125,7 @@ function cnapi_browse_advanced_search_form() {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Search'),
+    '#value' => 'Zoek',
   );
 
   return $form;
