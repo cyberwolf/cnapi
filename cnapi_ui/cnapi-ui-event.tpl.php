@@ -5,21 +5,21 @@
 <dt>CDBID</dt>
 <dd><?php print $cdbid ?></dd>
 
-<dt>Title</dt>
+<dt>Titel</dt>
 <dd><?php print $title ?></dd>
 
 <?php if ($shortdescription) : ?>
-  <dt>Short description</dt>
+  <dt>Korte omschrijving</dt>
   <dd><?php print $shortdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($longdescription) : ?>
-  <dt>Long description</dt>
+  <dt>Lange omschrijving</dt>
   <dd><?php print $longdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($location) : ?>
-  <dt>Where</dt>
+  <dt>Waar</dt>
   <dd>
     <?php if (isset($location['link'])) : ?>
       <?php print $location['link'] ?>
@@ -31,7 +31,7 @@
 <?php endif; ?>
 
 <?php if ($organiser) : ?>
-  <dt>Organiser</dt>
+  <dt>Organisatie</dt>
   <dd>
     <?php if (isset($organiser['link'])) : ?>
       <?php print $organiser['link'] ?>
@@ -45,13 +45,13 @@
   <dt>Reservation</dt>
   <dd>
   <?php if (isset($reservation['mail'])) : ?>
-    Mail : <?php print $reservation['mail'] ?><br />
+    Mail: <?php print $reservation['mail'] ?><br />
   <?php endif; ?>
   <?php if (isset($reservation['phone'])) : ?>
-    Phone : <?php print $reservation['phone'] ?><br />
+    Telefoon: <?php print $reservation['phone'] ?><br />
   <?php endif; ?>
   <?php if (isset($reservation['fax'])) : ?>
-    Fax : <?php print $reservation['fax'] ?>
+    Fax: <?php print $reservation['fax'] ?>
   <?php endif; ?>
   </dd>
 <?php endif; ?>
@@ -60,24 +60,24 @@
   <dt>Contact</dt>
   <dd>
   <?php if (isset($contact['mail'])) : ?>
-    Mail : <?php print $contact['mail'] ?><br />
+    Mail: <?php print $contact['mail'] ?><br />
   <?php endif; ?>
   <?php if (isset($contact['phone'])) : ?>
-    Phone : <?php print $contact['phone'] ?><br />
+    Telefoon: <?php print $contact['phone'] ?><br />
   <?php endif; ?>
   <?php if (isset($contact['fax'])) : ?>
-    Fax : <?php print $contact['fax'] ?>
+    Fax: <?php print $contact['fax'] ?>
   <?php endif; ?>
   </dd>
 <?php endif; ?>
 
 <?php if ($when) : ?>
-  <dt>When</dt>
+  <dt>Wanneer</dt>
   <dd><?php print $when ?></dd>
 <?php endif; ?>
 
 <?php if ($performers) : ?>
-  <dt>Performers</dt>
+  <dt>Uitvoerder</dt>
   <dd>
     <?php foreach ($performers as $performer) : ?>
       <?php print $performer ?>,
@@ -86,7 +86,7 @@
 <?php endif; ?>
 
 <?php if ($headings) : ?>
-  <dt>Headings</dt>
+  <dt>Rubrieken</dt>
   <dd>
     <?php foreach ($headings as $heading) : ?>
       <?php print $heading ?>,
@@ -100,7 +100,7 @@
 <?php endif; ?>
 
 <?php if ($images) : ?>
-  <dt>Images</dt>
+  <dt>Afbeeldingen</dt>
   <dd>
     <?php foreach ($images as $image) : ?>
       <?php print $image['image'] ?>
@@ -129,12 +129,12 @@
 <?php endif; ?>
 
 <?php if ($agefrom) : ?>
-  <dt>Age from</dt>
+  <dt>Leeftijd vanaf</dt>
   <dd><?php print $agefrom ?></dd>
 <?php endif; ?>
 
 <?php if ($targetaudiences) : ?>
-  <dt>Target audiences</dt>
+  <dt>Doelgroep</dt>
   <dd>
     <?php foreach ($targetaudiences as $targetaudience) : ?>
       <?php print $targetaudience ?>,
@@ -143,7 +143,7 @@
 <?php endif; ?>
 
 <?php if ($facilities) : ?>
-  <dt>Facilities</dt>
+  <dt>Voorzieningen</dt>
   <dd>
     <?php foreach ($facilities as $facility) : ?>
       <?php print $facility ?>,
