@@ -183,7 +183,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 
   // when
   if ($type == 'event') {
-    $variables['when'] = isset($object['calendarsummary']) ? $object['calendarsummary'] : '';
+    $variables['when'] = isset($event['calendarsummary']) ? $event['calendarsummary'] : '';
   }
 }
 

@@ -27,7 +27,7 @@ function cnapi_browse_block_active_filters() {
     }
   }
 
-  $block['subject'] = 'Active filters';
+  $block['subject'] = t('Active filters');
   $block['content'] = array(
     '#theme' => 'cnapi_browse_filter_options',
     '#options' => $filter_options
@@ -77,7 +77,7 @@ function cnapi_browse_block_navigation() {
     $items[] = $item;
   }
 
-  $block['subject'] = 'Bekijk alle rubrieken';
+  $block['subject'] = t('Browse all categories');
   $block['content'] = array(
     '#theme' => 'cnapi_browse_navigation',
     '#items' => $items
@@ -87,7 +87,7 @@ function cnapi_browse_block_navigation() {
 }
 
 function cnapi_browse_block_search() {
-  $block['subject'] = 'Zoek';
+  $block['subject'] = t('Search');
   $block['content'] = drupal_get_form('cnapi_browse_search_form');
 
   return $block;
@@ -98,13 +98,13 @@ function cnapi_browse_search_form() {
 
   $form['query'] = array(
     '#type' => 'textfield',
-    '#title' => 'Wat',
+    '#title' => t('What'),
     '#size' => 20,
   );
 
   $form['city'] = array(
     '#type' => 'textfield',
-    '#title' => 'Waar',
+    '#title' => t('Where'),
     '#autocomplete_path' => 'cnapi/autocomplete/location',
     '#size' => 20,
   );
@@ -112,21 +112,21 @@ function cnapi_browse_search_form() {
   $valid_types = array('today', 'tomorrow', 'thisweek', 'thisweekend', 'nextweekend', 'next30days');
   $datetypes = array_intersect_key(cnapi_get_datetypes(), array_flip($valid_types));
 
-  $options = array(CNAPI_OPTION_NONE => 'Selecteer een datum') + $datetypes;
+  $options = array(CNAPI_OPTION_NONE => t('Select a date from this list')) + $datetypes;
 
   $form['when'] = array(
     '#type' => 'select',
-    '#title' => 'Wanneer',
+    '#title' => t('When'),
     '#options' => $options,
     '#default_value' => -1,
     '#attributes' => array('class' => array('has-datepicker')),
   );
 
   $form['when_date'] = array(
-    '#title' => 'Datum',
+    '#title' => t('Date'),
     '#type' => 'textfield',
     '#default_value' => '',
-    '#description' => 'Formaat yyyy/mm/dd',
+    '#description' => t('Format is yyyy/mm/dd'),
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
@@ -136,11 +136,11 @@ function cnapi_browse_search_form() {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Zoek',
+    '#value' => t('Search'),
   );
 
   $form['advanced_search'] = array(
-    '#markup' => '<div id="link-advanced-search">' . l('Uitgebreide zoek', 'agenda/s') . '</div>',
+    '#markup' => '<div id="link-advanced-search">' . l(t('Advanced search'), 'agenda/s') . '</div>',
   );
 
   return $form;
@@ -200,17 +200,17 @@ function cnapi_browse_block_filters() {
   }
 
   if ($context['type'] == 'event') {
-    $render['filter_what']['title'] = array('#markup' => '<h2>' . 'Wat' . '</h2>');
+    $render['filter_what']['title'] = array('#markup' => '<h2>' . t('What') . '</h2>');
     $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
   }
 
-  $render['filter_where']['title'] = array('#markup' => '<h2>' . 'Waar' . '</h2>');
+  $render['filter_where']['title'] = array('#markup' => '<h2>' . t('Where') . '</h2>');
   $render['filter_where']['filter'] = cnapi_browse_filter_where($report, $context['type']);
 
-  $render['filter_when']['title'] = array('#markup' => '<h2>' . 'Wanneer' . '</h2>');
+  $render['filter_when']['title'] = array('#markup' => '<h2>' . t('When') . '</h2>');
   $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
 
-  $block['subject'] = 'Filter zoekresultaten';
+  $block['subject'] = t('Filter search results');
   $block['content'] = $render;
 
   return $block;
@@ -263,7 +263,7 @@ function cnapi_browse_filter_what_event($report) {
 
     $filter_options[] = array(
       'id' => NULL,
-      'name' => 'Alle rubrieken',
+      'name' => t('All headings'),
       'url' => $request_remove,
       'total' => $result['total'],
       'active' => FALSE,
@@ -459,7 +459,7 @@ function cnapi_browse_filter_where($report, $type) {
 
     $filter_option = array(
       'id' => NULL,
-      'name' => 'In Vlaanderen',
+      'name' => t('In Flanders'),
       'url' => $request_remove,
       'total' => $result['total'],
       'active' => FALSE,
@@ -499,11 +499,11 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
   $form = array();
 
   $provinces = cnapi_get_provinces();
-  $options = cnapi_get_select_options($provinces, 'lid', 'name', 'Kies een provincie');
+  $options = cnapi_get_select_options($provinces, 'lid', 'name', t('Choose a province'));
 
   $form['province'] = array(
     '#type' => 'select',
-    '#title' => 'Provincie',
+    '#title' => t('Province'),
     '#options' => $options,
     '#attributes' => array('class' => array('autosubmit')),
   );
@@ -511,7 +511,7 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
   if ($type == 'event') {
     $form['city'] = array(
       '#type' => 'textfield',
-      '#title' => 'Stad of gemeente',
+      '#title' => t('City'),
       '#autocomplete_path' => 'cnapi/autocomplete/location',
       '#size' => 20,
     );
@@ -531,11 +531,11 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
 
     asort($options);
 
-    $options = array(CNAPI_OPTION_NONE => 'Selecteer een locatie') + $options;
+    $options = array(CNAPI_OPTION_NONE => t('Select a location')) + $options;
 
     $form['location'] = array(
       '#type' => 'select',
-      '#title' => 'Locatie',
+      '#title' => t('Location'),
       '#options' => $options,
       '#attributes' => array('class' => array('autosubmit')),
     );
@@ -543,7 +543,7 @@ function cnapi_browse_filter_where_form($form, &$form_state, $report, $type) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Filter',
+    '#value' => t('Filter'),
   );
 
   return $form;
@@ -636,9 +636,9 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
 
   $form['when_date'] = array(
     '#type' => 'textfield',
-    '#title' => 'Datum',
+    '#title' => t('Date'),
     '#default_value' => isset($request['query']['date']) ? $request['query']['date'] : '',
-    '#description' => 'Formaat yyyy/mm/dd',
+    '#description' => t('Format is yyyy/mm/dd'),
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
@@ -648,7 +648,7 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Selecteer',
+    '#value' => t('Submit'),
   );
 
   return $form;

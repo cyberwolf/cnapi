@@ -5,35 +5,35 @@
 <dt>CDBID</dt>
 <dd><?php print $cdbid ?></dd>
 
-<dt>Titel</dt>
+<dt>Title</dt>
 <dd><?php print $title ?></dd>
 
 <?php if ($shortdescription) : ?>
-  <dt>Korte omschrijving</dt>
+  <dt>Short description</dt>
   <dd><?php print $shortdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($longdescription) : ?>
-  <dt>Lange omschrijving</dt>
+  <dt>Long description</dt>
   <dd><?php print $longdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($address) : ?>
-  <dt>Waar</dt>
+  <dt>Where</dt>
   <dd><?php print $address ?></dd>
 <?php endif; ?>
 
 <?php if ($reservation) : ?>
-  <dt>Reservatie</dt>
+  <dt>Reservation</dt>
   <dd>
   <?php if (isset($reservation['mail'])) : ?>
-    Mail: <?php print $reservation['mail'] ?><br />
+    Mail : <?php print $reservation['mail'] ?><br />
   <?php endif; ?>
   <?php if (isset($reservation['phone'])) : ?>
-    Telefoon: <?php print $reservation['phone'] ?><br />
+    Phone : <?php print $reservation['phone'] ?><br />
   <?php endif; ?>
   <?php if (isset($reservation['fax'])) : ?>
-    Fax: <?php print $reservation['fax'] ?>
+    Fax : <?php print $reservation['fax'] ?>
   <?php endif; ?>
   </dd>
 <?php endif; ?>
@@ -42,24 +42,24 @@
   <dt>Contact</dt>
   <dd>
   <?php if (isset($contact['mail'])) : ?>
-    Mail: <?php print $contact['mail'] ?><br />
+    Mail : <?php print $contact['mail'] ?><br />
   <?php endif; ?>
   <?php if (isset($contact['phone'])) : ?>
-    Telefoon: <?php print $contact['phone'] ?><br />
+    Phone : <?php print $contact['phone'] ?><br />
   <?php endif; ?>
   <?php if (isset($contact['fax'])) : ?>
-    Fax: <?php print $contact['fax'] ?>
+    Fax : <?php print $contact['fax'] ?>
   <?php endif; ?>
   </dd>
 <?php endif; ?>
 
 <?php if ($when) : ?>
-  <dt>Wanneer</dt>
+  <dt>When</dt>
   <dd><?php print $when ?></dd>
 <?php endif; ?>
 
 <?php if ($images) : ?>
-  <dt>Afbeeldingen</dt>
+  <dt>Images</dt>
   <dd>
     <?php foreach ($images as $image) : ?>
       <?php print $image['image'] ?>
