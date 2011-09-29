@@ -33,7 +33,7 @@
         <dd><?php print $where ?></dd>
       <?php endif; ?>
 
-      <?php if ($when) : ?>
+      <?php if (true) : ?>
         <dt>Wanneer</dt>
         <dd><?php print $when ?></dd>
       <?php endif; ?>

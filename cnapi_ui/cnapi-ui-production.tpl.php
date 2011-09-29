@@ -5,21 +5,21 @@
 <dt>CDBID</dt>
 <dd><?php print $cdbid ?></dd>
 
-<dt>Title</dt>
+<dt>Titel</dt>
 <dd><?php print $title ?></dd>
 
 <?php if ($shortdescription) : ?>
-  <dt>Short description</dt>
+  <dt>Korte omschrijving</dt>
   <dd><?php print $shortdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($longdescription) : ?>
-  <dt>Long description</dt>
+  <dt>Lange omschrijving</dt>
   <dd><?php print $longdescription ?></dd>
 <?php endif; ?>
 
 <?php if ($directors) : ?>
-  <dt>Directors</dt>
+  <dt>Regisseurs</dt>
   <dd>
     <?php foreach ($directors as $director) : ?>
       <?php print $director ?>,
@@ -28,7 +28,7 @@
 <?php endif; ?>
 
 <?php if ($actors) : ?>
-  <dt>Actors</dt>
+  <dt>Acteurs</dt>
   <dd>
     <?php foreach ($actors as $actor) : ?>
       <?php print $actor ?>,
@@ -37,7 +37,7 @@
 <?php endif; ?>
 
 <?php if ($performers) : ?>
-  <dt>Other performers</dt>
+  <dt>Andere uitvoerders</dt>
   <dd>
     <?php foreach ($performers as $performer) : ?>
       <?php print $performer ?>,
@@ -46,7 +46,7 @@
 <?php endif; ?>
 
 <?php if ($images) : ?>
-  <dt>Images</dt>
+  <dt>Afbeeldingen</dt>
   <dd>
     <?php foreach ($images as $image) : ?>
       <?php print $image['image'] ?>
@@ -61,7 +61,7 @@
 <?php endif; ?>
 
 <?php if ($agefrom) : ?>
-  <dt>Age from</dt>
+  <dt>Leeftijd vanaf</dt>
   <dd><?php print $agefrom ?></dd>
 <?php endif; ?>
 
