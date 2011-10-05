@@ -56,7 +56,7 @@ function cnapi_browse_block_view($delta = '') {
 function cnapi_browse_theme() {
   return array(
     'cnapi_browse_navigation' => array(
-      'variables' => array('items' => array()),
+      'variables' => array('items' => array(), 'level' => 0),
       'template' => 'cnapi-browse-navigation',
     ),
     'cnapi_browse_navigation_item' => array(
