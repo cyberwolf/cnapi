@@ -130,7 +130,7 @@ function theme_cnapi_browse_headings_element($variables = NULL) {
   $tree = cnapi_get_headings_tree();
 
   foreach ($tree as $heading_group) {
-    $output .= '<div id="heading-group">';
+    $output .= '<div class="heading-group">';
     $output .= '<strong>' . $heading_group['name'] . '</strong>';
     foreach ($heading_group['children'] as $id => $heading) {
       if (isset($variables['element'][$id])) {
