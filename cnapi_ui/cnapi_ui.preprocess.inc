@@ -23,9 +23,6 @@ function cnapi_ui_preprocess_page(&$variables) {
 
   // Fetch the full context object to determine the title.
   $context = cnapi_ui_contexts('id', $request['context']);
-
-  // Set the $title variable to the context title.
-  $variables['title'] = $context['title'];
 }
 
 /**
