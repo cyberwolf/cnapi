@@ -53,7 +53,7 @@ function template_preprocess_cnapi_browse_filter_option(&$variables) {
   
   // total
   if (isset($variables['option']['total'])) {
-    $variables['total'] = '<span class="total">' . $variables['option']['total'] . '</span>';
+    $variables['total'] = $variables['option']['total'];
   }
   
   // link
