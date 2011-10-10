@@ -46,10 +46,10 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   // Text for result info (number of results, ...)
   if (isset($query)) {
-    $variables['result_info'] = format_plural($variables['total'], '@total result found for !query', '@total results found for !query', array('@total' => $variables['total'], '!query' => $query));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total result</strong> found for <strong>!query</strong>', '<strong>@total results</strong> found for <strong>!query</strong>', array('@total' => $variables['total'], '!query' => $query));
   }
   else {
-    $variables['result_info'] = format_plural($variables['total'], '@total result found', '@total results found', array('@total' => $variables['total']));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total result</strong> found', '<strong>@total results</strong> found', array('@total' => $variables['total']));
   }
 
   // Set the $objects variable as an array of themed object summaries.
@@ -136,7 +136,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   $variables['more_link'] = l(t('More info'), $object_url['path'], $object_url['options']);
 
   // thumbnail
-  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg', array('absolute' => $variables['url_absolute']));
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif', array('absolute' => $variables['url_absolute']));
   $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
   $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
   $object_url['options']['html'] = TRUE;
