@@ -53,7 +53,7 @@ function template_preprocess_cnapi_browse_filter_option(&$variables) {
   
   // total
   if (isset($variables['option']['total'])) {
-    $variables['total'] = $variables['option']['total'];
+    $variables['total'] = '<span class="total">' . $variables['option']['total'] . '</span>';
   }
   
   // link
@@ -61,6 +61,8 @@ function template_preprocess_cnapi_browse_filter_option(&$variables) {
   
   // link_remove
   if (isset($variables['option']['url_remove'])) {
-    $variables['link_remove'] = cnapi_url_dp2dul('x', $variables['option']['url_remove']);
+    $url = cnapi_url_dp2dua($variables['option']['url_remove']);
+    $url['options']['attributes']['class'] = array('remove');
+    $variables['link_remove'] = l('x', $url['path'], $url['options']);
   }
 }

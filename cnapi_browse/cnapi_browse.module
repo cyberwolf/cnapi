@@ -64,7 +64,7 @@ function cnapi_browse_theme() {
       'template' => 'cnapi-browse-navigation-item',
     ),
     'cnapi_browse_filter_options' => array(
-      'variables' => array('options' => array()),
+      'variables' => array('options' => array(), 'level' => 0),
       'template' => 'cnapi-browse-filter-options',
     ),
     'cnapi_browse_filter_option' => array(
