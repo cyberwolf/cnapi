@@ -23,7 +23,14 @@ function template_preprocess_cnapi_browse_navigation_item(&$variables) {
   }
   
   // link
-  $variables['link'] = cnapi_url_dp2dul($variables['name'], $variables['item']['url']);
+  $text = $variables['name'];
+  if (!$variables['item']['is_heading_group']) {
+    $text .= ' <span class="total">(' . $variables['total'] . ')</span>';
+  }
+  
+  $url = cnapi_url_dp2dua($variables['item']['url']);
+  $url['options']['html'] = TRUE;
+  $variables['link'] = l($text, $url['path'], $url['options']);
   
   // is_heading_group
   $variables['is_heading_group'] = $variables['item']['is_heading_group'];
