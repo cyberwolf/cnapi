@@ -47,7 +47,7 @@ function _cnapi_parse($request, $xml) {
   if ($request['action'] == 'detail') {
     $xpath = sprintf('/cdbxml/%ss/%s', $request['type'], $request['type']);
     if ($xml_object = $xml->xpath($xpath)) {
-      call_user_func('_cnapi_parse_' . $request['type'], &$data, NULL, reset($xml_object));
+      call_user_func('_cnapi_parse_' . $request['type'], $data, NULL, reset($xml_object));
     }
   }
 
@@ -63,7 +63,7 @@ function _cnapi_parse($request, $xml) {
     if ($xml_objects = $xml->xpath($xpath)) {
       foreach ($xml_objects as $xml_object) {
         $object = array();
-        call_user_func('_cnapi_parse_' . $request['type'], &$object, NULL, $xml_object);
+        call_user_func('_cnapi_parse_' . $request['type'], $object, NULL, $xml_object);
         if (!empty($object)) {
           $data['data'][] = $object;
         }
@@ -97,7 +97,7 @@ function _cnapi_parse($request, $xml) {
     $xml_items = $xml->xpath($items_path);
     foreach ($xml_items as $xml_item) {
       $object = array();
-      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', &$object, $xml_item);
+      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', $object, $xml_item);
 
       $data['data'][] = $object;
     }
