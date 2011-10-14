@@ -179,7 +179,7 @@ function _cnapi_mgt_parse($path, $xml) {
       $xml_items = $xml->xpath('/cdbxml/userpools/userpool');
       foreach ($xml_items as $xml_item) {
         $object = array();
-        _cnapi_parse_userpool($object, $xml_item);
+        _cnapi_parse_userpool(&$object, $xml_item);
 
         $data['data'][] = $object;
       }
