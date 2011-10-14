@@ -89,6 +89,17 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
 }
 
 /**
+ * Preprocess variables for cnapi-ui-event-mini-summary.tpl.php.
+ *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object_summary.
+ *
+ * @see cnapi-ui-event-mini-summary.tpl.php
+ */
+function template_preprocess_cnapi_ui_event_mini_summary(&$variables) {
+  _template_preprocess_cnapi_ui_object_summary($variables, 'event');
+}
+
+/**
  * Preprocess variables for cnapi-ui-event.tpl.php.
  *
  * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object_summary.
