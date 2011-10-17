@@ -52,10 +52,10 @@ function _cnapi_parse($request, $xml) {
           _cnapi_parse_actor($data, NULL, reset($xml_object));
           break;
         case 'event':
-          _cnapi_parse_actor($data, NULL, reset($xml_object));
+          _cnapi_parse_event($data, NULL, reset($xml_object));
           break;
         case 'production':
-          _cnapi_parse_actor($data, NULL, reset($xml_object));
+          _cnapi_parse_production($data, NULL, reset($xml_object));
           break;
       }
     }
