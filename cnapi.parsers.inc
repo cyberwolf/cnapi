@@ -47,7 +47,17 @@ function _cnapi_parse($request, $xml) {
   if ($request['action'] == 'detail') {
     $xpath = sprintf('/cdbxml/%ss/%s', $request['type'], $request['type']);
     if ($xml_object = $xml->xpath($xpath)) {
-      call_user_func('_cnapi_parse_' . $request['type'], &$data, NULL, reset($xml_object));
+      switch ($request['type']) {
+        case 'actor':
+          _cnapi_parse_actor($data, NULL, reset($xml_object));
+          break;
+        case 'event':
+          _cnapi_parse_actor($data, NULL, reset($xml_object));
+          break;
+        case 'production':
+          _cnapi_parse_actor($data, NULL, reset($xml_object));
+          break;
+      }
     }
   }
 
@@ -63,7 +73,17 @@ function _cnapi_parse($request, $xml) {
     if ($xml_objects = $xml->xpath($xpath)) {
       foreach ($xml_objects as $xml_object) {
         $object = array();
-        call_user_func('_cnapi_parse_' . $request['type'], &$object, NULL, $xml_object);
+        switch ($request['type']) {
+          case 'actor':
+            call_user_func('_cnapi_parse_actor', $object, NULL, $xml_object);
+            break;
+          case 'event':
+            call_user_func('_cnapi_parse_event', $object, NULL, $xml_object);
+            break;
+          case 'production':
+            call_user_func('_cnapi_parse_production', $object, NULL, $xml_object);
+            break;
+        }
         if (!empty($object)) {
           $data['data'][] = $object;
         }
@@ -97,7 +117,17 @@ function _cnapi_parse($request, $xml) {
     $xml_items = $xml->xpath($items_path);
     foreach ($xml_items as $xml_item) {
       $object = array();
-      call_user_func('_cnapi_parse_' . $request['type'] . '_list_item', &$object, $xml_item);
+      switch ($request['type']) {
+        case 'actor':
+          _cnapi_parse_actor_list_item($object, $xml_item);
+          break;
+        case 'event':
+          _cnapi_parse_event_list_item($object, $xml_item);
+          break;
+        case 'production':
+          _cnapi_parse_production_list_item($object, $xml_item);
+          break;
+      }
 
       $data['data'][] = $object;
     }

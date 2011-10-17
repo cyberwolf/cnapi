@@ -153,7 +153,7 @@ function _cnapi_xpath_bool($xml, $query, $multiple = FALSE) {
 function _cnapi_parse_str(&$data, $field, $xml, $query, $multiple = FALSE, $trim = TRUE) {
   $result = _cnapi_xpath_str($xml, $query, $multiple, $trim);
 
-  _cnapi_parse_basic(&$data, $field, $result, $multiple);
+  _cnapi_parse_basic($data, $field, $result, $multiple);
 }
 
 function _cnapi_parse_int(&$data, $field, $xml, $query, $multiple = FALSE) {
@@ -171,7 +171,7 @@ function _cnapi_parse_float(&$data, $field, $xml, $query, $multiple = FALSE) {
 function _cnapi_parse_bool(&$data, $field, $xml, $query, $multiple = FALSE) {
   $result = _cnapi_xpath_bool($xml, $query, $multiple);
 
-  _cnapi_parse_basic(&$data, $field, $result, $multiple);
+  _cnapi_parse_basic($data, $field, $result, $multiple);
 }
 
 function _cnapi_parse_basic(&$data, $field, $result, $multiple) {
