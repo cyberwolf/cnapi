@@ -273,7 +273,7 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
   }
 
   // If a $id was defined, look it up.
-  if ($id) {
+  if ($id !== NULL) {
     return isset($contexts[$key][$id]) ? $contexts[$key][$id] : NULL;
   }
 
