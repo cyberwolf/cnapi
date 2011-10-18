@@ -5,17 +5,17 @@
   
   <div class="result-controls">
 
-    <p><?php print t('Sort by') ?> : <?php print $sort_links ?></p>
+    <p><?php print t('Sort by') ?>: <?php print $sort_links ?></p>
 
     <p><?php print $rss ?></p>
     
   </div>
 
-    <ul>
+  <ul>
     <?php foreach ($objects as $object) : ?>
       <li><?php print $object ?></li>
     <?php endforeach; ?>
-    </ul>
+  </ul>
   
 <?php endif; ?>
 
