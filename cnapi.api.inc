@@ -107,8 +107,8 @@ function cnapi_get_actors($query = NULL, $action = CNAPI_LIST_SUMMARY) {
   return cnapi_get($request);
 }
 
-function cnapi_get_report($type, $query = array()) {
-  $request = array('action' => 'report', 'type' => $type, 'query' => $query);
+function cnapi_get_report($type, $query = array(), $parse_geo = TRUE) {
+  $request = array('action' => 'report', 'type' => $type, 'query' => $query, 'options' => array('parse_geo' => $parse_geo));
   return cnapi_get($request);
 }
 

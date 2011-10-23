@@ -1,9 +1,9 @@
 <?php
 
-function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = FALSE, $sort_types = array(), $sort_heading_groups = TRUE) {
+function cnapi_browse_get_event_report($query = array(), $skip_heading_groups = FALSE, $sort_types = array(), $sort_heading_groups = TRUE, $parse_geo = TRUE) {
   cnapi_ui_apply_context_query($query, 'event');
 
-  $report = cnapi_get_report('event', $query);
+  $report = cnapi_get_report('event', $query, $parse_geo);
 
   // movies as productions
   $movies_context = cnapi_ui_contexts('id', 'movie');

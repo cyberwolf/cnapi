@@ -135,7 +135,12 @@ function _cnapi_parse($request, $xml) {
 
   elseif ($request['action'] == 'report') {
     // parsing all report types
-    $types = array('headings', 'geo', 'time', 'age', 'production', 'region', 'location');
+    $types = array('headings', 'time', 'age', 'production', 'region', 'location');
+    
+    if (isset($request['options']['parse_geo']) && $request['options']['parse_geo']) {
+      $types[] = 'geo';
+    }
+    
     foreach ($types as $type) {
       $xml_items = $xml->xpath('report/' . $type . '/item');
       foreach ($xml_items as $xml_item) {
@@ -170,28 +175,26 @@ function _cnapi_parse($request, $xml) {
 }
 
 function _cnapi_parse_report_item(&$data, $xml) {
+  $attrs = $xml->attributes();
+  
   // $data['name']
-  _cnapi_parse_str($data, 'name', $xml, '@name');
+  $data['name'] = strval($attrs['name']);
 
   // $data['id']
-  _cnapi_parse_str($data, 'id', $xml, '@id');
+  $data['id'] = strval($attrs['id']);
 
   // $data['total']
-  _cnapi_parse_int($data, 'total', $xml, '@total');
-
-  // $data['total']
-  _cnapi_parse_str($data, 'total', $xml, '@total');
+  $data['total'] = strval($attrs['total']);
 
   // $data['link']
-  _cnapi_parse_str($data, 'link', $xml, '@link');
+  $data['link'] = strval($attrs['link']);
   if (!empty($data['link'])) {
     $data['link'] = cnapi_url_a2p($data['link']);
     cnapi_request_remove_defaults($data['link']);
   }
 
   // $data['children']
-  $xml_children = $xml->xpath('item');
-  foreach ($xml_children as $xml_child) {
+  foreach ($xml->item as $xml_child) {
     $child = array();
     _cnapi_parse_report_item($child, $xml_child);
     if (!empty($child)) {
@@ -220,14 +223,14 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   // $data['zip']
   _cnapi_parse_str($data, 'zip', $xml, '@zip');
 
-  // $data['citid']
-  if (isset($data['zip']) && isset($data['city'])) {
+  // $data['cityid']
+  if (isset($data['cityid']) && isset($data['cityid'])) {
     $data['cityid'] = cnapi_get_cityid($data['zip'], $data['city']);
   }
 
   // $data['address']
   _cnapi_parse_str($data, 'address', $xml, '@address');
-  $latlng = explode(';', _cnapi_xpath_str($xml, '@latlng'));
+  $latlng = explode(';', strval($attrs['latlng']));
   if (count($latlng) == 2) {
     $data['gis']['lat'] = $latlng[0];
     $data['gis']['lng'] = $latlng[1];

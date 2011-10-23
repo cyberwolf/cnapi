@@ -55,7 +55,8 @@ function cnapi_cache_cid($request) {
     case 'detail':
       return implode(':', array($request['type'], cnapi_query_hash($request), $request['query']['cdbid']));
     case 'report':
-      return implode(':', array($request['type'], cnapi_base_query_hash($request), $request['action']));
+      $parse_geo = isset($request['options']['parse_geo']) && $request['options']['parse_geo'] ? 'geo' : 'no_geo';
+      return implode(':', array($request['type'], cnapi_base_query_hash($request), $request['action'], $parse_geo));
     default:
       return implode(':', array($request['type'], cnapi_base_query_hash($request), $request['action'], $request['query']['pagelength'], $request['query']['page'], $request['query']['sort']));
   }

@@ -205,6 +205,7 @@ function cnapi_base_query_hash($request) {
   unset($base_request['query']['page']);
   unset($base_request['query']['pagelength']);
   unset($base_request['query']['sort']);
+  unset($base_request['options']['parse_geo']);
   return cnapi_query_hash($base_request);
 }
 

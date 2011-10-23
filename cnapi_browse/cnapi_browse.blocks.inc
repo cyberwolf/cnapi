@@ -37,7 +37,7 @@ function cnapi_browse_block_active_filters() {
 }
 
 function cnapi_browse_block_navigation() {
-  $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE);
+  $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE, FALSE);
 
   if (!isset($report['headings']) || empty($report['headings'])) {
     return;
@@ -193,7 +193,7 @@ function cnapi_browse_block_filters() {
   unset($report_query['page']);
 
   if ($context['type'] == 'event') {
-    $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'));
+    $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'), TRUE, isset($request['query']['regio']));
   }
   elseif ($context['type'] == 'production') {
     $report = cnapi_get_report('production', $report_query);
