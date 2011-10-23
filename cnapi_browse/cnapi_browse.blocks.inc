@@ -196,7 +196,7 @@ function cnapi_browse_block_filters() {
     $report = cnapi_browse_get_event_report($report_query, TRUE, array('headings'), TRUE, isset($request['query']['regio']));
   }
   elseif ($context['type'] == 'production') {
-    $report = cnapi_get_report('production', $report_query);
+    $report = cnapi_get_report('production', $report_query, isset($request['query']['regio']));
   }
 
   if ($context['type'] == 'event') {
