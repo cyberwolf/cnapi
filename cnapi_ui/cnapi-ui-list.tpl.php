@@ -4,6 +4,8 @@
   <div class="result-title"><?php print $result_info ?></div>
   
   <div class="result-controls">
+    
+    <p><?php print $result_counter ?></p>
 
     <p><?php print t('Sort by') ?>: <?php print $sort_links ?></p>
 

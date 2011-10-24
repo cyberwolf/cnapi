@@ -48,6 +48,14 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   else {
     $variables['result_info'] = format_plural($variables['total'], '<strong>@total result</strong> found', '<strong>@total results</strong> found', array('@total' => $variables['total']));
   }
+  
+  // Result counter
+  global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
+
+  $start = $pager_page_array[0] * $pager_limits[0] + 1;
+  $stop = min(($pager_page_array[0] + 1) * $pager_limits[0], $pager_total_items[0]);
+  $total = $pager_total_items[0];
+  $variables['result_counter'] = sprintf('%d-%d van %d', $start, $stop, $total);
 
   // Set the $objects variable as an array of themed object summaries.
   $variables['objects'] = array();
