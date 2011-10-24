@@ -230,10 +230,12 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
 
   // $data['address']
   _cnapi_parse_str($data, 'address', $xml, '@address');
-  $latlng = explode(';', strval($attrs['latlng']));
-  if (count($latlng) == 2) {
-    $data['gis']['lat'] = $latlng[0];
-    $data['gis']['lng'] = $latlng[1];
+  if (!empty($attrs['latlng'])) {
+    $latlng = explode(';', strval($attrs['latlng']));
+    if (count($latlng) == 2) {
+      $data['gis']['lat'] = $latlng[0];
+      $data['gis']['lng'] = $latlng[1];
+    }
   }
 
   // $data['calendarsummary']
