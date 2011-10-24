@@ -30,7 +30,7 @@ function cnapi_tracking_library() {
     'website' => 'http://www.cultuurnet.be',
     'version' => '1',
     'js' => array(
-      variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION) => array(),
+      variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION) => array('preprocess' => FALSE),
       $path . '/js/cnapi_tracking.js' => array(),
     ),
   );
