@@ -44,7 +44,7 @@ function template_preprocess_cnapi_browse_navigation_item(&$variables) {
 function template_preprocess_cnapi_browse_filter_option(&$variables) {
   // id
   $variables['id'] = $variables['option']['id'];
-  
+
   // name
   $variables['name'] = $variables['option']['name'];
   
@@ -52,7 +52,7 @@ function template_preprocess_cnapi_browse_filter_option(&$variables) {
   $variables['active'] = $variables['option']['active'];
   
   // total
-  if (isset($variables['option']['total'])) {
+  if (isset($variables['option']['total']) && !in_array($variables['option']['id'], array(64, 98))) {
     $variables['total'] = $variables['option']['total'];
   }
   
