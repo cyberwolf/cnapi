@@ -1,3 +1,4 @@
+<span>
 <?php if ($active) : ?>
   <?php print $name ?>
 <?php else : ?>
@@ -9,3 +10,4 @@
 <?php if ($active) : ?>
   <?php print $link_remove ?>
 <?php endif; ?>
+</span>
