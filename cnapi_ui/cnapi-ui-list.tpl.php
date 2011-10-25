@@ -5,11 +5,11 @@
   
   <div class="result-controls">
     
-    <p><?php print $result_counter ?></p>
+    <p class="result-counter"><?php print $result_counter ?></p>
 
-    <p><?php print t('Sort by') ?>: <?php print $sort_links ?></p>
+    <p class="result-sort"><?php print t('Sort by') ?>: <?php print $sort_links ?></p>
 
-    <p><?php print $rss ?></p>
+    <p class="result-rss"><?php print $rss ?></p>
     
   </div>
 
