@@ -81,6 +81,16 @@ function cnapi_ui_set_canonical_and_noindex() {
       }
     }
   }
+  
+  // We don't allow indexing of passed events (older than 1 day).
+  if (isset($request['event'])) {
+    $event = cnapi_get_event($request['event']);
+    if (isset($event['calendar']['stop'])) {
+      if (REQUEST_TIME > $event['calendar']['stop'] + 60 * 60 * 24) {
+        $noindex = TRUE;
+      }
+    }
+  }
 
   // We only allow indexing of actor pages that are "assets".
   if (isset($request['actor'])) {
