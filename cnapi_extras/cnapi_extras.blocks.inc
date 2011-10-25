@@ -9,6 +9,9 @@ function cnapi_extras_block_movie_results() {
       return;
     }
   }
+  else {
+    return;
+  }
 
   if (isset($request['query']['heading'])) {
     return;
