@@ -3,7 +3,7 @@
 <?php else : ?>
   <p><?php print $result_info ?></p>
 
-  <p><?php print t('Sort by') ?> : <?php print $sort_links ?></p>
+  <p>Sorteer: <?php print $sort_links ?></p>
 
   <p><?php print $rss ?></p>
 

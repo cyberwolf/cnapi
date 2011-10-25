@@ -35,7 +35,7 @@ function cnapi_ui_preprocess_page(&$variables) {
  */
 function template_preprocess_cnapi_ui_list(&$variables) {
   // Text for "no results".
-  $variables['no_results'] = t('No results found.');
+  $variables['no_results'] = 'Geen resultaten gevonden';
 
   // If we have a free text search "filter", we add it together with the "remove filter url" to the result info.
   $filters = cnapi_ui_get_active_request_filters();
@@ -133,7 +133,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   $variables['object_url'] = url($object_url['path'], $object_url['options']);
 
   // more_link
-  $variables['more_link'] = l(t('More info'), $object_url['path'], $object_url['options']);
+  $variables['more_link'] = l('Meer info', $object_url['path'], $object_url['options']);
 
   // thumbnail
   $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.jpg', array('absolute' => $variables['url_absolute']));
@@ -185,6 +185,24 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
   if ($type == 'event') {
     $variables['when'] = isset($object['calendarsummary']) ? $object['calendarsummary'] : '';
   }
+
+	// headings
+  if ($type == 'event') {
+    
+    $variables['headings'] = '';
+
+    $headings = cnapi_get_headings();
+    if (isset($object['headingid'])) {
+      foreach ($object['headingid'] as $i => $heading) {;
+        $heading_info = $headings[ltrim($heading)];
+        if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading_info['pid'] != 0)) {
+          $variables['headings'][] = $heading_info['name'];
+        }
+      }
+      $variables['headings'] = implode(', ',$variables['headings']);
+    }
+  }
+  
 }
 
 /**

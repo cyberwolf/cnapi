@@ -13,6 +13,12 @@
   <?php if ($thumbnail) : ?>
     <?php print $thumbnail ?>
   <?php endif; ?>
+  
+	<?php if ($headings) : ?>
+    <div class="headings">
+      <?php print $headings ?>
+    </div>
+  <?php endif; ?>
 
   <?php if ($shortdescription) : ?>
     <div class="description">
