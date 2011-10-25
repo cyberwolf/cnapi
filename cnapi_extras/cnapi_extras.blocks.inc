@@ -1,5 +1,70 @@
 <?php
 
+function cnapi_extras_block_movie_results() {
+  $request = cnapi_ui_get_active_request();
+  
+  if (isset($request['context'])) {
+    $context = cnapi_ui_contexts('id', $request['context']);
+    if ($context['type'] != 'event') {
+      return;
+    }
+  }
+
+  if (isset($request['query']['heading'])) {
+    return;
+  }
+
+  if (isset($request['query']['facilities']) && in_array($request['query']['facilities'], array('3.21.0.0.0', '3.12.0.0.0', '3.13.0.0.0', '3.12.0.0.0', '3.17.0.0.0', '3.14.0.0.0'))) {
+    return;
+  }
+
+  if (isset($request['query']['isfree'])) {
+    return;
+  }
+
+  if (isset($request['query']['type'])) {
+    return;
+  }
+
+	if (isset($request['query']['thema']) && $request['query']['thema'] != '1.7.0.0.0') {
+    return;
+  }
+
+  if (isset($request['query']['page']) && $request['query']['page'] > 0) {
+    return;
+  }
+  
+  $movie_context = cnapi_ui_contexts('id', 'movie');
+
+  $query = $request['query'];
+  
+  foreach ($movie_context['query'] as $key => $value) {
+    $query[$key] = $value;
+  }
+  
+  $query['pagelength'] = 5;
+  
+  $productions = cnapi_get_productions($query);
+  
+  if (empty($productions['data'])) {
+    return;
+  }
+
+  unset($query['pagelength']);
+  $more_request = array('context' => 'movie', 'query' => $query);
+  
+  $block['subject'] = 'Meest vertoonde films voor uw zoekopdracht';
+  $block['content'] = array(
+    '#theme' => 'cnapi_extras_block_movie_results',
+    '#productions' => $productions['data'], 
+    '#form' => drupal_render(drupal_get_form('cnapi_extras_movie_search_form')),
+    '#total' => $productions['total'],
+    '#more_request' => $more_request,
+  );
+  
+  return $block;
+}
+
 /**
  * The wider radius block provides a block on cnapi search results pages that have no results.
  * If no results were found and the request contains a filter on city or cityid, we will iteratively search in a wider and wider radius from that city for possible results.

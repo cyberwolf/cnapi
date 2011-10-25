@@ -6,6 +6,50 @@
  */
 
 /**
+ * Preprocess variables for cnapi-extras-block-movie-results.tpl.php.
+ *
+ * @see cnapi-extras-block-movie-results.tpl.php
+ */
+function template_preprocess_cnapi_extras_block_movie_results(&$variables) {
+  $items = array();
+  foreach ($variables['productions'] as $production) {
+    $items[] = theme('cnapi_extras_movie_summary', array('production' => $production));
+  }
+  $variables['productions'] = theme('item_list', array('items' => $items));
+  
+  // more link
+  if ($variables['total'] > count($variables['productions'])) {
+    $text = sprintf('Toon alle %d films voor deze zoekopdracht', $variables['total']);
+    $variables['more_link'] = cnapi_url_dp2dul($text, $variables['more_request']);
+  }
+}
+
+/**
+ * Preprocess variables for cnapi-extras-movie-summary.tpl.php.
+ *
+ * @see cnapi-extras-movie-summary.tpl.php
+ */
+function template_preprocess_cnapi_extras_movie_summary(&$variables) {
+  $object = $variables['production'];
+  
+  // object_url
+  $request_detail = array('production' => $object['cdbid'], 'title' => $object['title']);
+  $object_url = cnapi_url_dp2dua($request_detail);
+
+  // more_link
+  $variables['more_link'] = l(t('More info'), $object_url['path'], $object_url['options']);
+  
+  // title
+  $variables['title'] = l($object['title'], $object_url['path'], $object_url['options']);
+  
+  // thumbnail
+  $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
+  $object_url['options']['html'] = TRUE;
+  $variables['thumbnail'] = l($thumbnail_img, $object_url['path'], $object_url['options']);
+}
+
+/**
  * Preprocess variables for cnapi-extras-block-wider-radius-search.tpl.php.
  *
  * @see cnapi-extras-block-wider-radius-search.tpl.php
