@@ -718,8 +718,21 @@ function _cnapi_parse_related_events(&$data, $field, $xml) {
   }
 }
 
-function _cnapi_parse_calendar(&$data, $field, $xml) {
-  // @todo implement this
+function _cnapi_parse_calendar(&$data, $field, $xml) {  // calendar
+  $timestamps = $xml->xpath('calendar/timestamps/timestamp');
+  $periods = $xml->xpath('calendar/periods/period');
+  
+  if ($timestamps) {
+    $data[$field]['start'] = strtotime(strval(reset($timestamps[0]->xpath('date'))) . ' ' . strval(reset($timestamps[0]->xpath('timestart'))));
+    if (count($timestamps) > 1) {
+      $last = count($timestamps) - 1;
+      $data[$field]['stop'] = strtotime(strval(reset($timestamps[$last]->xpath('date'))) . ' ' . strval(reset($timestamps[$last]->xpath('timestart'))));
+    }
+  }
+  elseif ($periods) {
+    $data[$field]['start'] = strtotime(reset($periods[0]->xpath('datefrom')));
+    $data[$field]['stop'] = strtotime(reset($periods[0]->xpath('dateto')));
+  }
 }
 
 function _cnapi_parse_languages(&$data, $field, $xml) {
