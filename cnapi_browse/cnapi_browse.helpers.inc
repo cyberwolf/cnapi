@@ -122,7 +122,7 @@ function cnapi_browse_process_form_values(&$request, $values) {
       $request['query']['heading'] = implode(';', $headings);
     }
   }
-  if (isset($values['cdbid'])) {
+  if (isset($values['cdbid']) && $values['cdbid'] != CNAPI_OPTION_NONE) {
     $request['query']['cdbid'] = $values['cdbid'];
     unset($request['query']['heading']);
     unset($request['query']['query']);
