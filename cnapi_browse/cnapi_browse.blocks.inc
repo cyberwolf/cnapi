@@ -204,6 +204,11 @@ function cnapi_browse_block_filters() {
     $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
   }
 
+  if ($context['type'] == 'production') {
+    $render['filter_what']['title'] = array('#markup' => '<h2>' . 'Wat' . '</h2>');
+    $render['filter_what']['filter'] = cnapi_browse_filter_what_production($report);
+  }
+
   $render['filter_where']['title'] = array('#markup' => '<h2>' . 'Waar' . '</h2>');
   $render['filter_where']['filter'] = cnapi_browse_filter_where($report, $context['type']);
 
@@ -346,6 +351,71 @@ function cnapi_browse_filter_what_event($report) {
     '#theme' => 'cnapi_browse_filter_options',
     '#options' => $filter_options,
   );
+}
+
+function cnapi_browse_filter_what_production() {
+  $render['filter_form'] = drupal_get_form('cnapi_browse_filter_what_production_form', $report);
+  
+  return $render;
+}
+
+function cnapi_browse_filter_what_production_form($form, &$form_state, $report) {
+  $form = array();
+  
+  $request = cnapi_ui_get_active_request();
+
+  $context = cnapi_ui_contexts('id', $request['context']);
+  
+  $query = $context['query'];
+  
+  $options = array();
+  
+  $report = cnapi_get_report('production', $query);
+  $productions = $report['production'];
+  foreach ($productions as $cdbid => $production) {
+    $options[$cdbid] = $production['name'];
+  }
+  
+  asort($options);
+
+  $form['cdbid'] = array(
+    '#type' => 'select',
+    '#title' => t('Production'),
+    '#options' => $options,
+    '#default_value' => isset($request['query']['cdbid']) ? $request['query']['cdbid'] : '',
+    '#attributes' => array('class' => array('autosubmit')),
+  );
+  
+  $form['query'] = array(
+    '#type' => 'textfield',
+    '#title' => t('What'),
+    '#description' => 'Zoek op titel/trefwoord',
+    '#default_value' => isset($request['query']['query']) ? $request['query']['query'] : '',
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter',
+  );
+  
+  return $form;
+}
+
+function cnapi_browse_filter_what_production_form_submit($form, &$form_state) {
+  // The search form relies on control of the redirect destination for its
+  // functionality, so we override any static destination set in the request,
+  // for example by drupal_access_denied() or drupal_not_found()
+  // (see http://drupal.org/node/292565).
+  if (isset($_GET['destination'])) {
+    unset($_GET['destination']);
+  }
+
+  // initialising the request object with the event context
+  $request = cnapi_ui_get_active_request();
+
+  cnapi_browse_process_form_values($request, $form_state['values']);
+
+  cnapi_ui_goto($request);
 }
 
 function cnapi_browse_filter_where($report, $type) {
