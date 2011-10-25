@@ -166,7 +166,7 @@ function cnapi_admin_defaults() {
     $form['defaults'][$context]['sort'] = array(
       '#type' => 'select',
       '#title' => t('Sort'),
-      '#description' => t('The amount of items to request by default per API call.'),
+      '#description' => t('The sort field by default per API call.'),
       '#options' => array(-1 => t('Use general pagelength settings')) + $combined_sort_options,
       '#default_value' => _cnapi_default_values('sort', $context),
     );

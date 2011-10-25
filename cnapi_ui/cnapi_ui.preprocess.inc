@@ -67,17 +67,30 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   $sort_links = array();
 
   $request_sort = $variables['request'];
+  
+  $context = cnapi_ui_contexts('id', $variables['request']['context']);
+  
+  if ($context['type'] == 'event') {
+    $request_sort['query']['sort'] = 'date ASC';
+    $sort_links[] = cnapi_url_dp2dul(t('By date'), $request_sort);
+    
+    $request_sort['query']['sort'] = 'location ASC';
+    $sort_links[] = cnapi_url_dp2dul(t('By location'), $request_sort);
+    
+    $request_sort['query']['sort'] = 'title ASC';
+    $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
+  }
+  elseif ($context['type'] == 'production') {
+    $request_sort['query']['sort'] = 'weight ASC';
+    $sort_links[] = cnapi_url_dp2dul(t('By most plays'), $request_sort);
+    
+    $request_sort['query']['sort'] = 'title ASC';
+    $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
+  }
 
-  $request_sort['query']['sort'] = 'date ASC';
-  $sort_links[] = cnapi_url_dp2dul(t('By date'), $request_sort);
-
-  $request_sort['query']['sort'] = 'location ASC';
-  $sort_links[] = cnapi_url_dp2dul(t('By location'), $request_sort);
-
-  $request_sort['query']['sort'] = 'title ASC';
-  $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
-
-  $variables['sort_links'] = theme('item_list', array('items' => $sort_links));
+  if (!empty($sort_links)) {
+    $variables['sort_links'] = theme('item_list', array('items' => $sort_links));
+  }
 
   // Add a link to the RSS feed in $rss.
   $url_rss = cnapi_ui_rss_feed_url_raw();
