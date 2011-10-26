@@ -11,6 +11,9 @@ function cnapi_extras_block_info() {
   
   $block['movie_results']['info'] = t('Movie results');
   $block['movie_results']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  
+  $block['movie_playlist']['info'] = t('Movie playlist');
+  $block['movie_playlist']['cache'] = DRUPAL_CACHE_PER_PAGE;
 
   return $block;
 }
@@ -42,6 +45,10 @@ function cnapi_extras_theme() {
     'cnapi_extras_movie_summary' => array(
       'variables' => array('production' => NULL),
       'template' => 'cnapi-extras-block-movie',
+    ),
+    'cnapi_extras_movie_playlist' => array(
+      'variables' => array('movies' => NULL),
+      'template' => 'cnapi-extras-movie-playlist',
     ),
   );
 }

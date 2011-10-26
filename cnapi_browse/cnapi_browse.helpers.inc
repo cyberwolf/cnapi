@@ -122,11 +122,6 @@ function cnapi_browse_process_form_values(&$request, $values) {
       $request['query']['heading'] = implode(';', $headings);
     }
   }
-  if (isset($values['cdbid']) && $values['cdbid'] != CNAPI_OPTION_NONE) {
-    $request['query']['cdbid'] = $values['cdbid'];
-    unset($request['query']['heading']);
-    unset($request['query']['query']);
-  }
 
   // where
   $filter_is_set = FALSE;
@@ -197,6 +192,12 @@ function cnapi_browse_process_form_values(&$request, $values) {
       list($key, $value) = explode(':', $option);
       $request['query'][$key] = $value;
     }
+  }
+  
+  // cdbid
+  if (isset($values['cdbid']) && $values['cdbid'] != CNAPI_OPTION_NONE) {
+    $context = cnapi_ui_contexts('id', $request['context']);
+    $request = array($context['type'] => $values['cdbid']);
   }
 
   drupal_alter('cnapi_browse_process_form_values', $request, $values);

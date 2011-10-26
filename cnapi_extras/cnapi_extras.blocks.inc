@@ -1,5 +1,41 @@
 <?php
 
+function cnapi_extras_block_movie_playlist() {
+  $request = cnapi_ui_get_active_request();
+
+  if (!isset($request['production'])) {
+    return;
+  }
+  
+  $production = cnapi_get_production($request['production'], CNAPI_LIST_DETAIL);
+  
+  $events = $production['related_events'];
+  
+  $movies = array();
+  
+  $locations = cnapi_get_locations_tree(CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, TRUE, 'flat');
+  
+  foreach ($events as $event) {
+    $title = $event['detail']['nl']['title'];
+    $city = $event['location']['address']['city'];
+    $cityid = $event['location']['address']['cityid'];
+    $locationid = $event['location']['actor']['cdbid'];
+    $pid = $locations[$cityid]['pid'];
+    $pid = $locations[$pid]['pid'];
+    $province = $locations[$pid]['name'];
+
+    $movies[$province][$locationid][] = $event;
+  }
+  
+  $block['subject'] = 'Speellijst';
+  $block['content'] = array(
+    '#theme' => 'cnapi_extras_movie_playlist',
+    '#movies' => $movies,
+  );
+  
+  return $block;  
+}
+
 function cnapi_extras_block_movie_results() {
   $request = cnapi_ui_get_active_request();
   

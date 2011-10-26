@@ -378,7 +378,7 @@ function cnapi_browse_filter_what_production_form($form, &$form_state, $report) 
   
   asort($options);
   
-  array(CNAPI_OPTION_NONE => 'Selecteer een productie') + $options;
+  $options = array(CNAPI_OPTION_NONE => 'Selecteer een productie') + $options;
 
   $form['cdbid'] = array(
     '#type' => 'select',

@@ -224,7 +224,7 @@ function _cnapi_parse_event_list_item(&$data, $xml) {
   _cnapi_parse_str($data, 'zip', $xml, '@zip');
 
   // $data['cityid']
-  if (isset($data['cityid']) && isset($data['cityid'])) {
+  if (isset($data['zip']) && isset($data['city'])) {
     $data['cityid'] = cnapi_get_cityid($data['zip'], $data['city']);
   }
 
