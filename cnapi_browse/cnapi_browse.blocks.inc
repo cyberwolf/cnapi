@@ -181,21 +181,41 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   cnapi_ui_goto($request);
 }
 
-function cnapi_browse_block_view_filters() {
+function cnapi_browse_block_is_visible_filters() {
   $request = cnapi_ui_get_active_request();
 
   if (!isset($request['context'])) {
-    return;
+    return FALSE;
   }
 
   $context = cnapi_ui_contexts('id', $request['context']);
 
   if (!$context) {
-    return;
+    return FALSE;
   }
   elseif (!in_array($context['type'], array('event', 'production'))) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+function cnapi_browse_block_cache_id_filters() {
+  $request = cnapi_ui_get_active_request();
+  
+  $request = cnapi_url_dp2p($request);
+  
+  unset($request['query']['page']);
+  unset($request['query']['pagelength']);
+  unset($request['query']['sort']);
+  
+  return array(cnapi_request_hash($request));
+}
+
+function cnapi_browse_block_view_filters() {
+  $request = cnapi_ui_get_active_request();
+  
+  $context = cnapi_ui_contexts('id', $request['context']);
 
   $request_p = cnapi_url_dp2p($request);
   

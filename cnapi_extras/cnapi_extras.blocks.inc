@@ -189,6 +189,10 @@ function cnapi_extras_block_cache_id_wider_radius_search() {
   
   $request = cnapi_url_dp2p($request);
   
+  unset($request['query']['page']);
+  unset($request['query']['pagelength']);
+  unset($request['query']['sort']);
+  
   return array(cnapi_request_hash($request));
 }
 

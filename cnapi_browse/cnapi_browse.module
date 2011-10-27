@@ -30,10 +30,10 @@ function cnapi_browse_block_info() {
   $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['filters']['info'] = t('CultuurNet API filters');
-  $block['filters']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $block['filters']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   $block['active_filters']['info'] = t('CultuurNet API active filters');
-  $block['active_filters']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $block['active_filters']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   return $block;
 }
