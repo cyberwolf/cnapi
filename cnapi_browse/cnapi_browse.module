@@ -50,10 +50,11 @@ function cnapi_browse_block_view($delta = '') {
     }
   }
   
-  if (function_exists('cnapi_browse_block_cache_id_' . $delta)) {
+  if (function_exists('cnapi_browse_block_cache_id_' . $delta) && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
     $cid = cnapi_browse_block_get_cache_id($delta);
     
     if ($cache = cache_get($cid, 'cache_block')) {
+      print "<pre>".print_r($cache->data, TRUE)."</pre>";
       return $cache->data;
     }
     
