@@ -33,7 +33,7 @@ function cnapi_extras_block_view($delta = '') {
     }
   }
   
-  $cid = cnapi_ui_extras_block_get_cache_id($delta);
+  $cid = cnapi_extras_block_get_cache_id($delta);
   
   if ($cache = cache_get($cid, 'cache_block')) {
     return $cache->data;
@@ -48,7 +48,7 @@ function cnapi_extras_block_view($delta = '') {
   }
 }
 
-function cnapi_ui_extras_block_get_cache_id($delta) {
+function cnapi_extras_block_get_cache_id($delta) {
   global $theme, $base_root, $user;
 
   // User 1 being out of the regular 'roles define permissions' schema,
