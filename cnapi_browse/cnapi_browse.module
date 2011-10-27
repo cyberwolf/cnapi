@@ -54,7 +54,6 @@ function cnapi_browse_block_view($delta = '') {
     $cid = cnapi_browse_block_get_cache_id($delta);
     
     if ($cache = cache_get($cid, 'cache_block')) {
-      print "<pre>".print_r($cache->data, TRUE)."</pre>";
       return $cache->data;
     }
     
