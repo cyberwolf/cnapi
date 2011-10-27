@@ -49,7 +49,9 @@ function cnapi_extras_block_view($delta = '') {
     }
   }
   else {
-    return call_user_func('cnapi_extras_block_view_' . $delta);
+    if (function_exists('cnapi_extras_block_view_' . $delta)) {
+      return call_user_func('cnapi_extras_block_view_' . $delta);
+    }
   }
 }
 
