@@ -27,7 +27,7 @@ function cnapi_browse_block_info() {
   $block['navigation']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['search']['info'] = t('CultuurNet API search');
-  $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
+  $block['search']['cache'] = DRUPAL_NO_CACHE;
 
   $block['filters']['info'] = t('CultuurNet API filters');
   $block['filters']['cache'] = DRUPAL_CACHE_CUSTOM;
