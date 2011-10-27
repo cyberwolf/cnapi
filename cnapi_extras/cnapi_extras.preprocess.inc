@@ -6,6 +6,34 @@
  */
 
 /**
+ * Preprocess variables for cnapi-extras-actor-playlist-event.tpl.php.
+ *
+ * @see cnapi-extras-actor-playlist-event.tpl.php
+ */
+function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
+  $event = $variables['event'];
+  
+  // event_url
+  $request_detail = array('production' => $event['cdbid'], 'title' => $event['title']);
+  $event_url = cnapi_url_dp2dua($request_detail);
+
+  // more_link
+  $variables['more_link'] = l(t('More info'), $event_url['path'], $event_url['options']);
+  
+  // title
+  $variables['title'] = l($event['title'], $event_url['path'], $event_url['options']);
+  
+  // calendarsummary
+  $variables['calendarsummary'] = $event['calendarsummary'];
+  
+  // thumbnail
+  $thumbnail_url = isset($event['thumbnail']) && !empty($event['thumbnail']) ? $event['thumbnail'] : $default_image;
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
+  $event_url['options']['html'] = TRUE;
+  $variables['thumbnail'] = l($thumbnail_img, $event_url['path'], $event_url['options']);
+}
+
+/**
  * Preprocess variables for cnapi-extras-block-movie-results.tpl.php.
  *
  * @see cnapi-extras-block-movie-results.tpl.php

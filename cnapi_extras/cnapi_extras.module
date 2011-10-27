@@ -7,13 +7,16 @@ require_once('cnapi_extras.preprocess.inc');
  */
 function cnapi_extras_block_info() {
   $block['wider_radius_search']['info'] = t('CultuurNet API wider radius search');
-  $block['wider_radius_search']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $block['wider_radius_search']['cache'] = DRUPAL_CACHE_CUSTOM;
   
   $block['movie_results']['info'] = t('Movie results');
-  $block['movie_results']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $block['movie_results']['cache'] = DRUPAL_CACHE_CUSTOM;
   
   $block['movie_playlist']['info'] = t('Movie playlist');
-  $block['movie_playlist']['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $block['movie_playlist']['cache'] = DRUPAL_CACHE_CUSTOM;
+  
+  $block['actor_playlist']['info'] = t('Actor playlist');
+  $block['actor_playlist']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   return $block;
 }
@@ -23,9 +26,51 @@ function cnapi_extras_block_info() {
  */
 function cnapi_extras_block_view($delta = '') {
   module_load_include('inc', 'cnapi_extras', 'cnapi_extras.blocks');
+  
+  if (function_exists('cnapi_extras_block_is_visible_' . $delta)) {
+    if (!call_user_func('cnapi_extras_block_is_visible_' . $delta)) {
+      return FALSE;
+    }
+  }
+  
+  $cid = cnapi_ui_extras_block_get_cache_id($delta);
+  
+  if ($cache = cache_get($cid, 'cache_block')) {
+    return $cache->data;
+  }
 
-  if (function_exists('cnapi_extras_block_' . $delta)) {
-    return call_user_func('cnapi_extras_block_' . $delta);
+  if (function_exists('cnapi_extras_block_view_' . $delta)) {
+    $block = call_user_func('cnapi_extras_block_view_' . $delta);
+    
+    cache_set($cid, $block, 'cache_block', CACHE_TEMPORARY);
+    
+    return $block;
+  }
+}
+
+function cnapi_ui_extras_block_get_cache_id($delta) {
+  global $theme, $base_root, $user;
+
+  // User 1 being out of the regular 'roles define permissions' schema,
+  // it brings too many chances of having unwanted output get in the cache
+  // and later be served to other users. We therefore exclude user 1 from
+  // block caching.
+  if (variable_get('block_cache', FALSE) && $user->uid != 1) {
+    // Start with common sub-patterns: block identification, theme, language.
+    $cid_parts[] = 'cnapi_extras';
+    $cid_parts[] = $delta;
+    $cid_parts[] = $theme;
+    // If Locale is enabled but we have only one language we do not need it as cid
+    // part.
+    if (drupal_multilingual()) {
+      foreach (language_types_configurable() as $language_type) {
+        $cid_parts[] = $GLOBALS[$language_type]->language;
+      }
+    }
+  
+    $cid_parts = array_merge($cid_parts, call_user_func('cnapi_extras_block_cache_id_' . $delta));
+    
+    return implode(':', $cid_parts);
   }
 }
 
@@ -39,7 +84,7 @@ function cnapi_extras_theme() {
       'template' => 'cnapi-extras-block-wider-radius-search',
     ),
     'cnapi_extras_block_movie_results' => array(
-      'variables' => array('productions' => NULL, 'form' => NULL, 'total' => NULL, 'more_request' => NULL),
+      'variables' => array('productions' => array(), 'form' => NULL, 'total' => NULL, 'more_request' => NULL),
       'template' => 'cnapi-extras-block-movie-results',
     ),
     'cnapi_extras_movie_summary' => array(
@@ -47,8 +92,12 @@ function cnapi_extras_theme() {
       'template' => 'cnapi-extras-block-movie',
     ),
     'cnapi_extras_movie_playlist' => array(
-      'variables' => array('movies' => NULL),
+      'variables' => array('movies' => array()),
       'template' => 'cnapi-extras-movie-playlist',
+    ),
+    'cnapi_extras_actor_playlist_event' => array(
+      'variables' => array('event' => array()),
+      'template' => 'cnapi-extras-actor-playlist-event',
     ),
   );
 }

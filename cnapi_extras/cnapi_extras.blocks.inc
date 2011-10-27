@@ -1,11 +1,71 @@
 <?php
 
-function cnapi_extras_block_movie_playlist() {
+function cnapi_extras_block_cache_id_actor_playlist() {
+  $request = cnapi_ui_get_active_request();
+  
+  return array($request['actor']);
+}
+
+function cnapi_extras_block_is_visible_actor_playlist() {
+  $request = cnapi_ui_get_active_request();
+
+  if (!isset($request['actor'])) {
+    return FALSE;
+  }
+  
+  return TRUE;
+}
+
+function cnapi_extras_block_view_actor_playlist() {
+  $request = cnapi_ui_get_active_request();
+  
+  $actor = cnapi_get_actor($request['actor']);
+
+  $query = array();
+  $query['q'] = $actor['detail']['nl']['title'];
+  $query['cityid'] = $actor['contactinfo']['address']['cityid'];
+  $query['sort'] = 'date ASC';
+  $query['pagelength'] = 100;
+  
+  $events = cnapi_get_events($query);
+  
+  if (empty($events['data'])) {
+    return;
+  }
+  
+  $items = array();
+  
+  foreach ($events['data'] as $event) {
+    $items[] = theme('cnapi_extras_actor_playlist_event', array('event' => $event));
+  }
+
+  $block['subject'] = 'Speellijst';
+  $block['content'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+  
+  return $block; 
+}
+
+function cnapi_extras_block_cache_id_movie_playlist() {
+  $request = cnapi_ui_get_active_request();
+  
+  return array($request['production']);
+}
+
+function cnapi_extras_block_is_visible_movie_playlist() {
   $request = cnapi_ui_get_active_request();
 
   if (!isset($request['production'])) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+function cnapi_extras_block_view_movie_playlist() {
+  $request = cnapi_ui_get_active_request();
   
   $production = cnapi_get_production($request['production'], CNAPI_LIST_DETAIL);
   
@@ -36,44 +96,64 @@ function cnapi_extras_block_movie_playlist() {
   return $block;  
 }
 
-function cnapi_extras_block_movie_results() {
+function cnapi_extras_block_cache_id_movie_results() {
+  $request = cnapi_ui_get_active_request();
+  
+  $request = cnapi_url_dp2p($request);
+  
+  return array(cnapi_request_hash($request));
+}
+
+function cnapi_extras_block_is_visible_movie_results() {
   $request = cnapi_ui_get_active_request();
   
   if (isset($request['context'])) {
     $context = cnapi_ui_contexts('id', $request['context']);
     if ($context['type'] != 'event') {
-      return;
+      return FALSE;
     }
   }
   else {
-    return;
+    return FALSE;
   }
 
   if (isset($request['query']['heading'])) {
-    return;
+    return FALSE;
   }
 
   if (isset($request['query']['facilities']) && in_array($request['query']['facilities'], array('3.21.0.0.0', '3.12.0.0.0', '3.13.0.0.0', '3.12.0.0.0', '3.17.0.0.0', '3.14.0.0.0'))) {
-    return;
+    return FALSE;
   }
 
   if (isset($request['query']['isfree'])) {
-    return;
+    return FALSE;
   }
 
   if (isset($request['query']['type'])) {
-    return;
+    return FALSE;
   }
 
 	if (isset($request['query']['thema']) && $request['query']['thema'] != '1.7.0.0.0') {
-    return;
+    return FALSE;
   }
 
   if (isset($request['query']['page']) && $request['query']['page'] > 0) {
-    return;
+    return FALSE;
   }
   
+  return TRUE;
+}
+
+function cnapi_extras_block_view_movie_results() {
+  $request = cnapi_ui_get_active_request();
+  
   $movie_context = cnapi_ui_contexts('id', 'movie');
+  
+  $context = $request['context'];
+  
+  $request = cnapi_url_dp2p($request);
+  
+  cnapi_ui_remove_context_query($request['query'], $context); // we only want the query the user was actualy doing (without extra context queries)
 
   $query = $request['query'];
   
@@ -82,9 +162,9 @@ function cnapi_extras_block_movie_results() {
   }
   
   $query['pagelength'] = 5;
-  
+
   $productions = cnapi_get_productions($query);
-  
+
   if (empty($productions['data'])) {
     return;
   }
@@ -104,19 +184,34 @@ function cnapi_extras_block_movie_results() {
   return $block;
 }
 
-/**
- * The wider radius block provides a block on cnapi search results pages that have no results.
- * If no results were found and the request contains a filter on city or cityid, we will iteratively search in a wider and wider radius from that city for possible results.
- * If we still can't find results within the maximum radius, we expand to the whole of Flanders.
- */
-function cnapi_extras_block_wider_radius_search() {
+function cnapi_extras_block_cache_id_wider_radius_search() {
+  $request = cnapi_ui_get_active_request();
+  
+  $request = cnapi_url_dp2p($request);
+  
+  return array(cnapi_request_hash($request));
+}
+
+function cnapi_extras_block_is_visible_wider_radius_search() {
   // Get the current request.
   $request = cnapi_ui_get_active_request();
 
   // We only act upon cnapi requests.
   if (!$request || !isset($request['context'])) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+/**
+ * The wider radius block provides a block on cnapi search results pages that have no results.
+ * If no results were found and the request contains a filter on city or cityid, we will iteratively search in a wider and wider radius from that city for possible results.
+ * If we still can't find results within the maximum radius, we expand to the whole of Flanders.
+ */
+function cnapi_extras_block_view_wider_radius_search() {
+  // Get the current request.
+  $request = cnapi_ui_get_active_request();
 
   // Get full info on the context of the current request.
   $context = cnapi_ui_contexts('id', $request['context']);
