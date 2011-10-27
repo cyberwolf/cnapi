@@ -14,7 +14,7 @@ function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
   $event = $variables['event'];
   
   // event_url
-  $request_detail = array('production' => $event['cdbid'], 'title' => $event['title']);
+  $request_detail = array('event' => $event['cdbid'], 'title' => $event['title']);
   $event_url = cnapi_url_dp2dua($request_detail);
 
   // more_link
