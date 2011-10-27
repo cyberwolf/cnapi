@@ -1,11 +1,29 @@
 <?php
 
-function cnapi_browse_block_active_filters() {
+function cnapi_browse_block_is_visible_active_filters() {
   $request = cnapi_ui_get_active_request();
   
   if (!isset($request['context'])) {
-    return;
+    return FALSE;
   }
+  
+  return TRUE;
+}
+
+function cnapi_browse_block_cache_id_active_filters() {
+  $request = cnapi_ui_get_active_request();
+  
+  $request = cnapi_url_dp2p($request);
+  
+  unset($request['query']['page']);
+  unset($request['query']['pagelength']);
+  unset($request['query']['sort']);
+  
+  return array(cnapi_request_hash($request));
+}
+
+function cnapi_browse_block_view_active_filters() {
+  $request = cnapi_ui_get_active_request();
   
   $filter_options = array();
   
@@ -36,7 +54,7 @@ function cnapi_browse_block_active_filters() {
   return $block;
 }
 
-function cnapi_browse_block_navigation() {
+function cnapi_browse_block_view_navigation() {
   $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE, FALSE);
 
   if (!isset($report['headings']) || empty($report['headings'])) {
@@ -86,7 +104,7 @@ function cnapi_browse_block_navigation() {
   return $block;
 }
 
-function cnapi_browse_block_search() {
+function cnapi_browse_block_view_search() {
   $block['subject'] = 'Zoek';
   $block['content'] = drupal_get_form('cnapi_browse_search_form');
 
@@ -163,7 +181,7 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   cnapi_ui_goto($request);
 }
 
-function cnapi_browse_block_filters() {
+function cnapi_browse_block_view_filters() {
   $request = cnapi_ui_get_active_request();
 
   if (!isset($request['context'])) {

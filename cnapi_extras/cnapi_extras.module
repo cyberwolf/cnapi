@@ -33,18 +33,23 @@ function cnapi_extras_block_view($delta = '') {
     }
   }
   
-  $cid = cnapi_extras_block_get_cache_id($delta);
-  
-  if ($cache = cache_get($cid, 'cache_block')) {
-    return $cache->data;
+  if (function_exists('cnapi_extras_block_cache_id_' . $delta)) {
+    $cid = cnapi_extras_block_get_cache_id($delta);
+    
+    if ($cache = cache_get($cid, 'cache_block')) {
+      return $cache->data;
+    }
+    
+    if (function_exists('cnapi_extras_block_view_' . $delta)) {
+      $block = call_user_func('cnapi_extras_block_view_' . $delta);
+      
+      cache_set($cid, $block, 'cache_block', CACHE_TEMPORARY);
+      
+      return $block;
+    }
   }
-
-  if (function_exists('cnapi_extras_block_view_' . $delta)) {
-    $block = call_user_func('cnapi_extras_block_view_' . $delta);
-    
-    cache_set($cid, $block, 'cache_block', CACHE_TEMPORARY);
-    
-    return $block;
+  else {
+    return call_user_func('cnapi_extras_block_view_' . $delta);
   }
 }
 

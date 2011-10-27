@@ -31,7 +31,6 @@ function cnapi_browse_block_info() {
 
   $block['filters']['info'] = t('CultuurNet API filters');
   $block['filters']['cache'] = DRUPAL_CACHE_PER_PAGE;
-  $block['search']['cache'] = DRUPAL_CACHE_GLOBAL;
 
   $block['active_filters']['info'] = t('CultuurNet API active filters');
   $block['active_filters']['cache'] = DRUPAL_CACHE_PER_PAGE;
@@ -44,9 +43,56 @@ function cnapi_browse_block_info() {
  */
 function cnapi_browse_block_view($delta = '') {
   module_load_include('inc', 'cnapi_browse', 'cnapi_browse.blocks');
+  
+  if (function_exists('cnapi_browse_block_is_visible_' . $delta)) {
+    if (!call_user_func('cnapi_browse_block_is_visible_' . $delta)) {
+      return FALSE;
+    }
+  }
+  
+  if (function_exists('cnapi_browse_block_cache_id_' . $delta)) {
+    $cid = cnapi_browse_block_get_cache_id($delta);
+    
+    if ($cache = cache_get($cid, 'cache_block')) {
+      return $cache->data;
+    }
+    
+    if (function_exists('cnapi_browse_block_view_' . $delta)) {
+      $block = call_user_func('cnapi_browse_block_view_' . $delta);
+      
+      cache_set($cid, $block, 'cache_block', CACHE_TEMPORARY);
+      
+      return $block;
+    }
+  }
+  else {
+    return call_user_func('cnapi_browse_block_view_' . $delta);
+  }
+}
 
-  if (function_exists('cnapi_browse_block_' . $delta)) {
-    return call_user_func('cnapi_browse_block_' . $delta);
+function cnapi_browse_block_get_cache_id($delta) {
+  global $theme, $base_root, $user;
+
+  // User 1 being out of the regular 'roles define permissions' schema,
+  // it brings too many chances of having unwanted output get in the cache
+  // and later be served to other users. We therefore exclude user 1 from
+  // block caching.
+  if (variable_get('block_cache', FALSE) && $user->uid != 1) {
+    // Start with common sub-patterns: block identification, theme, language.
+    $cid_parts[] = 'cnapi_browse';
+    $cid_parts[] = $delta;
+    $cid_parts[] = $theme;
+    // If Locale is enabled but we have only one language we do not need it as cid
+    // part.
+    if (drupal_multilingual()) {
+      foreach (language_types_configurable() as $language_type) {
+        $cid_parts[] = $GLOBALS[$language_type]->language;
+      }
+    }
+  
+    $cid_parts = array_merge($cid_parts, call_user_func('cnapi_browse_block_cache_id_' . $delta));
+    
+    return implode(':', $cid_parts);
   }
 }
 
