@@ -217,18 +217,19 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
 
 	// headings
   if ($type == 'event') {
-    
     $variables['headings'] = '';
 
     $headings = cnapi_get_headings();
-    if (isset($object['headingid'])) {
-      foreach ($object['headingid'] as $i => $heading) {;
+    if (!empty($object['headingid'])) {
+      foreach ($object['headingid'] as $heading) {;
         $heading_info = $headings[ltrim($heading)];
         if (!cnapi_output_type_has_heading_groups() || (cnapi_output_type_has_heading_groups() && $heading_info['pid'] != 0)) {
           $variables['headings'][] = $heading_info['name'];
         }
       }
-      $variables['headings'] = implode(', ',$variables['headings']);
+      if (!empty($variables['headings'])) {
+        $variables['headings'] = implode(', ', $variables['headings']);
+      }
     }
   }
   
