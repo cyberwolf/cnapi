@@ -15,6 +15,12 @@
       <a href="<?php print $object_url; ?>"><?php print $title; ?></a>
     </h<?php print $heading_level ?>>
     <?php print render($title_suffix); ?>
+  
+	  <?php if ($headings) : ?>
+      <div class="headings">
+        <?php print $headings ?>
+      </div>
+    <?php endif; ?>
 
     <?php if ($for_children) : ?>
       <?php print $vlieg_image ?>

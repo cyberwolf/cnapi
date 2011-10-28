@@ -339,15 +339,15 @@ function cnapi_get_sort_options() {
 
   if (empty($options)) {
     $options = array(
-      'title'      => t('By title'),
-      'created'    => t('By creation date'),
-      'proximity'  => t('By proximity'),
-      'date'       => t('By date'),
-      'location'   => t('By location'),
-      'city'       => t('By city'),
-      'weightweek' => t('By weight per week'),
-      'weight'     => t('By weight'),
-      'random'     => t('Random'),
+      'title'      => 'Op titel',
+      'created'    => 'Op datum creatie',
+      'proximity'  => 'Op nabijheid',
+      'date'       => 'Op datum',
+      'location'   => 'Op locatie',
+      'city'       => 'Op gemeentenaam',
+      'weightweek' => 'Op gewicht per week',
+      'weight'     => 'Op gewicht',
+      'random'     => 'Willekeurig',
     );
   }
 
@@ -359,8 +359,8 @@ function cnapi_get_sort_direction_options() {
 
   if (empty($options)) {
     $options = array(
-      'asc' => t('Ascending'),
-      'desc' => t('Descending'),
+      'asc' => 'Oplopend',
+      'desc' => 'Aflopend',
     );
   }
 
@@ -382,15 +382,15 @@ function cnapi_get_datetypes() {
 
   if (empty($map)) {
     $map = array(
-      'today'        => t('Today'),
-      'tomorrow'     => t('Tomorrow'),
-      'thisweek'     => t('This week'),
-      'thisweekend'  => t('This weekend'),
-      'nextweekend'  => t('Next weekend'),
-      'next30days'   => t('Next @days days', array('@days' => 30)),
-      'next3months'  => t('Next @months months', array('@months' => 3)),
-      'next6months'  => t('Next @months months', array('@months' => 6)),
-      'next12months' => t('Next @months months', array('@months' => 12)),
+      'today'        => 'Vandaag',
+      'tomorrow'     => 'Morgen',
+      'thisweek'     => 'Deze week',
+      'thisweekend'  => 'Dit weekend',
+      'nextweekend'  => 'Volgend weekend',
+      'next30days'   => 'Volgende 30 dagen',
+      'next3months'  => 'Volgende 3 maanden',
+      'next6months'  => 'Volgende 6 maanden',
+      'next12months' => 'Volgende 12 maanden',
     );
   }
 

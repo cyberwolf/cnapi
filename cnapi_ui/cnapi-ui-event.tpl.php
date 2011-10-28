@@ -172,7 +172,8 @@
 <?php if ($coords) : ?>
   <dt>GPS</dt>
   <dd>
-    <?php print $coords['lat'] ?>, <?php print $coords['lng'] ?>
+    <a href="http://maps.google.com/maps?hl=nl&amp;q=<?php print $coords['lat'] ?>, <?php print $coords['lng'] ?>"><img src="http://maps.google.com/maps/api/staticmap?center=<?php print $coords['lat'] ?>, <?php print $coords['lng'] ?>&amp;zoom=15&amp;markers=<?php print $coords['lat'] ?>, <?php print $coords['lng'] ?>&amp;size=300x200&amp;sensor=false"></a>
+    <div><?php print $coords['lat'] ?>, <?php print $coords['lng'] ?></div>
   </dd>
 <?php endif; ?>
 
