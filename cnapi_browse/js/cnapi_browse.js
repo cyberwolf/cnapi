@@ -31,7 +31,7 @@ Drupal.behaviors.cnapiBrowseDatePicker = {
     $('.form-item:has(.date-for-datepicker)').after('<div class="datepicker"></div>');
 
     // add extra option to select field to display datepicker
-    $('.has-datepicker').append($("<option></option>").val("_datepicker").text(Drupal.t('Pick a date')));
+    $('.has-datepicker').append($("<option></option>").val("_datepicker").text('Kies zelf data'));
 
     // bind onchange event to show the datepicker when the "pick a date" option has been chosen
     $('.has-datepicker').bind('change', function () {

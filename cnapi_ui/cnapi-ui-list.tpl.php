@@ -7,7 +7,7 @@
     
     <p class="result-counter"><?php print $result_counter ?></p>
 
-    <p class="result-sort"><?php print t('Sort by') ?>: <?php print $sort_links ?></p>
+    <p class="result-sort">Sorteer op : <?php print $sort_links ?></p>
 
     <p class="result-rss"><?php print $rss ?></p>
     

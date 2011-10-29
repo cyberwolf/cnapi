@@ -130,7 +130,7 @@ function cnapi_extras_movie_search_form($form, &$form_state) {
 
   $form['cdbid'] = array(
     '#type' => 'select',
-    '#title' => t('Production'),
+    '#title' => 'Productie',
     '#options' => $options,
     '#default_value' => isset($request['query']['cdbid']) ? $request['query']['cdbid'] : '',
     '#attributes' => array('class' => array('autosubmit')),

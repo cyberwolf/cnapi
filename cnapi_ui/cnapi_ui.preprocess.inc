@@ -43,10 +43,10 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   // Text for result info (number of results, ...)
   if (isset($query)) {
-    $variables['result_info'] = format_plural($variables['total'], '<strong>@total result</strong> found for <strong>!query</strong>', '<strong>@total results</strong> found for <strong>!query</strong>', array('@total' => $variables['total'], '!query' => $query));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaat</strong> gevonden voor <strong>!query</strong>', '<strong>@total resultaten</strong> gevonden voor <strong>!query</strong>', array('@total' => $variables['total'], '!query' => $query));
   }
   else {
-    $variables['result_info'] = format_plural($variables['total'], '<strong>@total result</strong> found', '<strong>@total results</strong> found', array('@total' => $variables['total']));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaten</strong> found', '<strong>@total resultaten</strong> gevonden', array('@total' => $variables['total']));
   }
   
   // Result counter
@@ -72,20 +72,20 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   
   if ($context['type'] == 'event') {
     $request_sort['query']['sort'] = 'date ASC';
-    $sort_links[] = cnapi_url_dp2dul(t('By date'), $request_sort);
+    $sort_links[] = cnapi_url_dp2dul('Datum', $request_sort);
     
     $request_sort['query']['sort'] = 'location ASC';
-    $sort_links[] = cnapi_url_dp2dul(t('By location'), $request_sort);
+    $sort_links[] = cnapi_url_dp2dul('Locatie', $request_sort);
     
     $request_sort['query']['sort'] = 'title ASC';
-    $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
+    $sort_links[] = cnapi_url_dp2dul('Titel', $request_sort);
   }
   elseif ($context['type'] == 'production') {
     $request_sort['query']['sort'] = 'weight ASC';
-    $sort_links[] = cnapi_url_dp2dul(t('By most plays'), $request_sort);
+    $sort_links[] = cnapi_url_dp2dul('Meest gespeeld', $request_sort);
     
     $request_sort['query']['sort'] = 'title ASC';
-    $sort_links[] = cnapi_url_dp2dul(t('By title'), $request_sort);
+    $sort_links[] = cnapi_url_dp2dul('Titel', $request_sort);
   }
 
   if (!empty($sort_links)) {
@@ -94,7 +94,7 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   // Add a link to the RSS feed in $rss.
   $url_rss = cnapi_ui_rss_feed_url_raw();
-  $variables['rss'] = l(t('RSS'), $url_rss['path'], $url_rss['options']);
+  $variables['rss'] = l('RSS', $url_rss['path'], $url_rss['options']);
 
   // Add the pager in $pager.
   $variables['pager'] = theme('pager');

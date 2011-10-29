@@ -45,7 +45,7 @@ function cnapi_browse_block_view_active_filters() {
     }
   }
 
-  $block['subject'] = 'Active filters';
+  $block['subject'] = 'Actieve filters';
   $block['content'] = array(
     '#theme' => 'cnapi_browse_filter_options',
     '#options' => $filter_options
@@ -253,7 +253,7 @@ function cnapi_browse_block_view_filters() {
   $render['filter_when']['title'] = array('#markup' => '<h2>' . 'Wanneer' . '</h2>');
   $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
 
-  $block['subject'] = 'Filter zoekresultaten';
+  $block['subject'] = 'Resultaten filteren';
   $block['content'] = $render;
 
   return $block;
@@ -420,7 +420,7 @@ function cnapi_browse_filter_what_production_form($form, &$form_state, $report) 
 
   $form['cdbid'] = array(
     '#type' => 'select',
-    '#title' => t('Production'),
+    '#title' => 'Productie',
     '#options' => $options,
     '#default_value' => isset($request['query']['cdbid']) ? $request['query']['cdbid'] : '',
     '#attributes' => array('class' => array('autosubmit')),
@@ -428,7 +428,7 @@ function cnapi_browse_filter_what_production_form($form, &$form_state, $report) 
   
   $form['query'] = array(
     '#type' => 'textfield',
-    '#title' => t('What'),
+    '#title' => 'Wat',
     '#description' => 'Zoek op titel/trefwoord',
     '#default_value' => isset($request['query']['query']) ? $request['query']['query'] : '',
   );

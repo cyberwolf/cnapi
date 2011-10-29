@@ -18,7 +18,7 @@ function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
   $event_url = cnapi_url_dp2dua($request_detail);
 
   // more_link
-  $variables['more_link'] = l(t('More info'), $event_url['path'], $event_url['options']);
+  $variables['more_link'] = l('Meer info', $event_url['path'], $event_url['options']);
   
   // title
   $variables['title'] = l($event['title'], $event_url['path'], $event_url['options']);
@@ -65,7 +65,7 @@ function template_preprocess_cnapi_extras_movie_summary(&$variables) {
   $object_url = cnapi_url_dp2dua($request_detail);
 
   // more_link
-  $variables['more_link'] = l(t('More info'), $object_url['path'], $object_url['options']);
+  $variables['more_link'] = l('Meer info', $object_url['path'], $object_url['options']);
   
   // title
   $variables['title'] = l($object['title'], $object_url['path'], $object_url['options']);
@@ -104,16 +104,16 @@ function template_preprocess_cnapi_extras_block_wider_radius_search(&$variables)
 
   // In case the radius was -1, we had a hit for the whole of Flanders...
   if ($variables['radius'] == -1) {
-    $variables['info'] = t('!total results found in Flanders.', $replace);
+    $variables['info'] = strstr('!total resultaten gevonden in Flanders.', $replace);
   }
   
   // ... else we had a hit for a certain city and radius.
   else {
-    $variables['info'] = t('!total results found !radius km around !city.', $replace);
+    $variables['info'] = strstr('!total resultaten gevonden !radius km around !city.', $replace);
   }
   
   // Construct a "view all results" link.
-  $variables['link'] = l(t('View all results'), $url['path'], $url['options']);
+  $variables['link'] = l('Bekijk alle resultaten', $url['path'], $url['options']);
 
   // Get the top 3 result...
   $data = array_slice($variables['data'], 0, 3);
