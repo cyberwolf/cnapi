@@ -63,7 +63,7 @@
   <dd>
     <?php foreach ($images as $image) : ?>
       <?php print $image['image'] ?>
-      <div>Copyright: <?php if ($image['copyright']) : ?><?php print $image['copyright'] ?><?php endif; ?></div>
+      <div>Copyright: <?php if (!empty($image['copyright'])) : ?><?php print $image['copyright'] ?><?php endif; ?></div>
     <?php endforeach; ?>
   </dd>
 <?php endif; ?>
