@@ -181,13 +181,17 @@ function cnapi_get_cityid($zip, $name) {
 
       $items = db_query($sql)->fetchAll();
       foreach ($items as $item) {
-        $mapping[$item->zip][$item->name] = $item->lid;
+        $name = strtolower($item->name);
+        $zip = $item->zip;
+        $mapping[$zip][$name] = $item->lid;
       }
 
       cache_set($cid, $mapping);
     }
   }
 
+  $name = strtolower($name);
+  
   if (isset($mapping[$zip][$name])) {
     return $mapping[$zip][$name];
   }
