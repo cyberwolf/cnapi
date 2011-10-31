@@ -105,5 +105,5 @@ function cnapi_ui_page_list_rss() {
   drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
 
   // Return the themed feed as a render array.
-  print theme('cnapi_ui_page_list_rss', array('objects' => $data, 'type' => $request_dp['context']));
+  print theme('cnapi_ui_page_list_rss', array('objects' => $data, 'type' => $context['type']));
 }

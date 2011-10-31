@@ -128,7 +128,6 @@ function cnapi_snode_add_node($object) {
   else {
     $node->status = 1;
   }
-  $node->comment = variable_get('comment_' . $node->type, COMMENT_NODE_OPEN);
 
   $type = node_type_get_type($node);
   if ($type->has_title) {

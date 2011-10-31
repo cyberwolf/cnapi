@@ -391,7 +391,7 @@ function cnapi_browse_filter_what_event($report) {
   );
 }
 
-function cnapi_browse_filter_what_production() {
+function cnapi_browse_filter_what_production($report) {
   $render['filter_form'] = drupal_get_form('cnapi_browse_filter_what_production_form', $report);
   
   return $render;

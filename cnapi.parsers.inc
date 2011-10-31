@@ -300,6 +300,12 @@ function _cnapi_parse_production_list_item(&$data, $xml) {
   if (isset($data['performers'])) {
     $data['performers'] = explode(';', $data['performers']);
   }
+
+  // $data['created']
+  _cnapi_parse_str($data, 'created', $xml, '@created');
+  if (isset($data['created'])) {
+    $data['created'] = cnapi_timestamp($data['created']);
+  }
 }
 
 function _cnapi_parse_actor_list_item(&$data, $xml) {

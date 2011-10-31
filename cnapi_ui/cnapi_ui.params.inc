@@ -192,12 +192,12 @@ function cnapi_url_dua2a($url) {
   return cnapi_url_p2a($url);
 }
 
-function cnapi_url_p2dua($request, $context) {
+function cnapi_url_p2dua($request, $context = FALSE) {
   $request = cnapi_url_p2dp($request, $context);
   return cnapi_url_dp2dua($request);
 }
 
-function cnapi_url_p2dus($request, $context) {
+function cnapi_url_p2dus($request, $context = FALSE) {
   $request = cnapi_url_p2dp($request, $context);
   return cnapi_url_dp2dus($request);
 }
