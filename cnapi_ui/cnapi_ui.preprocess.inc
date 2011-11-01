@@ -101,6 +101,17 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 }
 
 /**
+ * Preprocess variables for cnapi-ui-actor-mini-summary.tpl.php.
+ *
+ * Actual preprocessing is delegated to _template_preprocess_cnapi_ui_object_summary.
+ *
+ * @see cnapi-ui-actor-mini-summary.tpl.php
+ */
+function template_preprocess_cnapi_ui_actor_mini_summary(&$variables) {
+  _template_preprocess_cnapi_ui_object_summary($variables, 'actor');
+}
+
+/**
  * Preprocess variables for cnapi-ui-actor.tpl.php.
  *
  * @see cnapi-ui-actor.tpl.php
@@ -208,6 +219,11 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
       $where[] = check_plain($object['city']);
     }
     $variables['where'] = !empty($where) ? implode(', ', $where) : '';
+  }
+
+  // where
+  if ($type == 'actor') {
+    $variables['where'] = isset($object['city']) ? check_plain($object['city']) : '';
   }
 
   // when

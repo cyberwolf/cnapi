@@ -104,13 +104,17 @@ function cnapi_ui_theme() {
       'variables' => array('production' => NULL),
       'template' => 'cnapi-ui-production',
     ),
-    'cnapi_ui_event_mini_summary' => array(
-      'variables' => array('event' => NULL, 'url_absolute' => FALSE, 'heading_level' => 3),
-      'template' => 'cnapi-ui-event-mini-summary',
+    'cnapi_ui_actor_mini_summary' => array(
+      'variables' => array('actor' => NULL, 'url_absolute' => FALSE, 'heading_level' => 3),
+      'template' => 'cnapi-ui-actor-mini-summary',
     ),
     'cnapi_ui_actor_summary' => array(
       'variables' => array('actor' => NULL, 'url_absolute' => FALSE, 'heading_level' => 2),
       'template' => 'cnapi-ui-actor-summary',
+    ),
+    'cnapi_ui_event_mini_summary' => array(
+      'variables' => array('event' => NULL, 'url_absolute' => FALSE, 'heading_level' => 3),
+      'template' => 'cnapi-ui-event-mini-summary',
     ),
     'cnapi_ui_event_summary' => array(
       'variables' => array('event' => NULL, 'url_absolute' => FALSE, 'heading_level' => 2),

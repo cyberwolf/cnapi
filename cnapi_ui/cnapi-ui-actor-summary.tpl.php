@@ -15,6 +15,17 @@
       <?php print $shortdescription ?>
     </div>
   <?php endif; ?>
+  
+  <?php if ($where) : ?>
+    <dl class="clearfix">
+  
+      <?php if ($where) : ?>
+        <dt>Waar</dt>
+        <dd><?php print $where ?></dd>
+      <?php endif; ?>
+  
+    </dl>
+  <?php endif; ?>
 
   <?php print $more_link ?>
 
