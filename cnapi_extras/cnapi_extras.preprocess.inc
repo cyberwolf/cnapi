@@ -27,6 +27,7 @@ function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
   $variables['calendarsummary'] = $event['calendarsummary'];
   
   // thumbnail
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
   $thumbnail_url = isset($event['thumbnail']) && !empty($event['thumbnail']) ? $event['thumbnail'] : $default_image;
   $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
   $event_url['options']['html'] = TRUE;
@@ -46,6 +47,7 @@ function template_preprocess_cnapi_extras_block_movie_results(&$variables) {
   $variables['productions'] = theme('item_list', array('items' => $items));
   
   // more link
+  $variables['more_link'] = '';
   if ($variables['total'] > count($variables['productions'])) {
     $text = sprintf('Toon alle %d films voor deze zoekopdracht', $variables['total']);
     $variables['more_link'] = cnapi_url_dp2dul($text, $variables['more_request']);
@@ -71,6 +73,7 @@ function template_preprocess_cnapi_extras_movie_summary(&$variables) {
   $variables['title'] = l($object['title'], $object_url['path'], $object_url['options']);
   
   // thumbnail
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
   $thumbnail_url = isset($object['thumbnail']) && !empty($object['thumbnail']) ? $object['thumbnail'] : $default_image;
   $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
   $object_url['options']['html'] = TRUE;

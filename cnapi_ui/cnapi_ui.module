@@ -130,6 +130,10 @@ function cnapi_ui_theme() {
  * Load function for an actor. Return an actor object as it is returned and parsed from the API.
  */
 function cnapi_ui_actor_load($cdbid) {
+  if ($cdbid == 'untitled') {
+    return FALSE;
+  }
+  
   return cnapi_get_actor($cdbid);
 }
 
@@ -137,6 +141,10 @@ function cnapi_ui_actor_load($cdbid) {
  * Load function for an event. Return an event object as it is returned and parsed from the API.
  */
 function cnapi_ui_event_load($cdbid) {
+  if ($cdbid == 'untitled') {
+    return FALSE;
+  }
+  
   return cnapi_get_event($cdbid);
 }
 
@@ -144,6 +152,10 @@ function cnapi_ui_event_load($cdbid) {
  * Load function for a production. Return a production object as it is returned and parsed from the API.
  */
 function cnapi_ui_production_load($cdbid) {
+  if ($cdbid == 'untitled') {
+    return FALSE;
+  }
+  
   return cnapi_get_production($cdbid);
 }
 

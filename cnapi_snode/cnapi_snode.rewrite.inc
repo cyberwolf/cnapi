@@ -40,6 +40,11 @@ function cnapi_snode_url_inbound_alter(&$path, $original_path, $path_language) {
 
   // Determine cdbid on the 4th argument of the path.
   $cdbid = arg(3, $path);
+  
+  // Special case 'untitled'.
+  if ($cdbid == 'untitled') {
+    return;
+  }
 
   // Try to fetch the api object with the determined type/cdbid combination.
   $object = call_user_func("cnapi_get_$type", $cdbid);
