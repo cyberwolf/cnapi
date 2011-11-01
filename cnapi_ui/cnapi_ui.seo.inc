@@ -134,7 +134,12 @@ function cnapi_ui_seo_redirects() {
   }
 
   // We only act upon detail cnapi page request.
-  if (count(array_intersect(array_keys($request), array('actor', 'event', 'production'))) > 0) {
+  $type = reset(array_intersect(array_keys($request), array('actor', 'event', 'production')));
+  if ($type) {
+    if ($request[$type] == 'undefined') {
+      return;
+    }
+    
     // Fetch the object's info from the api.
     $object = cnapi_get(cnapi_url_dp2p($request));
 
