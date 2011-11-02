@@ -400,9 +400,6 @@ function _cnapi_parse_event(&$data, $field = NULL, $xml) {
   }
 
   if (!empty($event)) {
-    // caching this object
-    _cnapi_cache_event($event, $xml);
-
     // adding data to requesting object
     if ($field) {
       $data[$field] = $event;
@@ -441,9 +438,6 @@ function _cnapi_parse_production(&$data, $field = NULL, $xml) {
   _cnapi_parse_related_events($production, 'related_events', $xml);
 
   if (!empty($production)) {
-    // caching this object
-    _cnapi_cache_production($production, $xml);
-
     // adding data to requesting object
     if ($field) {
       $data[$field] = $production;
@@ -482,9 +476,6 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) {
   _cnapi_parse_contactinfo($actor, 'contactinfo', $xml);
 
   if (!empty($actor)) {
-    // caching this object
-    _cnapi_cache_actor($actor, $xml);
-
     // adding data to requesting object
     if ($field) {
       $data[$field] = $actor;
@@ -493,44 +484,6 @@ function _cnapi_parse_actor(&$data, $field = NULL, $xml) {
       $data = $actor;
     }
   }
-}
-
-function _cnapi_cache_event($event, $xml) {
-  // constructing the $request object for generating the cache id
-  $request = array('action' => 'detail', 'type' => 'event', 'query' => array('cdbid' => $event['cdbid']));
-
-  if ($xml->xpath('relatedevents/list/item')) {
-    $request['query']['relatedevents'] = 'list';
-  }
-  elseif ($xml->xpath('relatedevents/list/item')) {
-    $request['query']['relatedevents'] = 'detail';
-  }
-
-  // caching the event
-  _cnapi_cache_set($request, $event);
-}
-
-function _cnapi_cache_production($production, $xml) {
-  // constructing the $request object for generating the cache id
-  $request = array('action' => 'detail', 'type' => 'production', 'query' => array('cdbid' => $production['cdbid']));
-
-  if ($xml->xpath('relatedevents/list/item')) {
-    $request['query']['relatedevents'] = 'list';
-  }
-  elseif ($xml->xpath('relatedevents/list/item')) {
-    $request['query']['relatedevents'] = 'detail';
-  }
-
-  // caching the production
-  _cnapi_cache_set($request, $production);
-}
-
-function _cnapi_cache_actor($actor, $xml) {
-  // constructing the $request object for generating the cache id
-  $request = array('action' => 'detail', 'type' => 'actor', 'query' => array('cdbid' => $actor['cdbid']));
-
-  // caching the actor
-  _cnapi_cache_set($request, $actor);
 }
 
 function _cnapi_parse_event_details(&$data, $field, $xml) {

@@ -136,9 +136,7 @@ function cnapi_api_request_cached($request) {
           _cnapi_cache_list_clean_by_total($request, $result['total']);
         }
 
-        if ($request['action'] != 'detail') { // detail actions will be cached at parse level
-          _cnapi_cache_set($request, $result);
-        }
+        _cnapi_cache_set($request, $result);
       }
       else {
         watchdog('cnapi', 'Failed parsing for request !request.', array('!request' => serialize($request)), WATCHDOG_ERROR);
