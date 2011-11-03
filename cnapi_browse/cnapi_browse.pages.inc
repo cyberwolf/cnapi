@@ -5,7 +5,7 @@ function cnapi_browse_advanced_search_form() {
 
   $options = array();
 
-  $report = cnapi_browse_get_event_report(array(), TRUE, array('headings'));
+  $report = cnapi_browse_get_event_report(array(), TRUE, array('headings'), FALSE, FALSE, FALSE);
 
   if (isset($report['headings'])) {
     foreach ($report['headings'] as $id => $heading) {

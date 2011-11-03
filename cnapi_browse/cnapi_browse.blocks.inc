@@ -46,10 +46,7 @@ function cnapi_browse_block_view_active_filters() {
   }
 
   $block['subject'] = 'Actieve filters';
-  $block['content'] = array(
-    '#theme' => 'cnapi_browse_filter_options',
-    '#options' => $filter_options
-  );
+  $block['content'] = theme('cnapi_browse_filter_options', array('options' => $filter_options));
   
   return $block;
 }
@@ -96,10 +93,7 @@ function cnapi_browse_block_view_navigation() {
   }
 
   $block['subject'] = 'Bekijk alle rubrieken';
-  $block['content'] = array(
-    '#theme' => 'cnapi_browse_navigation',
-    '#items' => $items
-  );
+  $block['content'] = theme('cnapi_browse_navigation', array('items' => $items));
 
   return $block;
 }
@@ -254,7 +248,7 @@ function cnapi_browse_block_view_filters() {
   $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
 
   $block['subject'] = 'Resultaten filteren';
-  $block['content'] = $render;
+  $block['content'] = drupal_render($render);
 
   return $block;
 }
