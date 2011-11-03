@@ -53,10 +53,8 @@
       </dl>
     <?php endif; ?>
 
-      <div class="teaser-actions">
-
+    <div class="teaser-actions">
       <?php print $more_link ?>
-
     </div>
 
   </div>
