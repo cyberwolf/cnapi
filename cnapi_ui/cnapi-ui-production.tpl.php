@@ -60,6 +60,15 @@
   <dd><?php print $video ?></dd>
 <?php endif; ?>
 
+<?php if ($links) : ?>
+  <dt>Links</dt>
+  <dd>
+    <?php foreach ($links as $link) : ?>
+      <?php print $link ?>,
+    <?php endforeach; ?>
+  </dd>
+<?php endif; ?>
+
 <?php if ($for_children) : ?>
   <dt>Vlieg</dt>
   <dd><?php print $vlieg_image ?></dd>
