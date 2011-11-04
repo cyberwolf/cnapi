@@ -321,7 +321,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     }
 
     // image
-    if (isset($media_item['hlink']) && isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) {
+    if (isset($media_item['hlink']) && ((isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) || $media_item['filetype'] == 'jpeg')) {
       $vars = array('path' => $media_item['hlink'] . '?maxwidth=240');
       if (isset($image['title'])) {
         $vars['alt'] = $image['title'];
@@ -339,6 +339,14 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       $variables['images'][] = $image;
     }
   }
+
+	// video
+	$variables['video'] = '';
+	foreach ($media as $media_item) {
+		if (isset($media_item['mediatype']) && $media_item['mediatype'] = 'video') {
+			$variables['video'] = _cnapi_ui_video_url_to_embed($media_item['hlink'], 240, 180);
+		}
+	}
 
   // headings
   if ($type == 'event') {
@@ -739,4 +747,32 @@ function _template_preprocess_cnapi_ui_address($address) {
   }
 
   return '';
+}
+
+/**
+ * Convert a given url to a youtube embed.
+ */
+function _cnapi_ui_video_url_to_embed($url, $width, $height) {
+
+  // Construct embed url.
+  $embed_url = str_replace('watch', 'v', $url);
+  $video_parts = explode('?v=', $embed_url);
+  if (count($video_parts) == 0) {
+    return;
+  }
+  $embed_url = $video_parts[0] .'/' . $video_parts[1];
+  $embed_url .= '?fs=1&showinfo=0';
+
+  $embed = '';
+  $embed .= '<object width="' . $width . '" height="' . $height . '">';
+  $embed .= '<param name="movie" value="'.  $embed_url .'"></param>';
+  $embed .= '<param name="allowFullScreen" value="true"></param>';
+  $embed .= '<param name="wmode" value="transparent"></param>';
+  $embed .= '<embed src="'.  $embed_url .'"';
+  $embed .= 'type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" allowfullscreen="true" wmode="transparent">';
+  $embed .= '</embed>';
+  $embed .= '</object>';
+
+  return $embed;
+
 }
