@@ -126,11 +126,11 @@ function cnapi_extras_movie_search_form($form, &$form_state) {
   
   asort($options);
   
-  $options = array(CNAPI_OPTION_NONE => 'Selecteer een locatie') + $options;
+  $options = array(CNAPI_OPTION_NONE => 'Selecteer een film') + $options;
 
   $form['cdbid'] = array(
     '#type' => 'select',
-    '#title' => 'Productie',
+    '#title' => 'Film',
     '#options' => $options,
     '#default_value' => isset($request['query']['cdbid']) ? $request['query']['cdbid'] : '',
     '#attributes' => array('class' => array('autosubmit')),
