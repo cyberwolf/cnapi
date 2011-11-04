@@ -235,7 +235,15 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
 }
 
 function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE, $tree_type = 'tree') {
-  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_locations', array($did, $include_cities));
+	$cid = sprintf('cnapi_locations_tree:%d:%d:%s', $did, $include_cities ? 1 : 0, $tree_type);
+	
+	if ($cache = cache_get($cid)) {
+		return $cache->data;
+	}
+	
+  $tree = _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_locations', array($did, $include_cities));
+
+	cache_set($cid, $tree);
 }
 
 function cnapi_get_output_types() {
