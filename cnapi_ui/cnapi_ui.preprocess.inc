@@ -479,6 +479,12 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     }
   }
 
+	// location is organiser
+	$variables['location_is_organiser'] = isset($organiser['cdbid']) ? TRUE : FALSE;
+	if (isset($organiser['cdbid']) && isset($location['cdbid'])) {
+		$variables['location_is_organiser'] = ($organiser['cdbid'] == $location['cdbid']);
+	}
+
   // contact
   $variables['contact'] = array();
 

@@ -30,7 +30,7 @@
   </dd>
 <?php endif; ?>
 
-<?php if ($organiser) : ?>
+<?php if ($organiser && !$location_is_organiser) : ?>
   <dt>Organisatie</dt>
   <dd>
     <?php if (isset($organiser['link'])) : ?>
