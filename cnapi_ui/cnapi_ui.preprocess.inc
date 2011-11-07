@@ -321,7 +321,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     }
 
     // image
-    if (isset($media_item['hlink']) && ((isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) || $media_item['filetype'] == 'jpeg')) {
+    if (isset($media_item['hlink']) && ((isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) || (isset($media_item['filetype']) && $media_item['filetype'] == 'jpeg'))) {
       $vars = array('path' => $media_item['hlink'] . '?maxwidth=240');
       if (isset($image['title'])) {
         $vars['alt'] = $image['title'];
@@ -343,8 +343,10 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 	// video
 	$variables['video'] = '';
 	foreach ($media as $media_item) {
-		if (isset($media_item['mediatype']) && $media_item['mediatype'] = 'video') {
-			$variables['video'] = _cnapi_ui_video_url_to_embed($media_item['hlink'], 240, 180);
+		if (isset($media_item['mediatype']) && $media_item['mediatype'] == 'video') {
+			if ($video = _cnapi_ui_video_url_to_embed($media_item['hlink'], 240, 180)) {
+				$variables['video'] = $video;
+			}
 		}
 	}
 
@@ -758,12 +760,13 @@ function _template_preprocess_cnapi_ui_address($address) {
  * Convert a given url to a youtube embed.
  */
 function _cnapi_ui_video_url_to_embed($url, $width, $height) {
-
   // Construct embed url.
   $embed_url = str_replace('watch', 'v', $url);
+
   $video_parts = explode('?v=', $embed_url);
+
   if (count($video_parts) == 0) {
-    return;
+    return FALSE;
   }
   $embed_url = $video_parts[0] .'/' . $video_parts[1];
   $embed_url .= '?fs=1&showinfo=0';
@@ -779,5 +782,4 @@ function _cnapi_ui_video_url_to_embed($url, $width, $height) {
   $embed .= '</object>';
 
   return $embed;
-
 }
