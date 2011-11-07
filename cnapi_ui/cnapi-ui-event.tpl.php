@@ -42,7 +42,7 @@
 <?php endif; ?>
 
 <?php if ($reservation) : ?>
-  <dt>Reservation</dt>
+  <dt>Reservaties</dt>
   <dd>
   <?php if (isset($reservation['mail'])) : ?>
     Mail: <?php print $reservation['mail'] ?><br />
@@ -119,7 +119,7 @@
 <?php endif; ?>
 
 <?php if ($price) : ?>
-  <dt>Price</dt>
+  <dt>Prijs</dt>
   <dd><?php print $price ?></dd>
 <?php endif; ?>
 

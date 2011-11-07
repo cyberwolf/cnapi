@@ -8,7 +8,7 @@ require_once('cnapi_browse.preprocess.inc');
  */
 function cnapi_browse_menu() {
   $items['agenda/s'] = array(
-    'title' => 'Uitgebreide zoek',
+    'title' => 'Uitgebreid zoeken',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cnapi_browse_advanced_search_form'),
     'access arguments' => array('access content'),

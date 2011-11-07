@@ -152,7 +152,7 @@ function cnapi_browse_search_form() {
   );
 
   $form['advanced_search'] = array(
-    '#markup' => '<div id="link-advanced-search">' . l('Uitgebreide zoek', 'agenda/s') . '</div>',
+    '#markup' => '<div id="link-advanced-search">' . l('Uitgebreid zoeken', 'agenda/s') . '</div>',
   );
 
   return $form;
@@ -247,7 +247,7 @@ function cnapi_browse_block_view_filters() {
   $render['filter_when']['title'] = array('#markup' => '<h2>' . 'Wanneer' . '</h2>');
   $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
 
-  $block['subject'] = 'Resultaten filteren';
+  $block['subject'] = 'Filter resultaten';
   $block['content'] = drupal_render($render);
 
   return $block;
