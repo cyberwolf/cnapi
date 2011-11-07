@@ -60,7 +60,13 @@ function cnapi_browse_block_view($delta = '') {
     if (function_exists('cnapi_browse_block_view_' . $delta)) {
       $block = call_user_func('cnapi_browse_block_view_' . $delta);
       
-      cache_set($cid, $block, 'cache_block', CACHE_TEMPORARY);
+      $cache_expires = CACHE_TEMPORARY;
+      
+      if (in_array($delta, array('filters', 'active_filters')) {
+        $cache_expires = variable_get('cnapi_cache_lifetime', 0);
+      }
+      
+      cache_set($cid, $block, 'cache_block', $cache_expires);
       
       return $block;
     }
