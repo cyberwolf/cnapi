@@ -615,7 +615,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   }
 
   // facilities
-  if ($type == 'event' || $type == 'production') {
+  if ($type == 'event' || $type == 'production' || $type == 'actor') {
     $variables['facilities'] = array();
 
     if (isset($object['categories']['facility'])) {
