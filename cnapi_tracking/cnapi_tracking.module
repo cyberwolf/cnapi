@@ -98,7 +98,11 @@ function cnapi_tracking_page_alter(&$page) {
  */
 function cnapi_tracking_uuid() {
   global $user;
-  if ($user->uid) {
+	
+	if (module_exists('culturefeed') && DrupalCultureFeed::isCultureFeedUser()) {
+		return DrupalCultureFeed::getLoggedInAccount()->culturefeed_uid;
+	}
+  elseif ($user->uid) {
     return md5($user->mail . 'hotsauce');
   }
   else {
