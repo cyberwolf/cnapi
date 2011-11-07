@@ -31,7 +31,7 @@ function cnapi_tracking_library() {
     'version' => '1',
     'js' => array(
       variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION) => array('preprocess' => FALSE),
-      $path . '/js/cnapi_tracking.js' => array(),
+      $path . '/js/cnapi_tracking.js' => array('every_page' => TRUE),
     ),
   );
 
