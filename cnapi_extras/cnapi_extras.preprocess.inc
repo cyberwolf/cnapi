@@ -28,7 +28,10 @@ function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
   
   // thumbnail
   $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif');
-  $thumbnail_url = isset($event['thumbnail']) && !empty($event['thumbnail']) ? $event['thumbnail'] : $default_image;
+  $thumbnail_url = $default_image;
+  if (isset($event['thumbnail']) && !empty($event['thumbnail'])) {
+    $thumbnail_url = str_replace('maxwidth=162&maxheight=109', 'maxwidth=50&maxheight=50', $event['thumbnail']);
+  }
   $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
   $event_url['options']['html'] = TRUE;
   $variables['thumbnail'] = l($thumbnail_img, $event_url['path'], $event_url['options']);

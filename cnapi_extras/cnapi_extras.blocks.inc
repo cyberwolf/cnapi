@@ -26,9 +26,9 @@ function cnapi_extras_block_view_actor_playlist() {
   $query['cityid'] = $actor['contactinfo']['address']['cityid'];
   $query['sort'] = 'date ASC';
   $query['pagelength'] = 100;
-  
+
   $events = cnapi_get_events($query);
-  
+
   if (empty($events['data'])) {
     return;
   }
