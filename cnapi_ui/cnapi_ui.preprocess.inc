@@ -127,8 +127,20 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
  *
  * @see cnapi-ui-event-mini-summary.tpl.php
  */
-function template_preprocess_cnapi_ui_event_mini_summary(&$variables) {
+function template_preprocess_cnapi_ui_event_mini_summary(&$variables, $type) {
+  $object = $variables['event'];
+  
   _template_preprocess_cnapi_ui_object_summary($variables, 'event');
+
+  // thumbnail
+  $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif', array('absolute' => $variables['url_absolute']));
+  $thumbnail_url = $default_image;
+  if (isset($object['thumbnail']) && !empty($object['thumbnail'])) {
+    $thumbnail_url = str_replace('maxwidth=162&maxheight=109', 'width=50&height=50&crop=auto', $object['thumbnail']);
+  }
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
+  $object_url['options']['html'] = TRUE;
+  $variables['thumbnail'] = l($thumbnail_img, $object_url['path'], $object_url['options']);
 }
 
 /**
