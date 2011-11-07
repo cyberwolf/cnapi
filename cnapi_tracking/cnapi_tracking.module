@@ -93,6 +93,7 @@ function cnapi_tracking_page_alter(&$page) {
 
 /**
  * Returns a unique uid for the current user.
+ * For CultureFeed users, the CultureFeed user id can be used.
  * For real users, the email address can be used.
  * For anonymous users, a uuid is provided in a cookie.
  */
