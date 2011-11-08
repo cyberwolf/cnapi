@@ -43,6 +43,7 @@ function cnapi_extras_block_view_actor_playlist() {
   $block['content'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#attributes' => array('class' => 'actor-playlist')
   );
   
   return $block; 
