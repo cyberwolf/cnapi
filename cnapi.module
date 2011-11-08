@@ -79,13 +79,6 @@ function cnapi_menu() {
 }
 
 /**
- * Implements hook_flush_caches().
- */
-function cnapi_flush_caches() {
-  return array('cache_cnapi', 'cache_cnapi_detail');
-}
-
-/**
  * Implements hook_form_alter().
  */
 function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
