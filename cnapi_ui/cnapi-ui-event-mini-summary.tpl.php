@@ -14,6 +14,10 @@
   </h<?php print $heading_level ?>>
   <?php print render($title_suffix); ?>
 
+  <?php if ($where) : ?>
+    <div class="where"><?php print $where ?></div>
+  <?php endif; ?>
+
   <?php if ($when) : ?>
     <div class="when"><?php print $when ?></div>
   <?php endif; ?>
