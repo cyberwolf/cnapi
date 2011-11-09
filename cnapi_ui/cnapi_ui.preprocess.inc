@@ -127,10 +127,14 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
  *
  * @see cnapi-ui-event-mini-summary.tpl.php
  */
-function template_preprocess_cnapi_ui_event_mini_summary(&$variables, $type) {
+function template_preprocess_cnapi_ui_event_mini_summary(&$variables) {
   $object = $variables['event'];
   
   _template_preprocess_cnapi_ui_object_summary($variables, 'event');
+
+  // object_url
+  $request_detail = array('event' => $object['cdbid'], 'title' => $object['title']);
+  $object_url = cnapi_url_dp2dua($request_detail);
 
   // thumbnail
   $default_image = url(drupal_get_path('module', 'cnapi_ui') . '/img/default-image.gif', array('absolute' => $variables['url_absolute']));
