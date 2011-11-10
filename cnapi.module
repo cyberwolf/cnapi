@@ -79,6 +79,14 @@ function cnapi_menu() {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function cnapi_cron() {
+  cache_clear_all(NULL, 'cache_cnapi');
+  cache_clear_all(NULL, 'cache_cnapi_detail');
+}
+
+/**
  * Implements hook_form_alter().
  */
 function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
