@@ -108,6 +108,20 @@ function cnapi_location_autocomplete($input = '') {
   drupal_json_output($matches);
 }
 
+function cnapi_actor_autocomplete($input = '') {
+  $matches = array();
+  
+  if ($input) {
+    $sql = "SELECT CONCAT(name, ' - ', zip, ' ', city) AS full FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) LIKE :input";
+    $actors = db_query_range($sql, 0, 10, array(':input' => '%' . db_like(strtolower($input)) . '%'))->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($actors as $actor) {
+      $matches[$actor['full']] = $actor['full'];
+    }
+  }
+  
+  drupal_json_output($matches);
+}
+
 function cnapi_get_provinces() {
   return cnapi_get_regions(CNAPI_LOCATIONS_DIMENSION_PROVINCE);
 }

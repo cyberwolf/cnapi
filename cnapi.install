@@ -245,6 +245,44 @@ function cnapi_schema() {
     ),
   );
 
+  // categories
+  $schema['cnapi_actor'] = array(
+    'description' => 'Actors for the CultuurNet API.',
+    'fields' => array(
+      'cdbid' => array(
+        'description' => 'The primary identifier for an actor.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'description' => 'Actor name.',
+        'type' => 'varchar',
+        'length' => 256,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'zip' => array(
+        'description' => 'Actor ZIP.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE
+      ),
+      'city' => array(
+        'description' => 'Actor city.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'indexes' => array(
+      'cdbid' => array('cdbid'),
+    ),
+    'primary key' => array('cdbid'),
+  );
+
   return $schema;
 }
 
@@ -358,4 +396,14 @@ function cnapi_requirements($phase) {
   }
 
   return $requirements;
+}
+
+/**
+ * Install the schema for actors upgrading.
+ */
+function cnapi_update_7001() {
+  if (!db_table_exists('cnapi_actor')) {
+    $schema = cnapi_schema();
+    db_create_table('cnapi_actor', $schema['cnapi_actor']);
+  }
 }

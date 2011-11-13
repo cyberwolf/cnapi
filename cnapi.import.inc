@@ -179,3 +179,34 @@ function _cnapi_xml_import($xml, $path, $mappings, $table, $primary_key = array(
     return;
   }
 }
+
+function cnapi_import_actors() {
+  $pagelength = 100;
+  $page = 1;
+  
+  $actors = array();
+  
+  do {
+    $result = cnapi_get_actors(array('pagelength' => $pagelength, 'page' => $page));
+    
+    $actors = array_merge($actors, $result['data']);
+    
+    $total = $result['total'];
+
+    $page++;
+  }
+  while ($pagelength * ($page - 1) < $total);
+  
+  db_truncate('cnapi_actor')->execute();
+  
+  foreach ($actors as $actor) {
+    $object = array(
+      'cdbid' => $actor['cdbid'],
+      'name' => $actor['title'],
+      'zip' => $actor['zip'],
+      'city' => $actor['city'],
+    );
+
+    drupal_write_record('cnapi_actor', $object);
+  }
+}
