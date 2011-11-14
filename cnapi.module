@@ -71,6 +71,14 @@ function cnapi_menu() {
   $items['cnapi/autocomplete/location'] = array(
     'title' => 'Locations autocomplete',
     'page callback' => 'cnapi_location_autocomplete',
+    'page arguments' => array(FALSE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['cnapi/autocomplete/location/onlyzip'] = array(
+    'title' => 'Locations autocomplete',
+    'page callback' => 'cnapi_location_autocomplete',
+    'page arguments' => array(TRUE),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
