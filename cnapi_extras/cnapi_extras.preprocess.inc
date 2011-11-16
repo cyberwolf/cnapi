@@ -32,7 +32,7 @@ function template_preprocess_cnapi_extras_actor_playlist_event(&$variables) {
   if (isset($event['thumbnail']) && !empty($event['thumbnail'])) {
     $thumbnail_url = str_replace('maxwidth=162&maxheight=109', 'width=50&height=50&crop=auto', $event['thumbnail']);
   }
-  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $variables['title']));
+  $thumbnail_img = theme('image', array('path' => $thumbnail_url, 'alt' => $event['title']));
   $event_url['options']['html'] = TRUE;
   $variables['thumbnail'] = l($thumbnail_img, $event_url['path'], $event_url['options']);
 }
