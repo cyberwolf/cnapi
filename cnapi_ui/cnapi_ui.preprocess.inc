@@ -650,7 +650,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     if (isset($detail['media']['other'])) {
       foreach ($detail['media']['other'] as $link) {
         if (isset($link['mediatype']) && $link['mediatype'] == 'reservations') {
-          $variables['tickets'][] = l($link['title'], $link['hlink']);
+          $variables['tickets'][] = l($link['title'], $link['hlink'], array('attributes' => array('rel' => 'nofollow')));
         }
       }
     }
@@ -720,7 +720,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
 	$variables['links'] = array();
   foreach ($links as $link) {
-    $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link);
+    $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
 }
 
