@@ -55,6 +55,10 @@
 
     <div class="teaser-actions">
       <?php print $more_link ?>
+      
+      <?php if ($reservation) : ?>
+        <?php print $reservation ?>
+      <?php endif; ?>
     </div>
 
   </div>
