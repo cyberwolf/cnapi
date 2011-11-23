@@ -726,6 +726,14 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   foreach ($links as $link) {
     $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
+  
+  if ($type == 'event') {
+    if (!empty($object['related_production'])) {
+      $request = array('context' => 'event', 'query' => array('query' => $object['detail']['nl']['title']));
+      $url = cnapi_url_dp2dua($request);
+      $variables['more_data'] = l('Meer data en locaties', $url['path'], $url['options'], array('attributes' => array('class' => 'more-data-link')));
+    }
+  }
 }
 
 /**

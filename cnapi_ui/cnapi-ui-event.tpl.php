@@ -73,7 +73,12 @@
 
 <?php if ($when) : ?>
   <dt>Wanneer</dt>
-  <dd><?php print $when ?></dd>
+  <dd>
+    <?php print $when ?>
+    <?php if ($more_data) : ?>
+      <?php print $more_data ?>
+    <?php endif; ?>
+  </dd>
 <?php endif; ?>
 
 <?php if ($performers) : ?>
