@@ -22,7 +22,7 @@ function cnapi_ui_tracking() {
     $context = cnapi_ui_contexts('id', $request['context']);
 
     // Activity : list
-    $activity = 1;
+    $activity = 'list';
 
     // Params : context (event, movie, ...), type (actor, event, production) and query (the filters).
     $params = array();
@@ -48,7 +48,7 @@ function cnapi_ui_tracking() {
     }
 
     // Activity : detail
-    $activity = 2;
+    $activity = 'detail';
 
     // Params : type (actor, event, production)
     if (isset($type)) {

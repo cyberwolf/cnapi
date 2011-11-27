@@ -728,6 +728,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   }
   
   if ($type == 'event') {
+    $variables['more_data'] = '';
     if (!empty($object['related_production'])) {
       $request = array('context' => 'event', 'query' => array('query' => $object['detail']['nl']['title']));
       $url = cnapi_url_dp2dua($request);
