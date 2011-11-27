@@ -298,10 +298,13 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
 }
 
 function cnapi_ui_get_active_request_filters() {
-  $filters = array();
-
-  // Get the current request.
   $request = cnapi_ui_get_active_request();
+  
+  return cnapi_ui_get_request_filters($request);
+}
+
+function cnapi_ui_get_request_filters($request) {
+  $filters = array();
 
   // We only act upon list pages.
   if (!isset($request['context'])) {
@@ -514,7 +517,7 @@ function cnapi_ui_get_active_request_filters() {
   }
 
   // Give other modules a chance to alter the filters.
-  drupal_alter('cnapi_ui_active_request_filters', $filters);
+  drupal_alter('cnapi_ui_request_filters', $filters);
 
   return $filters;
 }
