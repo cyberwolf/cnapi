@@ -1,0 +1,112 @@
+<?php
+
+define('CNAPI_TRACKING_SCRIPT_LOCATION', 'http://track.uitdatabank.be/web/js/tracking.js');
+
+/**
+ * Implements hook_menu().
+ */
+function cnapi_tracking_menu() {
+  $items['admin/config/services/cnapi_tracking'] = array(
+    'title' => 'CultuurNet API tracking',
+    'description' => 'Change CultuurNet API tracking settings like script location, ...',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cnapi_tracking_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'cnapi_tracking.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_library().
+ */
+function cnapi_tracking_library() {
+  $path = drupal_get_path('module', 'cnapi_tracking');
+
+  // CultuurNet API tracking
+  $libraries['cnapi_tracking'] = array(
+    'title' => 'CultuurNet API tracking',
+    'website' => 'http://www.cultuurnet.be',
+    'version' => '1',
+    'js' => array(
+      variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION) => array('preprocess' => FALSE),
+      $path . '/js/cnapi_tracking.js' => array('every_page' => TRUE),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Track an activity with certain parameters.
+ *
+ * @param $activity
+ *   The ID of the activity to track.
+ * @param $params
+ *   More params do describe or specify the activity.
+ */
+function cnapi_tracking_track($activity, $params = array()) {
+  // All tracking calls are buffered in a static variable which is later read in hook_page_alter.
+  $track = &drupal_static(__FUNCTION__, array());
+
+  // We calculate a hash from the $params to log each call only once per page request.
+  $params_copy = $params;
+  ksort($params);
+  $params_hash = md5(serialize($params));
+
+  if (!isset($track[$activity][$params_hash])) {
+    $track[$activity][$params_hash] = $params;
+  }
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function cnapi_tracking_page_alter(&$page) {
+  // We read all tracking calls from the static variable in cnapi_tracking_track.
+  $track = &drupal_static('cnapi_tracking_track', array());
+
+  // Add the current user and API partnerkey as JS setting.
+  $settings = array(
+    'partnerKey' => variable_get('cnapi_api_key', ''),
+    'user' => cnapi_tracking_uuid(),
+  );
+  drupal_add_js(array('cnapi_tracking' => $settings), 'setting');
+
+  // Add the JS library.
+  drupal_add_library('cnapi_tracking', 'cnapi_tracking', TRUE);
+
+  // Looping over all tracking calls and generating a JS tracking call for each activity.
+  $code = '';
+  foreach ($track as $activity => $params_info) {
+    foreach ($params_info as $hash => $params) {
+      $code .= 'Drupal.cnapi_tracking.track("' . $activity . '", ' . json_encode($params) . ');';
+    }
+  }
+
+  // If the resulting code is not empty, we add it to our output.
+  if (!empty($code)) {
+    drupal_add_js($code, array('type' => 'inline', 'scope' => 'footer'));
+  }
+}
+
+/**
+ * Returns a unique uid for the current user.
+ * For CultureFeed users, the CultureFeed user id can be used.
+ * For real users, the email address can be used.
+ * For anonymous users, a uuid is provided in a cookie.
+ */
+function cnapi_tracking_uuid() {
+  global $user;
+  
+  if (module_exists('culturefeed') && DrupalCultureFeed::isCultureFeedUser()) {
+    return DrupalCultureFeed::getLoggedInUserId();
+  }
+  elseif ($user->uid) {
+    return md5($user->mail . 'hotsauce');
+  }
+  else {
+    // Automatically handled by the tracking api for anonymous users.
+  }
+}

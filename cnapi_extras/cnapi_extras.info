@@ -1,0 +1,9 @@
+name = CultuurNet API extras
+description = Extra functionality for enhancing the CultuurNet API User Interface
+package = CultuurNet API
+version = VERSION
+core = 7.x
+dependencies[] = cnapi_ui
+files[] = cnapi_extras.module
+files[] = cnapi_extras.blocks.inc
+files[] = cnapi_extras.preprocess.inc

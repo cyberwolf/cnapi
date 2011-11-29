@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -23,13 +22,13 @@ function cnapi_admin_settings() {
   $form['settings']['cnapi_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('API location'),
-    '#description' => t('The URL where the Cultuurnet API resides. End with a slash. Example: http://build.uitdatabank.be/'),
+    '#description' => t('The URL where the CultuurNet API resides. End with a slash. Example: http://build.uitdatabank.be/'),
     '#default_value' => variable_get('cnapi_api_location', CNAPI_API_LOCATION),
   );
   $form['settings']['cnapi_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t('API key'),
-    '#description' => t('Your Cultuurnet API key.'),
+    '#description' => t('Your CultuurNet API key.'),
     '#default_value' => variable_get('cnapi_api_key', ''),
     '#size' => 40,
     '#maxlength' => 40,
@@ -37,7 +36,7 @@ function cnapi_admin_settings() {
   $form['settings']['cnapi_api_output_type'] = array(
     '#type' => 'textfield',
     '#title' => t('Output type'),
-    '#description' => t('Your Cultuurnet API output type.'),
+    '#description' => t('Your CultuurNet API output type.'),
     '#default_value' => variable_get('cnapi_api_output_type', 1),
     '#size' => 2,
     '#maxlength' => 2,
@@ -167,7 +166,7 @@ function cnapi_admin_defaults() {
     $form['defaults'][$context]['sort'] = array(
       '#type' => 'select',
       '#title' => t('Sort'),
-      '#description' => t('The amount of items to request by default per API call.'),
+      '#description' => t('The sort field by default per API call.'),
       '#options' => array(-1 => t('Use general pagelength settings')) + $combined_sort_options,
       '#default_value' => _cnapi_default_values('sort', $context),
     );

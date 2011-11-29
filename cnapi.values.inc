@@ -1,5 +1,8 @@
 <?php
-// $Id$
+
+function cnapi_output_type_has_heading_groups() {
+  return variable_get('cnapi_api_output_type', 1) == 3;
+}
 
 function cnapi_location_parse($input = '') {
   // empty input never parses succesfully
@@ -39,7 +42,7 @@ function cnapi_location_parse($input = '') {
         }
       }
     }
-  
+
     // only zip is known
     else {
       $locations = db_query("SELECT * FROM {cnapi_location} cl WHERE zip = :zip", array(':zip' => $zip))->fetchAll(PDO::FETCH_ASSOC);
@@ -71,7 +74,7 @@ function cnapi_location_parse($input = '') {
 
   if (count($locations) == 1) {
     return array(
-      'type' => 'region',
+      'type' => 'regio',
       'value' => $locations[0]['lid'],
     );
   }
@@ -79,7 +82,7 @@ function cnapi_location_parse($input = '') {
   return FALSE;
 }
 
-function cnapi_location_autocomplete($input = '') {
+function cnapi_location_autocomplete($only_zip = FALSE, $input = '') {
   $matches = array();
 
   if ($input) {
@@ -98,10 +101,29 @@ function cnapi_location_autocomplete($input = '') {
       else {
         $text = $location['name'] . ' (Regio)';
       }
-      $matches[$text] = $text;
+      if ($only_zip) {
+        $matches[$location['zip']] = $text;
+      }
+      else {
+        $matches[$text] = $text;
+      }
     }
   }
 
+  drupal_json_output($matches);
+}
+
+function cnapi_actor_autocomplete($input = '') {
+  $matches = array();
+  
+  if ($input) {
+    $sql = "SELECT CONCAT(name, ' - ', zip, ' ', city) AS full FROM {cnapi_actor} WHERE CONCAT(LOWER(name), ' - ', zip, ' ', LOWER(city)) LIKE :input";
+    $actors = db_query_range($sql, 0, 10, array(':input' => '%' . db_like(strtolower($input)) . '%'))->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($actors as $actor) {
+      $matches[$actor['full']] = $actor['full'];
+    }
+  }
+  
   drupal_json_output($matches);
 }
 
@@ -178,17 +200,21 @@ function cnapi_get_cityid($zip, $name) {
 
       $items = db_query($sql)->fetchAll();
       foreach ($items as $item) {
-        $mapping[$item->zip][$item->name] = $item->lid;
+        $name = strtolower($item->name);
+        $zip = $item->zip;
+        $mapping[$zip][$name] = $item->lid;
       }
 
       cache_set($cid, $mapping);
     }
   }
 
+  $name = strtolower($name);
+  
   if (isset($mapping[$zip][$name])) {
     return $mapping[$zip][$name];
   }
-  
+
   return NULL;
 }
 
@@ -211,6 +237,8 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
       $params[':did'] = $did;
 
       if ($include_cities) {
+        $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = 4";
+        $sql_parts[] = "SELECT cl.*, 0 AS pid FROM {cnapi_location} cl WHERE did = 4";
         $sql_parts[] = "SELECT cl.*, clh.pid FROM {cnapi_location} cl INNER JOIN {cnapi_location_hierarchy} clh ON clh.lid = cl.lid INNER JOIN {cnapi_location} cl2 ON cl2.lid = clh.pid WHERE cl.did = 0 AND cl2.did = :did";
       }
 
@@ -226,7 +254,15 @@ function cnapi_get_locations($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $i
 }
 
 function cnapi_get_locations_tree($did = CNAPI_LOCATIONS_DIMENSION_ADMINISTRATIVE, $include_cities = TRUE, $tree_type = 'tree') {
-  return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_locations', array($did, $include_cities));
+	$cid = sprintf('cnapi_locations_tree:%d:%d:%s', $did, $include_cities ? 1 : 0, $tree_type);
+	
+	if ($cache = cache_get($cid)) {
+		return $cache->data;
+	}
+	
+  $tree = _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_locations', array($did, $include_cities));
+
+	cache_set($cid, $tree);
 }
 
 function cnapi_get_output_types() {
@@ -311,8 +347,12 @@ function _cnapi_get_categories($did) {
   return $categories[$did];
 }
 
-function cnapi_get_headings($tid) {
+function cnapi_get_headings($tid = NULL) {
   $headings = &drupal_static(__FUNCTION__, NULL);
+
+  if (!$tid) {
+    $tid = variable_get('cnapi_api_output_type', 1);
+  }
 
   if (!$headings) {
     $headings = db_query("SELECT hid, pid, name, weight FROM {cnapi_heading} WHERE tid = :tid ORDER BY pid, weight", array(':tid' => $tid))->fetchAllAssoc('hid', PDO::FETCH_ASSOC);
@@ -321,7 +361,7 @@ function cnapi_get_headings($tid) {
   return $headings;
 }
 
-function cnapi_get_headings_tree($tid, $tree_type = 'tree') {
+function cnapi_get_headings_tree($tid = NULL, $tree_type = 'tree') {
   return _cnapi_get_tree(__FUNCTION__, $tree_type, 'cnapi_get_headings', array($tid));
 }
 
@@ -330,15 +370,15 @@ function cnapi_get_sort_options() {
 
   if (empty($options)) {
     $options = array(
-      'title'      => t('By title'),
-      'created'    => t('By creation date'),
-      'proximity'  => t('By proximity'),
-      'date'       => t('By date'),
-      'location'   => t('By location'),
-      'city'       => t('By city'),
-      'weightweek' => t('By weight per week'),
-      'weight'     => t('By weight'),
-      'random'     => t('Random'),
+      'title'      => 'Op titel',
+      'created'    => 'Op datum creatie',
+      'proximity'  => 'Op nabijheid',
+      'date'       => 'Op datum',
+      'location'   => 'Op locatie',
+      'city'       => 'Op gemeentenaam',
+      'weightweek' => 'Op gewicht per week',
+      'weight'     => 'Op gewicht',
+      'random'     => 'Willekeurig',
     );
   }
 
@@ -350,8 +390,8 @@ function cnapi_get_sort_direction_options() {
 
   if (empty($options)) {
     $options = array(
-      'asc' => t('Ascending'),
-      'desc' => t('Descending'),
+      'asc' => 'Oplopend',
+      'desc' => 'Aflopend',
     );
   }
 
@@ -373,16 +413,15 @@ function cnapi_get_datetypes() {
 
   if (empty($map)) {
     $map = array(
-      'today'        => t('Today'),
-      'tomorrow'     => t('Tomorrow'),
-      'thisweek'     => t('This week'),
-      'thisweekend'  => t('This weekend'),
-      'nextweekend'  => t('Next weekend'),
-      'thismonth'    => t('This month'),
-      'next30days'   => t('Next @days days', array('@days' => 30)),
-      'next3months'  => t('Next @months months', array('@months' => 3)),
-      'next6months'  => t('Next @months months', array('@months' => 6)),
-      'next12months' => t('Next @months months', array('@months' => 12)),
+      'today'        => 'Vandaag',
+      'tomorrow'     => 'Morgen',
+      'thisweek'     => 'Deze week',
+      'thisweekend'  => 'Dit weekend',
+      'nextweekend'  => 'Volgend weekend',
+      'next30days'   => 'Volgende 30 dagen',
+      'next3months'  => 'Volgende 3 maanden',
+      'next6months'  => 'Volgende 6 maanden',
+      'next12months' => 'Volgende 12 maanden',
     );
   }
 

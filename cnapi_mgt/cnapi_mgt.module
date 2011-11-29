@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Implements hook_menu().
@@ -8,13 +7,13 @@ function cnapi_mgt_form_cnapi_admin_settings_alter(&$form, $form_state) {
   $form['settings']['cnapi_mgt_user'] = array(
     '#type' => 'textfield',
     '#title' => t('API Username'),
-    '#description' => t('Your Cultuurnet API username.'),
+    '#description' => t('Your CultuurNet API username.'),
     '#default_value' => variable_get('cnapi_mgt_user', ''),
   );
   $form['settings']['cnapi_mgt_password'] = array(
     '#type' => 'textfield',
     '#title' => t('API Password'),
-    '#description' => t('Your Cultuurnet API password.'),
+    '#description' => t('Your CultuurNet API password.'),
     '#default_value' => variable_get('cnapi_mgt_password', ''),
   );
 }
@@ -55,11 +54,11 @@ function cnapi_mgt_edit_userpool($userpool) {
 
   // do the request
   $result = _cnapi_mgt_request($path, $query);
-  
+
   // if the result was TRUE, return it
   if ($result === TRUE) {
     return TRUE;
-  } 
+  }
 
   // if a key is in the response, the request was successfull, so return the key as result
   if ($result) {
@@ -153,7 +152,7 @@ function _cnapi_mgt_prepare_userpool_query($userpool) {
       }
       unset($userpool['filters'][$local_key]);
     }
-    
+
     $userpool[$url_key] = implode(';', $filters);
   }
 
@@ -190,7 +189,7 @@ function _cnapi_mgt_parse($path, $xml) {
     elseif ($path == 'userpool/new') {
       $data = _cnapi_xpath_str($xml, '/cdbxml/response/userpoolkey');
     }
-    
+
     // parsing userpool modification results
     elseif ($path == 'userpool/modify') {
       $data = TRUE;

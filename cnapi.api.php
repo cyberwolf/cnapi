@@ -1,9 +1,8 @@
 <?php
-// $Id$
 
 /**
  * @file
- * Hooks provided by the Cultuurnet API module.
+ * Hooks provided by the CultuurNet API module.
  */
 
 /**

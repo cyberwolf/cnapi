@@ -1,0 +1,198 @@
+<?php
+
+require_once('cnapi_browse.helpers.inc');
+require_once('cnapi_browse.preprocess.inc');
+
+/**
+ * Implements hook_menu().
+ */
+function cnapi_browse_menu() {
+  $items['agenda/s'] = array(
+    'title' => 'Uitgebreid zoeken',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cnapi_browse_advanced_search_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'cnapi_browse.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function cnapi_browse_block_info() {
+  $block['navigation']['info'] = t('CultuurNet API navigation');
+  $block['navigation']['cache'] = DRUPAL_CACHE_GLOBAL;
+
+  $block['search']['info'] = t('CultuurNet API search');
+  $block['search']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['filters']['info'] = t('CultuurNet API filters');
+  $block['filters']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  $block['active_filters']['info'] = t('CultuurNet API active filters');
+  $block['active_filters']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cnapi_browse_block_view($delta = '') {
+  module_load_include('inc', 'cnapi_browse', 'cnapi_browse.blocks');
+  
+  if (function_exists('cnapi_browse_block_is_visible_' . $delta)) {
+    if (!call_user_func('cnapi_browse_block_is_visible_' . $delta)) {
+      return FALSE;
+    }
+  }
+  
+  if (function_exists('cnapi_browse_block_cache_id_' . $delta) && $_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD') {
+    $cid = cnapi_browse_block_get_cache_id($delta);
+    
+    if ($cache = cache_get($cid, 'cache_block')) {
+      return $cache->data;
+    }
+    
+    if (function_exists('cnapi_browse_block_view_' . $delta)) {
+      $block = call_user_func('cnapi_browse_block_view_' . $delta);
+      
+      $cache_expires = CACHE_TEMPORARY;
+      
+      if (in_array($delta, array('filters', 'active_filters'))) {
+        $cache_expires = variable_get('cnapi_cache_lifetime', 0);
+      }
+      
+      cache_set($cid, $block, 'cache_block', $cache_expires);
+      
+      return $block;
+    }
+  }
+  else {
+    if (function_exists('cnapi_browse_block_view_' . $delta)) {
+      return call_user_func('cnapi_browse_block_view_' . $delta);
+    }
+  }
+}
+
+function cnapi_browse_block_get_cache_id($delta) {
+  global $theme, $base_root, $user;
+
+  // User 1 being out of the regular 'roles define permissions' schema,
+  // it brings too many chances of having unwanted output get in the cache
+  // and later be served to other users. We therefore exclude user 1 from
+  // block caching.
+  if (variable_get('block_cache', FALSE) && $user->uid != 1) {
+    // Start with common sub-patterns: block identification, theme, language.
+    $cid_parts[] = 'cnapi_browse';
+    $cid_parts[] = $delta;
+    $cid_parts[] = $theme;
+    // If Locale is enabled but we have only one language we do not need it as cid
+    // part.
+    if (drupal_multilingual()) {
+      foreach (language_types_configurable() as $language_type) {
+        $cid_parts[] = $GLOBALS[$language_type]->language;
+      }
+    }
+  
+    $cid_parts = array_merge($cid_parts, call_user_func('cnapi_browse_block_cache_id_' . $delta));
+    
+    return implode(':', $cid_parts);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnapi_browse_theme() {
+  return array(
+    'cnapi_browse_navigation' => array(
+      'variables' => array('items' => array(), 'level' => 0),
+      'template' => 'cnapi-browse-navigation',
+    ),
+    'cnapi_browse_navigation_item' => array(
+      'variables' => array('item' => array()),
+      'template' => 'cnapi-browse-navigation-item',
+    ),
+    'cnapi_browse_filter_options' => array(
+      'variables' => array('options' => array(), 'level' => 0),
+      'template' => 'cnapi-browse-filter-options',
+    ),
+    'cnapi_browse_filter_option' => array(
+      'variables' => array('option' => NULL),
+      'template' => 'cnapi-browse-filter-option',
+    ),
+    'cnapi_browse_headings_element' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Implements hook_library().
+ */
+function cnapi_browse_library() {
+  $path = drupal_get_path('module', 'cnapi_browse');
+
+  // bgiframe
+  $libraries['jquery.bgiframe'] = array(
+    'title' => 'bgiframe',
+    'website' => 'http://plugins.jquery.com/project/bgiframe',
+    'version' => '2.1.1',
+    'js' => array(
+      $path . '/js/jquery.bgiframe.js' => array(),
+    ),
+  );
+
+  // date
+  $libraries['date'] = array(
+    'title' => 'Datejs',
+    'website' => 'http://www.datejs.com',
+    'version' => 'alpha1',
+    'js' => array(
+      $path . '/js/date.js' => array(),
+      $path . '/js/date_nl.js' => array(),
+    ),
+  );
+
+  // jQuery Datepicker
+  $libraries['jquery.datePicker'] = array(
+    'title' => 'Datejs',
+    'website' => 'http://www.kelvinluck.com/assets/jquery/datePicker/',
+    'version' => '2',
+    'js' => array(
+      $path . '/js/jquery.datePicker.js' => array(),
+    ),
+    'css' => array(
+      $path . '/css/datepicker.css' => array(),
+    ),
+    'dependencies' => array(
+      array('cnapi_browse', 'jquery.bgiframe'),
+      array('cnapi_browse', 'date'),
+    ),
+  );
+
+  return $libraries;
+}
+
+function theme_cnapi_browse_headings_element($variables = NULL) {
+  $output = '';
+
+  $tree = cnapi_get_headings_tree();
+
+  foreach ($tree as $heading_group) {
+    $output .= '<div class="heading-group">';
+    $output .= '<strong>' . $heading_group['name'] . '</strong>';
+    foreach ($heading_group['children'] as $id => $heading) {
+      if (isset($variables['element'][$id])) {
+        $output .= drupal_render($variables['element'][$id]);
+      }
+    }
+    $output .= '</div>';
+  }
+
+  return $output;
+}

@@ -1,8 +1,9 @@
 <?php
-// $Id$
 
 require_once 'cnapi.helpers.inc';
 require_once 'cnapi.parsers.inc';
+require_once 'cnapi.request.inc';
+require_once 'cnapi.cache.inc';
 require_once 'cnapi.api.inc';
 require_once 'cnapi.values.inc';
 
@@ -43,8 +44,8 @@ define('CNAPI_OPTION_NONE', '_none');
  */
 function cnapi_menu() {
   $items['admin/config/services/cnapi'] = array(
-    'title' => 'Cultuurnet API',
-    'description' => 'Change site name, e-mail address, slogan, default front page, and number of posts per page, error pages.',
+    'title' => 'CultuurNet API',
+    'description' => 'Change CultuurNet API setting like API key, location, ...',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cnapi_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -70,6 +71,20 @@ function cnapi_menu() {
   $items['cnapi/autocomplete/location'] = array(
     'title' => 'Locations autocomplete',
     'page callback' => 'cnapi_location_autocomplete',
+    'page arguments' => array(FALSE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['cnapi/autocomplete/location/onlyzip'] = array(
+    'title' => 'Locations autocomplete',
+    'page callback' => 'cnapi_location_autocomplete',
+    'page arguments' => array(TRUE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['cnapi/autocomplete/actor'] = array(
+    'title' => 'Actors autocomplete',
+    'page callback' => 'cnapi_actor_autocomplete',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
@@ -78,10 +93,11 @@ function cnapi_menu() {
 }
 
 /**
- * Implements hook_flush_caches().
+ * Implements hook_cron().
  */
-function cnapi_flush_caches() {
-  return array('cache_cnapi', 'cache_cnapi_detail');
+function cnapi_cron() {
+  cache_clear_all(NULL, 'cache_cnapi');
+  cache_clear_all(NULL, 'cache_cnapi_detail');
 }
 
 /**
@@ -96,9 +112,9 @@ function cnapi_form_system_performance_settings_alter(&$form, $form_state) {
 
   $form['cnapi_cache'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Cultuurnet API cache'),
+    '#title' => t('CultuurNet API cache'),
     '#weight' => 1,
-    '#description' => t('Enabling the Cultuurnet API cache will cache all parsed results of requests to the Cultuurnet API. This will reduce the number of requests made directly to the API service.'),
+    '#description' => t('Enabling the CultuurNet API cache will cache all parsed results of requests to the CultuurNet API. This will reduce the number of requests made directly to the API service.'),
   );
   $form['cnapi_cache']['cnapi_cache_status'] = array(
     '#type' => 'checkbox',

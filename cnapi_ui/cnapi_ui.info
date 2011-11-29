@@ -1,0 +1,15 @@
+name = CultuurNet API user interface
+description = Creates a default user interface for browsing and filtering objects (events, actors, productions) on the CultuurNet API.
+package = CultuurNet API
+version = VERSION
+core = 7.x
+dependencies[] = cnapi
+files[] = cnapi_ui.module
+files[] = cnapi_ui.hacks.inc
+files[] = cnapi_ui.helpers.inc
+files[] = cnapi_ui.pages.inc
+files[] = cnapi_ui.params.inc
+files[] = cnapi_ui.preprocess.inc
+files[] = cnapi_ui.seo.inc
+files[] = cnapi_ui.tracking.inc
+files[] = cnapi_ui.install
