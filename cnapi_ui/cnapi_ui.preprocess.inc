@@ -43,7 +43,7 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   // Text for result info (number of results, ...)
   if (isset($query)) {
-    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaat</strong> gevonden voor <strong>!query</strong>', '<strong>@total resultaten</strong> gevonden voor <strong>!query</strong>', array('@total' => $variables['total'], '!query' => $query));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaat</strong> gevonden voor !query', '<strong>@total resultaten</strong> gevonden voor !query', array('@total' => $variables['total'], '!query' => $query));
   }
   else {
     $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaten</strong> found', '<strong>@total resultaten</strong> gevonden', array('@total' => $variables['total']));
@@ -724,7 +724,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
 	$variables['links'] = array();
   foreach ($links as $link) {
-    $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
+    $variables['links'][] = l(truncate_utf8(ltrim($link, 'http://'), 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
   
   if ($type == 'event') {

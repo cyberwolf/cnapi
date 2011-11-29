@@ -140,6 +140,7 @@ function cnapi_browse_search_form() {
     '#default_value' => '',
     '#description' => 'Formaat yyyy/mm/dd',
     '#size' => 10,
+    '#maxlength' => 1024,
     '#attributes' => array('class' => array('date-for-datepicker')),
   );
 
