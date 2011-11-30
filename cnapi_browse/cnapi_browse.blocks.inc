@@ -176,6 +176,18 @@ function cnapi_browse_search_form_submit($form, &$form_state) {
   cnapi_ui_goto($request);
 }
 
+function cnapi_browse_block_is_visible_filters_what() {
+  return cnapi_browse_block_is_visible_filters();
+}
+
+function cnapi_browse_block_is_visible_filters_where() {
+  return cnapi_browse_block_is_visible_filters();
+}
+
+function cnapi_browse_block_is_visible_filters_when() {
+  return cnapi_browse_block_is_visible_filters();
+}
+
 function cnapi_browse_block_is_visible_filters() {
   $request = cnapi_ui_get_active_request();
 
@@ -195,6 +207,18 @@ function cnapi_browse_block_is_visible_filters() {
   return TRUE;
 }
 
+function cnapi_browse_block_cache_id_filters_what() {
+  return cnapi_browse_block_cache_id_filters();
+}
+
+function cnapi_browse_block_cache_id_filters_where() {
+  return cnapi_browse_block_cache_id_filters();
+}
+
+function cnapi_browse_block_cache_id_filters_when() {
+  return cnapi_browse_block_cache_id_filters();
+}
+
 function cnapi_browse_block_cache_id_filters() {
   $request = cnapi_ui_get_active_request();
   
@@ -207,7 +231,19 @@ function cnapi_browse_block_cache_id_filters() {
   return array(cnapi_request_hash($request));
 }
 
-function cnapi_browse_block_view_filters() {
+function cnapi_browse_block_view_filters_what() {
+  return cnapi_browse_block_view_filters('what', 'Wat');
+}
+
+function cnapi_browse_block_view_filters_where() {
+  return cnapi_browse_block_view_filters('where', 'Waar');
+}
+
+function cnapi_browse_block_view_filters_when() {
+  return cnapi_browse_block_view_filters('when', 'Wanneer');
+}
+
+function cnapi_browse_block_view_filters($type, $title) {
   $request = cnapi_ui_get_active_request();
   
   $context = cnapi_ui_contexts('id', $request['context']);
@@ -232,23 +268,25 @@ function cnapi_browse_block_view_filters() {
     $report = cnapi_get_report('production', $report_query, isset($request['query']['regio']));
   }
 
-  if ($context['type'] == 'event') {
-    $render['filter_what']['title'] = array('#markup' => '<h2>' . 'Wat' . '</h2>');
-    $render['filter_what']['filter'] = cnapi_browse_filter_what_event($report);
+  if ($type == 'what') {
+    if ($context['type'] == 'event') {
+      $render = cnapi_browse_filter_what_event($report);
+    }
+    
+    if ($context['type'] == 'production') {
+      $render = cnapi_browse_filter_what_production($report);
+    }
   }
 
-  if ($context['type'] == 'production') {
-    $render['filter_what']['title'] = array('#markup' => '<h2>' . 'Wat' . '</h2>');
-    $render['filter_what']['filter'] = cnapi_browse_filter_what_production($report);
+  if ($type == 'where') {
+    $render = cnapi_browse_filter_where($report, $context['type']);
   }
 
-  $render['filter_where']['title'] = array('#markup' => '<h2>' . 'Waar' . '</h2>');
-  $render['filter_where']['filter'] = cnapi_browse_filter_where($report, $context['type']);
+  if ($type == 'when') {
+    $render = cnapi_browse_filter_when($report);
+  }
 
-  $render['filter_when']['title'] = array('#markup' => '<h2>' . 'Wanneer' . '</h2>');
-  $render['filter_when']['filter'] = cnapi_browse_filter_when($report);
-
-  $block['subject'] = 'Filter resultaten';
+  $block['subject'] = $title;
   $block['content'] = drupal_render($render);
 
   return $block;
