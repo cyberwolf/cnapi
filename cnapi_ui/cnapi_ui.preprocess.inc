@@ -342,7 +342,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
     // image
     if (isset($media_item['hlink']) && ((isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) || (isset($media_item['filetype']) && $media_item['filetype'] == 'jpeg'))) {
-      $vars = array('path' => $media_item['hlink'] . '?maxwidth=240');
+      $vars = array('path' => $media_item['hlink'] . '?maxwidth=240&maxheight=240');
       if (isset($image['title'])) {
         $vars['alt'] = $image['title'];
         $vars['title'] = $image['title'];

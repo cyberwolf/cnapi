@@ -784,6 +784,7 @@ function cnapi_browse_filter_when_form($form, &$form_state) {
     '#description' => 'Formaat yyyy/mm/dd',
     '#size' => 10,
     '#attributes' => array('class' => array('date-for-datepicker')),
+    '#maxlength' => 1024,
   );
 
   $form['#attached']['library'][] = array('cnapi_browse', 'jquery.datePicker');
