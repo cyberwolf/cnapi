@@ -26,10 +26,5 @@ function cnapi_tracking_admin_settings() {
     '#default_value' => variable_get('cnapi_tracking_script_location', CNAPI_TRACKING_SCRIPT_LOCATION),
   );
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save configuration'),
-  );
-
-  return $form;
+  return system_settings_form($form);
 }
