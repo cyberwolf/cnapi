@@ -95,6 +95,10 @@ function cnapi_location_autocomplete($only_zip = FALSE, $input = '') {
     $locations = db_query_range($sql, 0, 10, array(':did' => CNAPI_LOCATIONS_DIMENSION_MUNICIPALITY, ':start' => strtolower($input) . '%', ':input' => strtolower($input)))->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($locations as $location) {
+      if ($only_zip && $location['type'] != 'city') {
+        continue;
+      }
+      
       if ($location['type'] == 'city') {
         $text = $location['zip'] . ' ' . $location['name'];
       }
