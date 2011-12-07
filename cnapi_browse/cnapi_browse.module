@@ -166,7 +166,6 @@ function cnapi_browse_library() {
       $path . '/css/datepicker.css' => array(),
     ),
     'dependencies' => array(
-      array('cnapi_browse'),
       array('cnapi_browse', 'date'),
     ),
   );
