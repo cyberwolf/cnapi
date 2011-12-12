@@ -82,11 +82,11 @@ function cnapi_ui_set_canonical_and_noindex() {
     }
   }
   
-  // We don't allow indexing of passed events (older than 1 day).
+  // We don't allow indexing of passed events (older than 30 days).
   if (isset($request['event'])) {
     $event = cnapi_get_event($request['event']);
     if (isset($event['calendar']['stop'])) {
-      if (REQUEST_TIME > $event['calendar']['stop'] + 60 * 60 * 24) {
+      if (REQUEST_TIME > $event['calendar']['stop'] + 60 * 60 * 24 * 30) {
         $noindex = TRUE;
       }
     }
