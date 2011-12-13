@@ -211,10 +211,6 @@ function cnapi_browse_block_cache_id_filters_what() {
   return cnapi_browse_block_cache_id_filters();
 }
 
-function cnapi_browse_block_cache_id_filters_where() {
-  return cnapi_browse_block_cache_id_filters();
-}
-
 function cnapi_browse_block_cache_id_filters_when() {
   return cnapi_browse_block_cache_id_filters();
 }
