@@ -20,6 +20,14 @@ function template_preprocess_link(&$variables) {
     if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
+      
+    if (isset($request['query']['heading'])) {
+      $headings = $request['query']['heading'];
+      $headings = explode(';', $headings);
+      if (count($headings) > 1) {
+        $variables['options']['attributes']['rel'] = 'nofollow';
+      }
+    }
 
     // We remove the "active" class on all cnapi list links.
     // Because all cnapi list links have the same path (but different querystring), Drupal marks all list links as active on all pages.
@@ -67,6 +75,14 @@ function cnapi_ui_set_canonical_and_noindex() {
 
         if (isset($request['query']['heading'])) {
           $canonical = cnapi_url_dp2dua(array('context' => $request['context'], 'query' => array('heading' => $request['query']['heading'])));
+        }
+      }
+      
+      if (isset($request['query']['heading'])) {
+        $headings = $request['query']['heading'];
+        $headings = explode(';', $headings);
+        if (count($headings) > 1) {
+          $noindex = TRUE;
         }
       }
     }
