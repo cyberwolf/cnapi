@@ -812,3 +812,49 @@ function _cnapi_ui_video_url_to_embed($url, $width, $height) {
 
   return $embed;
 }
+
+/**
+ * Implement hook_preprocess_html().
+ */
+function cnapi_ui_preprocess_html(&$variables) {
+  // Get active request.
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  // We only act upon detail cnapi page request.
+  $type = reset(array_intersect(array_keys($request), array('actor', 'event', 'production')));
+
+  if (!in_array($type, array('actor', 'event'))) {
+    return;
+  }
+
+  $object_request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $request[$type]));
+  $object = cnapi_get($object_request);
+
+  if ($type == 'event') {
+    $city = $object['location']['address']['city'];
+  }
+  elseif ($type == 'actor') {
+    $city = $object['contactinfo']['address']['city'];
+  }
+  else {
+    return;
+  }
+
+  $title = array();
+  
+  $title[] = cnapi_ui_page_detail_title($object);
+  $title[] = $city;
+
+  $head_title = array(
+    'title' => strip_tags(implode(' | ', $title)),
+    'name' => check_plain(variable_get('site_name', 'Drupal')),
+  );
+
+  $variables['head_title_array'] = $head_title;
+  $variables['head_title'] = implode(' | ', $head_title);
+}
