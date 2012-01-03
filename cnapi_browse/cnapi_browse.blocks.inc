@@ -306,6 +306,9 @@ function cnapi_browse_filter_what_event($report) {
   $the_depth = cnapi_output_type_has_heading_groups() ? 2 : 1;
 
   foreach ($request_headings as $active_heading) {
+	  if (!isset($headings[$active_heading])) {
+	    continue;
+	  }
     if (!cnapi_output_type_has_heading_groups()) {
       $active_headings[] = $active_heading;
     }

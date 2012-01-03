@@ -146,17 +146,17 @@ function cnapi_extras_block_is_visible_movie_results() {
 }
 
 function cnapi_extras_block_view_movie_results() {
-  $request = cnapi_ui_get_active_request();
+  $request_dp = cnapi_ui_get_active_request();
   
   $movie_context = cnapi_ui_contexts('id', 'movie');
   
-  $context = $request['context'];
+  $context = $request_dp['context'];
   
-  $request = cnapi_url_dp2p($request);
+  $request_p = cnapi_url_dp2p($request_dp);
   
-  cnapi_ui_remove_context_query($request['query'], $context); // we only want the query the user was actualy doing (without extra context queries)
+  cnapi_ui_remove_context_query($request_p['query'], $context); // we only want the query the user was actualy doing (without extra context queries)
 
-  $query = $request['query'];
+  $query = $request_p['query'];
   
   foreach ($movie_context['query'] as $key => $value) {
     $query[$key] = $value;
@@ -169,10 +169,15 @@ function cnapi_extras_block_view_movie_results() {
   if (empty($productions['data'])) {
     return;
   }
-
-  unset($query['pagelength']);
-  $more_request = array('context' => 'movie', 'query' => $query);
   
+  unset($query['pagelength']);
+  
+  $request_p['query'] = $query;
+
+  $request_dp = cnapi_url_p2dp($request_p);
+  
+  $more_request = array('context' => 'movie', 'query' => $request_dp['query']);
+
   $block['subject'] = 'Meest vertoonde films voor uw zoekopdracht';
   $block['content'] = array(
     '#theme' => 'cnapi_extras_block_movie_results',

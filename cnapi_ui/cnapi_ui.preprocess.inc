@@ -639,7 +639,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     $variables['facilities'] = array();
 
     if (isset($object['categories']['facility'])) {
-      $targetaudiences = cnapi_get_facilities();
+      $facilities = cnapi_get_facilities();
 
       foreach ($object['categories']['facility'] as $facility) {
         $request_facility = array('context' => $type, 'query' => array('facility' => $facility));
@@ -794,7 +794,7 @@ function _cnapi_ui_video_url_to_embed($url, $width, $height) {
 
   $video_parts = explode('?v=', $embed_url);
 
-  if (count($video_parts) == 0) {
+  if (count($video_parts) < 2) {
     return FALSE;
   }
   $embed_url = $video_parts[0] .'/' . $video_parts[1];

@@ -10,7 +10,7 @@
  *
  * @see theme_link()
  */
-function template_preprocess_link(&$variables) {
+function cnapi_ui_preprocess_link(&$variables) {
   // Pase the link url as a Drupal cnapi request object.
   $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
 
@@ -158,6 +158,10 @@ function cnapi_ui_seo_redirects() {
     
     // Fetch the object's info from the api.
     $object = cnapi_get(cnapi_url_dp2p($request));
+    
+    if (empty($object)) {
+      return;
+    }
 
     // Add the title to the current $request.
     if (isset($object['detail']['nl']['title'])) {
