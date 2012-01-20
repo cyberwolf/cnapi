@@ -10,15 +10,28 @@
  *
  * @see theme_link()
  */
-function template_preprocess_link(&$variables) {
+function cnapi_ui_preprocess_link(&$variables) {
   // Pase the link url as a Drupal cnapi request object.
   $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
 
   // Only act on cnapi list links.
   if ($request && isset($request['context'])) {
+    $context = cnapi_ui_contexts('id', $request['context']);
+    
     // In case the url has more parameters than page and heading, we add rel=nofollow. We only want search engines to index lists by heading.
     if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
+    }
+    elseif ($context['type'] == 'event' && !isset($request['query']['heading'])) {
+      $variables['options']['attributes']['rel'] = 'nofollow';
+    }
+      
+    if (isset($request['query']['heading'])) {
+      $headings = $request['query']['heading'];
+      $headings = explode(';', $headings);
+      if (count($headings) > 1) {
+        $variables['options']['attributes']['rel'] = 'nofollow';
+      }
     }
 
     // We remove the "active" class on all cnapi list links.
@@ -69,6 +82,17 @@ function cnapi_ui_set_canonical_and_noindex() {
           $canonical = cnapi_url_dp2dua(array('context' => $request['context'], 'query' => array('heading' => $request['query']['heading'])));
         }
       }
+      
+      if (isset($request['query']['heading'])) {
+        $headings = $request['query']['heading'];
+        $headings = explode(';', $headings);
+        if (count($headings) > 1) {
+          $noindex = TRUE;
+        }
+      }
+      else {
+        $noindex = TRUE;
+      }
     }
 
     // On actor and production listings we only allow the "page" parameter in the querystring.
@@ -82,11 +106,11 @@ function cnapi_ui_set_canonical_and_noindex() {
     }
   }
   
-  // We don't allow indexing of passed events (older than 1 day).
+  // We don't allow indexing of passed events (older than 30 days).
   if (isset($request['event'])) {
     $event = cnapi_get_event($request['event']);
     if (isset($event['calendar']['stop'])) {
-      if (REQUEST_TIME > $event['calendar']['stop'] + 60 * 60 * 24) {
+      if (REQUEST_TIME > $event['calendar']['stop'] + 60 * 60 * 24 * 30) {
         $noindex = TRUE;
       }
     }
@@ -142,6 +166,10 @@ function cnapi_ui_seo_redirects() {
     
     // Fetch the object's info from the api.
     $object = cnapi_get(cnapi_url_dp2p($request));
+    
+    if (empty($object)) {
+      return;
+    }
 
     // Add the title to the current $request.
     if (isset($object['detail']['nl']['title'])) {

@@ -25,16 +25,16 @@ Drupal.behaviors.cnapiBrowseDatePicker = {
   attach: function (context, settings) {
 
     // hide the date field
-    $('.form-item:has(.date-for-datepicker)').hide();
+    $('.form-item:has(.date-for-datepicker)', context).hide();
 
     // hide the date field for fields and add the datepicker
-    $('.form-item:has(.date-for-datepicker)').after('<div class="datepicker"></div>');
+    $('.form-item:has(.date-for-datepicker)', context).after('<div class="datepicker"></div>');
 
     // add extra option to select field to display datepicker
-    $('.has-datepicker').append($("<option></option>").val("_datepicker").text('Kies zelf data'));
+    $('.has-datepicker', context).append($("<option></option>").val("_datepicker").text('Kies zelf data'));
 
     // bind onchange event to show the datepicker when the "pick a date" option has been chosen
-    $('.has-datepicker').bind('change', function () {
+    $('.has-datepicker', context).bind('change', function () {
       if ($(this).val() == '_datepicker') {
         $('.datepicker', $(this).parents('form')).dpDisplay();
 
@@ -46,7 +46,7 @@ Drupal.behaviors.cnapiBrowseDatePicker = {
     });
 
     // create the datepicker and bind the "dateSelected" event
-    $('.datepicker')
+    $('.datepicker', context)
       .each(function () {
         var inline = $(this).parents('form').has('.has-datepicker').length == 0;
 
@@ -71,7 +71,7 @@ Drupal.behaviors.cnapiBrowseDatePicker = {
       });
 
     // highlighting selected dates in datepicker
-    $('.date-for-datepicker').each(function () {
+    $('.date-for-datepicker', context).each(function () {
       if ($(this).val() != '') {
         var dates = $(this).val().split(';');
         for (var i in dates) {

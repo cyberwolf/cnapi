@@ -17,6 +17,19 @@ function cnapi_ui_page_list() {
   // Getting the current request as a Drupal request object.
   $request_dp = cnapi_ui_get_active_request();
 
+  // There's a specific issue with requests with headings that are invalid.
+  if (isset($request_dp['query']['heading'])) {
+    $headings = $request_dp['query']['heading'];
+    $headings = explode(';', $headings);
+
+    foreach ($headings as $heading) {
+      if (empty($heading) || !is_numeric($heading)) {
+        drupal_not_found();
+        exit();
+      }
+    }
+  }
+
   // Converting it to an API request.
   $request = cnapi_url_dp2p($request_dp);
 

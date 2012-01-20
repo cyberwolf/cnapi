@@ -29,8 +29,14 @@ function cnapi_browse_block_info() {
   $block['search']['info'] = t('CultuurNet API search');
   $block['search']['cache'] = DRUPAL_NO_CACHE;
 
-  $block['filters']['info'] = t('CultuurNet API filters');
-  $block['filters']['cache'] = DRUPAL_CACHE_CUSTOM;
+  $block['filters_what']['info'] = t('CultuurNet API filters (What)');
+  $block['filters_what']['cache'] = DRUPAL_CACHE_CUSTOM;
+
+  $block['filters_where']['info'] = t('CultuurNet API filters (Where)');
+  $block['filters_where']['cache'] = DRUPAL_NO_CACHE;
+
+  $block['filters_when']['info'] = t('CultuurNet API filters (When)');
+  $block['filters_when']['cache'] = DRUPAL_CACHE_CUSTOM;
 
   $block['active_filters']['info'] = t('CultuurNet API active filters');
   $block['active_filters']['cache'] = DRUPAL_CACHE_CUSTOM;
@@ -137,16 +143,6 @@ function cnapi_browse_theme() {
 function cnapi_browse_library() {
   $path = drupal_get_path('module', 'cnapi_browse');
 
-  // bgiframe
-  $libraries['jquery.bgiframe'] = array(
-    'title' => 'bgiframe',
-    'website' => 'http://plugins.jquery.com/project/bgiframe',
-    'version' => '2.1.1',
-    'js' => array(
-      $path . '/js/jquery.bgiframe.js' => array(),
-    ),
-  );
-
   // date
   $libraries['date'] = array(
     'title' => 'Datejs',
@@ -170,7 +166,6 @@ function cnapi_browse_library() {
       $path . '/css/datepicker.css' => array(),
     ),
     'dependencies' => array(
-      array('cnapi_browse', 'jquery.bgiframe'),
       array('cnapi_browse', 'date'),
     ),
   );

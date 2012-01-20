@@ -43,7 +43,7 @@ function template_preprocess_cnapi_ui_list(&$variables) {
 
   // Text for result info (number of results, ...)
   if (isset($query)) {
-    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaat</strong> gevonden voor <strong>!query</strong>', '<strong>@total resultaten</strong> gevonden voor <strong>!query</strong>', array('@total' => $variables['total'], '!query' => $query));
+    $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaat</strong> gevonden voor !query', '<strong>@total resultaten</strong> gevonden voor !query', array('@total' => $variables['total'], '!query' => $query));
   }
   else {
     $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaten</strong> found', '<strong>@total resultaten</strong> gevonden', array('@total' => $variables['total']));
@@ -342,7 +342,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
     // image
     if (isset($media_item['hlink']) && ((isset($media_item['mediatype']) && in_array($media_item['mediatype'], array('photo', 'imageweb'))) || (isset($media_item['filetype']) && $media_item['filetype'] == 'jpeg'))) {
-      $vars = array('path' => $media_item['hlink'] . '?maxwidth=240');
+      $vars = array('path' => $media_item['hlink'] . '?maxwidth=240&maxheight=240');
       if (isset($image['title'])) {
         $vars['alt'] = $image['title'];
         $vars['title'] = $image['title'];
@@ -639,7 +639,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
     $variables['facilities'] = array();
 
     if (isset($object['categories']['facility'])) {
-      $targetaudiences = cnapi_get_facilities();
+      $facilities = cnapi_get_facilities();
 
       foreach ($object['categories']['facility'] as $facility) {
         $request_facility = array('context' => $type, 'query' => array('facility' => $facility));
@@ -724,7 +724,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 
 	$variables['links'] = array();
   foreach ($links as $link) {
-    $variables['links'][] = l(truncate_utf8($link, 30, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
+    $variables['links'][] = l(truncate_utf8(ltrim($link, 'http://'), 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
   
   if ($type == 'event') {
@@ -794,7 +794,7 @@ function _cnapi_ui_video_url_to_embed($url, $width, $height) {
 
   $video_parts = explode('?v=', $embed_url);
 
-  if (count($video_parts) == 0) {
+  if (count($video_parts) < 2) {
     return FALSE;
   }
   $embed_url = $video_parts[0] .'/' . $video_parts[1];
@@ -811,4 +811,50 @@ function _cnapi_ui_video_url_to_embed($url, $width, $height) {
   $embed .= '</object>';
 
   return $embed;
+}
+
+/**
+ * Implement hook_preprocess_html().
+ */
+function cnapi_ui_preprocess_html(&$variables) {
+  // Get active request.
+  $request = cnapi_ui_get_active_request();
+
+  // We only act upon cnapi requests.
+  if (!$request) {
+    return;
+  }
+
+  // We only act upon detail cnapi page request.
+  $type = reset(array_intersect(array_keys($request), array('actor', 'event', 'production')));
+
+  if (!in_array($type, array('actor', 'event'))) {
+    return;
+  }
+
+  $object_request = array('action' => 'detail', 'type' => $type, 'query' => array('cdbid' => $request[$type]));
+  $object = cnapi_get($object_request);
+
+  if ($type == 'event') {
+    $city = $object['location']['address']['city'];
+  }
+  elseif ($type == 'actor') {
+    $city = $object['contactinfo']['address']['city'];
+  }
+  else {
+    return;
+  }
+
+  $title = array();
+  
+  $title[] = cnapi_ui_page_detail_title($object);
+  $title[] = $city;
+
+  $head_title = array(
+    'title' => strip_tags(implode(' | ', $title)),
+    'name' => check_plain(variable_get('site_name', 'Drupal')),
+  );
+
+  $variables['head_title_array'] = $head_title;
+  $variables['head_title'] = implode(' | ', $head_title);
 }
