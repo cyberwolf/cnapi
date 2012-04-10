@@ -131,7 +131,12 @@ function cnapi_url_dp2p($request) {
 
     if ($query = $context['query']) {
       foreach ($query as $key => $value) {
-        $request_p['query'][$key] = $value;
+        if (isset($request_p['query'][$key])) {
+          $request_p['query'][$key] = $request_p['query'][$key] . ';' . $value;
+        }
+        else {
+          $request_p['query'][$key] = $value;
+        }
       }
     }
 

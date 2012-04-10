@@ -174,13 +174,15 @@ function cnapi_snode_cleanup() {
       return;
     }
 
-    if (isset($result['deletes'])) {
+    if (isset($result['data'])) {
       watchdog('cnapi_snode', 'Deleting shadow nodes for deleted objects of type !type from API for cleanup.', array('!type' => $type), WATCHDOG_INFO);
 
-      foreach ($result['deletes'] as $cdbid) {
+      foreach ($result['data'] as $object) {
         $data = new stdClass();
-        $data->id = $cdbid;
-        $data->type = 'cnapi_event';
+        $data->id = $object['cdbid'];
+        $data->title = $object['title'];
+        $data->data = array();
+        $data->type = 'cnapi_' . $type;
 
         $node = cnapi_snode_get_shadow_node($data, FALSE, FALSE);
 
@@ -194,4 +196,46 @@ function cnapi_snode_cleanup() {
   watchdog('cnapi_snode', 'Finished cleaning up shadow nodes deleted objects from API for cleanup.', array('!type' => $type), WATCHDOG_INFO);
 
   variable_set('cnapi_snode_last_cleanup', REQUEST_TIME);
+}
+
+/**
+ * Update node info for objects that have changed on the API.
+ */
+function cnapi_snode_update_from_api() {
+  $last_update = variable_get('cnapi_snode_last_update', 0);
+
+  $query = array('changedsince' => date('Y-m-d', $last_update));
+
+  $types = array('actor', 'event', 'production');
+
+  foreach ($types as $type) {
+    watchdog('cnapi_snode', 'Fetching changed objects of type !type from API for update.', array('!type' => $type), WATCHDOG_INFO);
+
+    $request = array('action' => 'list_summary', 'type' => $type, 'query' => $query);
+
+    $result = cnapi_get($request);
+
+    if (!$result) {
+       watchdog('cnapi_snode', 'Failed updating nodes for type !type. Stopped trying for all types and will retry again on the next run.', array('!type' => $type), WATCHDOG_ERROR);
+      return;
+    }
+
+    if (isset($result['data'])) {
+      watchdog('cnapi_snode', 'Updating shadow nodes for changed objects of type !type from API for update.', array('!type' => $type), WATCHDOG_INFO);
+
+      foreach ($result['data'] as $object) {
+        $data = new stdClass();
+        $data->id = $object['cdbid'];
+        $data->title = $object['title'];
+        $data->data = array();
+        $data->type = 'cnapi_' . $type;
+
+        $node = cnapi_snode_get_shadow_node($data, TRUE, TRUE);
+      }
+    }
+  }
+
+  watchdog('cnapi_snode', 'Finished updating shadow nodes from API.', array('!type' => $type), WATCHDOG_INFO);
+
+  variable_set('cnapi_snode_last_update', REQUEST_TIME);
 }

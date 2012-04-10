@@ -250,7 +250,7 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
         'type' => 'event',
         'query' => array('k' => '!UiTinVlaanderenFilm'),
         'path' => 'agenda/search',
-        'title' => 'Evenementen',
+        'title' => 'Agenda',
       ),
       'actor' => array(
         'id' => 'actor',

@@ -87,10 +87,6 @@ function cnapi_ui_set_canonical_and_noindex() {
     if ($context['type'] == 'event') {
       if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
         $noindex = TRUE;
-
-        if (isset($request['query']['heading'])) {
-          $canonical = cnapi_url_dp2dua(array('context' => $request['context'], 'query' => array('heading' => $request['query']['heading'])));
-        }
       }
       
       if (isset($request['query']['heading'])) {
@@ -109,9 +105,6 @@ function cnapi_ui_set_canonical_and_noindex() {
     else {
       if (count(array_diff(array_keys($request['query']), array('page'))) > 0) {
         $noindex = TRUE;
-
-        // We also put a canonical to the actor or production listing without parameters.
-        $canonical = cnapi_url_dp2dua(array('context' => $request['context']));
       }
     }
   }

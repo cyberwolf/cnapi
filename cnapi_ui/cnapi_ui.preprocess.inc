@@ -510,9 +510,12 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
   }
 
 	// location is organiser
-	$variables['location_is_organiser'] = isset($organiser['cdbid']) ? TRUE : FALSE;
-	if (isset($organiser['cdbid']) && isset($location['cdbid'])) {
-		$variables['location_is_organiser'] = ($organiser['cdbid'] == $location['cdbid']);
+	$variables['location_is_organiser'] = FALSE;
+	if (isset($organiser['cdbid']) && isset($location['actor']['cdbid'])) {
+		$variables['location_is_organiser'] = ($organiser['cdbid'] == $location['actor']['cdbid']);
+	}
+	else {
+	  $variables['location_is_organiser'] = ($organiser['title'] == $location['actor']['title']);
 	}
 
   // contact
