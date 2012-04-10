@@ -248,7 +248,7 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       'event' => array(
         'id' => 'event',
         'type' => 'event',
-        'query' => array('locationtype' => '!8.9.1.0.0'),
+        'query' => array('k' => '!UiTinVlaanderenFilm'),
         'path' => 'agenda/search',
         'title' => 'Evenementen',
       ),
@@ -262,14 +262,14 @@ function cnapi_ui_contexts($key = 'id', $id = NULL) {
       'movie' => array(
         'id' => 'movie',
         'type' => 'production',
-        'query' => array('type' => '0.50.6.0.0'),
+        'query' => array('k' => 'UiTinVlaanderenFilm'),
         'path' => 'agenda/film',
         'title' => 'Films',
       ),
       'movie_children' => array(
         'id' => 'movie_children',
         'type' => 'production',
-        'query' => array('type' => '0.50.6.0.0', 'age' => '1..11'),
+        'query' => array('k' => 'UiTinVlaanderenFilm', 'age' => '1..11'),
         'path' => 'agenda/film/kinderen',
         'title' => 'Film met kinderen',
       ),

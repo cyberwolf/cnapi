@@ -10,7 +10,7 @@
  *
  * @see theme_link()
  */
-function cnapi_ui_preprocess_link(&$variables) {
+function cnapi_ui_preprocess_link(&$variables) {    
   // Pase the link url as a Drupal cnapi request object.
   $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
 
@@ -23,6 +23,11 @@ function cnapi_ui_preprocess_link(&$variables) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
     elseif ($context['type'] == 'event' && !isset($request['query']['heading'])) {
+      $variables['options']['attributes']['rel'] = 'nofollow';
+    }
+    
+    // We only want to index the first page.
+    if (isset($request['query']['page']) && $request['query']['page'] > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
       
@@ -72,6 +77,11 @@ function cnapi_ui_set_canonical_and_noindex() {
 
     // And the query
     $query = $request['query'];
+    
+    // We only want to index the first page.
+    if (isset($query['page']) && $query['page'] > 0) {
+      $noindex = TRUE;
+    }
 
     // If we're on an event list, we look at headings
     if ($context['type'] == 'event') {
