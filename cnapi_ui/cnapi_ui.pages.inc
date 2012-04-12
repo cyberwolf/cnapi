@@ -83,7 +83,7 @@ function cnapi_ui_page_list_rss() {
   cnapi_ui_clean_rss_queries($query);
 
   // Set the pagelength for the API call to the default feed length.
-  $query['pagelength'] = variable_get('feed_default_items', 10);
+  $query['pagelength'] = isset($_GET['rss_pagelength']) ? $_GET['rss_pagelength'] : variable_get('feed_default_items', 10);
 
   // Set the sort field and direction to "created DESC".
   $query['sort'] = 'created DESC';
