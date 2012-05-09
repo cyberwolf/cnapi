@@ -514,7 +514,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 	if (isset($organiser['cdbid']) && isset($location['actor']['cdbid'])) {
 		$variables['location_is_organiser'] = ($organiser['cdbid'] == $location['actor']['cdbid']);
 	}
-	else {
+	elseif ($type != 'actor') {
 	  $variables['location_is_organiser'] = ($organiser['title'] == $location['actor']['title']);
 	}
 
