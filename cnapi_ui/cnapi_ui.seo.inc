@@ -10,14 +10,14 @@
  *
  * @see theme_link()
  */
-function cnapi_ui_preprocess_link(&$variables) {    
+function cnapi_ui_preprocess_link(&$variables) {
   // Pase the link url as a Drupal cnapi request object.
   $request = cnapi_url_dua2dp(array('path' => $variables['path'], 'options' => $variables['options']));
 
   // Only act on cnapi list links.
   if ($request && isset($request['context'])) {
     $context = cnapi_ui_contexts('id', $request['context']);
-    
+
     // In case the url has more parameters than page and heading, we add rel=nofollow. We only want search engines to index lists by heading.
     if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
@@ -25,12 +25,12 @@ function cnapi_ui_preprocess_link(&$variables) {
     elseif ($context['type'] == 'event' && !isset($request['query']['heading'])) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
-    
+
     // We only want to index the first page.
     if (isset($request['query']['page']) && $request['query']['page'] > 0) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
-      
+
     if (isset($request['query']['heading'])) {
       $headings = $request['query']['heading'];
       $headings = explode(';', $headings);
@@ -77,7 +77,7 @@ function cnapi_ui_set_canonical_and_noindex() {
 
     // And the query
     $query = $request['query'];
-    
+
     // We only want to index the first page.
     if (isset($query['page']) && $query['page'] > 0) {
       $noindex = TRUE;
@@ -88,7 +88,7 @@ function cnapi_ui_set_canonical_and_noindex() {
       if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
         $noindex = TRUE;
       }
-      
+
       if (isset($request['query']['heading'])) {
         $headings = $request['query']['heading'];
         $headings = explode(';', $headings);
@@ -108,7 +108,7 @@ function cnapi_ui_set_canonical_and_noindex() {
       }
     }
   }
-  
+
   // We don't allow indexing of passed events (older than 30 days).
   if (isset($request['event'])) {
     $event = cnapi_get_event($request['event']);
@@ -161,15 +161,16 @@ function cnapi_ui_seo_redirects() {
   }
 
   // We only act upon detail cnapi page request.
-  $type = reset(array_intersect(array_keys($request), array('actor', 'event', 'production')));
+  $types = array_intersect(array_keys($request), array('actor', 'event', 'production'));
+  $type = reset($types);
   if ($type) {
     if ($request[$type] == 'undefined') {
       return;
     }
-    
+
     // Fetch the object's info from the api.
     $object = cnapi_get(cnapi_url_dp2p($request));
-    
+
     if (empty($object)) {
       return;
     }

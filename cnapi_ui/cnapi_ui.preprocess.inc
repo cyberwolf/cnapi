@@ -48,7 +48,7 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   else {
     $variables['result_info'] = format_plural($variables['total'], '<strong>@total resultaten</strong> found', '<strong>@total resultaten</strong> gevonden', array('@total' => $variables['total']));
   }
-  
+
   // Result counter
   global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
 
@@ -67,23 +67,23 @@ function template_preprocess_cnapi_ui_list(&$variables) {
   $sort_links = array();
 
   $request_sort = $variables['request'];
-  
+
   $context = cnapi_ui_contexts('id', $variables['request']['context']);
-  
+
   if ($context['type'] == 'event') {
     $request_sort['query']['sort'] = 'date ASC';
     $sort_links[] = cnapi_url_dp2dul('Datum', $request_sort);
-    
+
     $request_sort['query']['sort'] = 'location ASC';
     $sort_links[] = cnapi_url_dp2dul('Locatie', $request_sort);
-    
+
     $request_sort['query']['sort'] = 'title ASC';
     $sort_links[] = cnapi_url_dp2dul('Titel', $request_sort);
   }
   elseif ($context['type'] == 'production') {
     $request_sort['query']['sort'] = 'weight ASC';
     $sort_links[] = cnapi_url_dp2dul('Meest gespeeld', $request_sort);
-    
+
     $request_sort['query']['sort'] = 'title ASC';
     $sort_links[] = cnapi_url_dp2dul('Titel', $request_sort);
   }
@@ -129,7 +129,7 @@ function template_preprocess_cnapi_ui_actor_summary(&$variables) {
  */
 function template_preprocess_cnapi_ui_event_mini_summary(&$variables) {
   $object = $variables['event'];
-  
+
   _template_preprocess_cnapi_ui_object_summary($variables, 'event');
 
   // object_url
@@ -264,7 +264,7 @@ function _template_preprocess_cnapi_ui_object_summary(&$variables, $type) {
       }
     }
   }
-  
+
   // reservation
   if ($type == 'event') {
     $variables['reservation'] = !empty($object['reservation']) ? l('Bestel tickets', $object['reservation'], array('attributes' => array('class' => 'reservation-link', 'rel' => 'nofollow'))) : '';
@@ -469,7 +469,7 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
       if (isset($location['actor']['detail']['nl']['title'])) {
         $variables['location']['title'] = $location['actor']['detail']['nl']['title'];
       }
-      
+
       elseif (isset($location['location'])) {
         $variables['location']['title'] = $location['location'];
       }
@@ -673,63 +673,63 @@ function _template_preprocess_cnapi_ui_object(&$variables, $type) {
 			}
 		}
 	}
-  
+
   // event links
   if (isset($object['contactinfo']['main']['url'])) {
     $links[] = $object['contactinfo']['main']['url'];
   }
-  
+
   if (isset($object['contactinfo']['other']['url'])) {
     foreach ($object['contactinfo']['other']['url'] as $url) {
       $links[] = $url;
     }
   }
-  
+
   // location links
   if (isset($object['location']['actor']['contactinfo']['main']['url'])) {
     $links[] = $object['location']['actor']['contactinfo']['main']['url'];
   }
-  
+
   if (isset($object['location']['actor']['contactinfo']['other']['url'])) {
     foreach ($object['location']['actor']['contactinfo']['other']['url'] as $url) {
       $links[] = $url;
     }
   }
-  
+
   // organiser links
   if (isset($object['organiser']['contactinfo']['main']['url'])) {
     $links[] = $object['organiser']['contactinfo']['main']['url'];
   }
-  
+
   if (isset($object['organiser']['contactinfo']['other']['url'])) {
     foreach ($object['organiser']['contactinfo']['other']['url'] as $url) {
       $links[] = $url;
     }
   }
-  
+
   // performer links
   if (isset($detail['performers']['actor']['contactinfo']['main']['url'])) {
     $links[] = $detail['performers']['actor']['contactinfo']['main']['url'];
   }
-  
+
   if (isset($detail['performers']['actor']['contactinfo']['other']['url'])) {
     foreach ($detail['performers']['actor']['contactinfo']['other']['url'] as $url) {
       $links[] = $url;
     }
   }
-  
+
   // cleaning up links
   foreach ($links as $i => $link) {
     $links[$i] = rtrim($link, '/');
   }
-  
+
   $links = array_unique($links);
 
 	$variables['links'] = array();
   foreach ($links as $link) {
     $variables['links'][] = l(truncate_utf8(ltrim($link, 'http://'), 40, FALSE, TRUE), $link, array('attributes' => array('rel' => 'nofollow')));
   }
-  
+
   if ($type == 'event') {
     $variables['more_data'] = '';
     if (!empty($object['related_production'])) {
@@ -829,7 +829,8 @@ function cnapi_ui_preprocess_html(&$variables) {
   }
 
   // We only act upon detail cnapi page request.
-  $type = reset(array_intersect(array_keys($request), array('actor', 'event', 'production')));
+  $types = array_intersect(array_keys($request), array('actor', 'event', 'production'));
+  $type = reset($types);
 
   if (!in_array($type, array('actor', 'event'))) {
     return;
@@ -849,7 +850,7 @@ function cnapi_ui_preprocess_html(&$variables) {
   }
 
   $title = array();
-  
+
   $title[] = cnapi_ui_page_detail_title($object);
   $title[] = $city;
 
