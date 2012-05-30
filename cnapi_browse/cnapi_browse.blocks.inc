@@ -52,12 +52,57 @@ function cnapi_browse_block_view_active_filters() {
 }
 
 function cnapi_browse_block_view_navigation() {
+  
   $report = cnapi_browse_get_event_report(array(), FALSE, array('headings'), FALSE, FALSE);
 
+  // if we can't fetch the report, we generate the navigation based on the heading tree in our database
   if (!isset($report['headings']) || empty($report['headings'])) {
-    return;
+    $items = array();
+    
+    $headings = cnapi_get_headings_tree();
+    
+    foreach ($headings as $heading) {
+      $url = array('context' => 'event', 'query' => array('heading' => $heading['hid']));
+      
+      $item = array(
+        'id' => $heading['hid'],
+        'name' => $heading['name'],
+        'url' => $url,
+        'total' => -1,
+        'is_heading_group' => TRUE,
+      );
+      
+      $child_items = array();
+    
+      foreach ($heading['children'] as $child_heading) {
+        $url = array('context' => 'event', 'query' => array('heading' => $child_heading['hid']));
+        
+        if ($child_heading['hid'] == 64) {
+          $url = array('context' => 'movie');
+        }
+        
+        if ($child_heading['hid'] == 98) {
+          $url = array('context' => 'movie_children');
+        }
+        
+        $child_items[] = array(
+          'id' => $child_heading['hid'],
+          'name' => $child_heading['name'],
+          'url' => $url,
+          'total' => -1,
+          'is_heading_group' => FALSE,
+        );
+      }
+    
+      if (!empty($child_items)) {
+        $item['children'] = $child_items;
+      }
+      
+      $items[] = $item;
+    }
   }
 
+  // If we could fetch the report, we build our navigation based on the report.
   $items = array();
   foreach ($report['headings'] as $report_item) {
     $link_context = isset($report_item['link']['context']) ? $report_item['link']['context'] : 'event';

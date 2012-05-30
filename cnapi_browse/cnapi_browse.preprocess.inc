@@ -24,7 +24,8 @@ function template_preprocess_cnapi_browse_navigation_item(&$variables) {
   
   // link
   $text = $variables['name'];
-  if (!$variables['item']['is_heading_group']) {
+
+  if (!$variables['item']['is_heading_group'] && $variables['item']['total'] != -1) {
     $text .= ' <span class="total">(' . $variables['total'] . ')</span>';
   }
   
