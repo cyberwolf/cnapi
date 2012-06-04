@@ -101,40 +101,42 @@ function cnapi_browse_block_view_navigation() {
       $items[] = $item;
     }
   }
-
-  // If we could fetch the report, we build our navigation based on the report.
-  $items = array();
-  foreach ($report['headings'] as $report_item) {
-    $link_context = isset($report_item['link']['context']) ? $report_item['link']['context'] : 'event';
-
-    $item = array(
-      'id' => $report_item['id'],
-      'name' => $report_item['name'],
-      'url' => cnapi_url_p2dp($report_item['link'], $link_context),
-      'total' => $report_item['total'],
-      'is_heading_group' => cnapi_output_type_has_heading_groups(),
-    );
-
-    if (cnapi_output_type_has_heading_groups() && isset($report_item['children'])) {
-      $child_items = array();
-
-      foreach ($report_item['children'] as $child_report_item) {
-        $link_context = isset($child_report_item['link']['context']) ? $child_report_item['link']['context'] : 'event';
-        $child_items[] = array(
-          'id' => $child_report_item['id'],
-          'name' => $child_report_item['name'],
-          'url' => cnapi_url_p2dp($child_report_item['link'], $link_context),
-          'total' => $child_report_item['total'],
-          'is_heading_group' => FALSE,
-        );
+  
+  else {
+    // If we could fetch the report, we build our navigation based on the report.
+    $items = array();
+    foreach ($report['headings'] as $report_item) {
+      $link_context = isset($report_item['link']['context']) ? $report_item['link']['context'] : 'event';
+    
+      $item = array(
+        'id' => $report_item['id'],
+        'name' => $report_item['name'],
+        'url' => cnapi_url_p2dp($report_item['link'], $link_context),
+        'total' => $report_item['total'],
+        'is_heading_group' => cnapi_output_type_has_heading_groups(),
+      );
+    
+      if (cnapi_output_type_has_heading_groups() && isset($report_item['children'])) {
+        $child_items = array();
+    
+        foreach ($report_item['children'] as $child_report_item) {
+          $link_context = isset($child_report_item['link']['context']) ? $child_report_item['link']['context'] : 'event';
+          $child_items[] = array(
+            'id' => $child_report_item['id'],
+            'name' => $child_report_item['name'],
+            'url' => cnapi_url_p2dp($child_report_item['link'], $link_context),
+            'total' => $child_report_item['total'],
+            'is_heading_group' => FALSE,
+          );
+        }
+    
+        if (!empty($child_items)) {
+          $item['children'] = $child_items;
+        }
       }
-
-      if (!empty($child_items)) {
-        $item['children'] = $child_items;
-      }
+    
+      $items[] = $item;
     }
-
-    $items[] = $item;
   }
 
   $block['subject'] = 'Bekijk alle rubrieken';
