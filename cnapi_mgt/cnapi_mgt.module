@@ -82,6 +82,18 @@ function cnapi_mgt_edit_userpool($userpool) {
 }
 
 /**
+ * @param string $userpoolkey the key of the userpool to remove
+ *
+ */
+function cnapi_mgt_remove_userpool($userpoolkey) {
+  $query = array('userpoolkey' => $userpoolkey);
+
+  $result = _cnapi_mgt_request('userpool/remove', $query);
+
+  return $result;
+}
+
+/**
  * Get a list of userpools. Results are paged.
  *
  * @param $page
@@ -192,6 +204,10 @@ function _cnapi_mgt_parse($path, $xml) {
 
     // parsing userpool modification results
     elseif ($path == 'userpool/modify') {
+      $data = TRUE;
+    }
+
+    elseif ($path == 'userpool/remove') {
       $data = TRUE;
     }
   }
