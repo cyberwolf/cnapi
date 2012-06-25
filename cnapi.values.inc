@@ -106,7 +106,7 @@ function cnapi_location_autocomplete($only_zip = FALSE, $input = '') {
         $text = $location['name'] . ' (Regio)';
       }
       if ($only_zip) {
-        $matches[$text] = $text;
+        $matches[$location['zip']] = $text;
       }
       else {
         $matches[$text] = $text;
