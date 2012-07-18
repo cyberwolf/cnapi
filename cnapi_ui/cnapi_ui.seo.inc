@@ -26,11 +26,6 @@ function cnapi_ui_preprocess_link(&$variables) {
       $variables['options']['attributes']['rel'] = 'nofollow';
     }
 
-    // We only want to index the first page.
-    if (isset($request['query']['page']) && $request['query']['page'] > 0) {
-      $variables['options']['attributes']['rel'] = 'nofollow';
-    }
-
     if (isset($request['query']['heading'])) {
       $headings = $request['query']['heading'];
       $headings = explode(';', $headings);
