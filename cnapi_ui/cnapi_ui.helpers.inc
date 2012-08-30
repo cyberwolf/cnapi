@@ -56,7 +56,7 @@ function cnapi_ui_rss_feed_url_raw($request = NULL) {
  */
 function cnapi_ui_clean_invalid_queries(&$query) {
   // Valid query parameters for actor, event and production lists.
-  $valid_queries_common = array('query', 'k', 'cdbid', 'changedsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
+  $valid_queries_common = array('query', 'k', 'cdbid', 'changedsince', 'createdsince', 'zip', 'city', 'cityid', 'regio', 'latlng', 'format', 'sort', 'page', 'pagelength');
 
   // Valid query parameters for productions.
   $valid_queries_events_productions = array('locationkeyword', 'organiserkeyword', 'organiser', 'agebetween', 'age', 'isfree', 'isparent', 'permanent', 'temporary', 'location', 'agefrom', 'organizer', 'type', 'thema', 'targetaudience', 'facility', 'publicscope', 'locationtype', 'eventtype', 'actortype', 'municipal', 'ipe', 'misc', 'heading', 'daterange', 'date', 'datetype');
