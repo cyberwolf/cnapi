@@ -50,7 +50,6 @@ function cnapi_ui_preprocess_link(&$variables) {
 /**
  * Put noindex and canonical metatags for SEO on relevant cnapi pages.
  * Since we only want search engines to index listings by heading, we put a "noindex" on all other listings (ex. ?heading=123&cityid=9000_GENT).
- * We put a canonical reference to the "heading" list for all listings that are listings by heading but also specify other query parameters (ex. ?heading=123&cityid=9000_GENT => ?heading=123)
  */
 function cnapi_ui_set_canonical_and_noindex() {
   // Get active request.
@@ -80,7 +79,7 @@ function cnapi_ui_set_canonical_and_noindex() {
 
     // If we're on an event list, we look at headings
     if ($context['type'] == 'event') {
-      if (count(array_diff(array_keys($request['query']), array('page', 'heading'))) > 0) {
+      if (count(array_diff(array_keys($request['query']), array('page', 'heading', 'regio'))) > 0) {
         $noindex = TRUE;
       }
 
@@ -89,6 +88,20 @@ function cnapi_ui_set_canonical_and_noindex() {
         $headings = explode(';', $headings);
         if (count($headings) > 1) {
           $noindex = TRUE;
+        }
+        
+        // Allow combination of regio and heading to be indexed  
+        elseif (isset($request['query']['regio'])) {
+          $regios = $request['query']['regio'];
+          $regios = explode(';', $regios);
+          if (count($regios) > 1) {
+            $noindex = TRUE;
+          }
+          
+          // We only want cities to be indexed, no provinces or touristic regions
+          elseif ($regios[0] < 34 || $regios[0] > 348) {
+            $noindex = TRUE;
+          }
         }
       }
       else {
